@@ -73,7 +73,7 @@ public class PanelPrincipal {
         });
 
         JButton updateButton = new JButton("Update");
-        JButton deleteButton = new JButton("delete");
+        JButton deleteButton = new JButton("Delete");
 
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());

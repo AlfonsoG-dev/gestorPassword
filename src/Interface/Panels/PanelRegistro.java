@@ -2,6 +2,8 @@ package Interface.Panels;
 
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -13,18 +15,23 @@ import javax.swing.JTextField;
 
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
+import Mundo.Cuentas.Cuenta;
 import Mundo.Users.User;
 import Mundo.Users.UserBuilder;
 
 public class PanelRegistro {
     private JFrame myFrame;
+    private QueryDAO<User> userDAO;
     private JLabel headerLabel;
+    private JTextField txtNombre;
+    private JTextField txtEmail;
+    private JComboBox<String> cbxUser;
     private JPanel pPrincipal;
     public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig) {
-        CreateUI(frameTitle, "user", hight, height, myConfig);
+        userDAO = new QueryDAO<User>("user", myConfig);
+        CreateUI(frameTitle, hight, height, myConfig);
     }
-    public String[] ComboBoxUsers(String tableName, DbConfig myConfig) {
-        QueryDAO<User> userDAO = new QueryDAO<>(tableName, myConfig);
+    public String[] ComboBoxUsers() {
         String result = "select a user...,";
         ArrayList<User> users = userDAO.ReadAll(new UserBuilder());
         for(User u: users) {
@@ -32,19 +39,35 @@ public class PanelRegistro {
         }
         return result.split(",");
     }
-    public JPanel OptionsComponent(String tableName, DbConfig myConfig) {
+    public JPanel OptionsComponent() {
         JPanel pOptions = new JPanel();
         pOptions.setLayout(new GridLayout(3, 2));
         pOptions.add(new JLabel(" nombre"));
-        pOptions.add(new JTextField());
+        pOptions.add(txtNombre = new JTextField());
         pOptions.add(new JLabel(" email"));
-        pOptions.add(new JTextField());
+        pOptions.add(txtEmail = new JTextField());
         pOptions.add(new JLabel(" user_id"));
-        pOptions.add(new JComboBox<String>(ComboBoxUsers(tableName, myConfig)));
+        pOptions.add(cbxUser = new JComboBox<String>(ComboBoxUsers()));
 
         return pOptions;
     }
-    public void CreateUI(String frameTitle, String tableName,int hight, int height, DbConfig myConfig) {
+    // inserts a new element to the database
+    public void OkButtonHandler(JButton OKButton) {
+        OKButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: implement the method to insert new element
+                // the cbx return the name of the user, use the name to get the ID of the user
+                String nombre = txtNombre.getText();
+                String email = txtEmail.getText();
+                String selectedUser = cbxUser.getSelectedItem().toString();
+                int selectedUserId = userDAO.FindByColumnName("nombre: " + selectedUser, "and", new UserBuilder()).getId_pk();
+                Cuenta nueva = new Cuenta(nombre, email, selectedUserId);
+                nueva.setCreate_at();
+                System.out.println(nueva.GetAllProperties());
+            }
+        });
+    }
+    public void CreateUI(String frameTitle,int hight, int height, DbConfig myConfig) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
@@ -55,12 +78,14 @@ public class PanelRegistro {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 1));
 
-        pPrincipal.add(OptionsComponent(tableName, myConfig));
+        pPrincipal.add(OptionsComponent());
 
         JPanel options = new JPanel();
         options.setLayout(new FlowLayout());
 
-        options.add(new JButton("OK"));
+        JButton OKButton = new JButton("OK");
+        options.add(OKButton);
+        OkButtonHandler(OKButton);
         options.add(new JButton("cancel"));
         pPrincipal.add(options);
 
