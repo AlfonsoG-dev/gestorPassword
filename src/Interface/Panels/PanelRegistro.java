@@ -1,6 +1,7 @@
 package Interface.Panels;
 
 import java.awt.GridLayout;
+import java.awt.FlowLayout;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -34,12 +35,13 @@ public class PanelRegistro {
     public JPanel OptionsComponent(String tableName, DbConfig myConfig) {
         JPanel pOptions = new JPanel();
         pOptions.setLayout(new GridLayout(3, 2));
-        pOptions.add(new JLabel("nombre"));
+        pOptions.add(new JLabel(" nombre"));
         pOptions.add(new JTextField());
-        pOptions.add(new JLabel("email"));
+        pOptions.add(new JLabel(" email"));
         pOptions.add(new JTextField());
-        pOptions.add(new JLabel("user_id"));
+        pOptions.add(new JLabel(" user_id"));
         pOptions.add(new JComboBox<String>(ComboBoxUsers(tableName, myConfig)));
+
         return pOptions;
     }
     public void CreateUI(String frameTitle, String tableName,int hight, int height, DbConfig myConfig) {
@@ -54,10 +56,17 @@ public class PanelRegistro {
         pPrincipal.setLayout(new GridLayout(2, 1));
 
         pPrincipal.add(OptionsComponent(tableName, myConfig));
-        pPrincipal.add(new JButton("OK"));
+
+        JPanel options = new JPanel();
+        options.setLayout(new FlowLayout());
+
+        options.add(new JButton("OK"));
+        options.add(new JButton("cancel"));
+        pPrincipal.add(options);
 
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
         myFrame.setVisible(true);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);;
     }
 }

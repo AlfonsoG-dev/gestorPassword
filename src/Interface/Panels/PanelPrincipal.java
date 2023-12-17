@@ -64,11 +64,11 @@ public class PanelPrincipal {
         controlPanel.add(scroll);
         return controlPanel;
     }
-    public JPanel OptionsComponent(DbConfig myConfig) {
+    public JPanel OptionsComponent(DbConfig myConfig, int hight, int height) {
         JButton insertButton = new JButton("Insert");
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                new PanelRegistro("Register", 500, 600, myConfig);
+                new PanelRegistro("Register", hight, height, myConfig);
             }
         });
 
@@ -101,7 +101,7 @@ public class PanelPrincipal {
 
         myFrame.add(headerLabel);
         myFrame.add(TableComponent(tableTitle));
-        myFrame.add(OptionsComponent(myConfig));
+        myFrame.add(OptionsComponent(myConfig, hight - 300, height - 100));
         
         myFrame.setVisible(true);
     }
