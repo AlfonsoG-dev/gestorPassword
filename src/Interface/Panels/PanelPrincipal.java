@@ -4,6 +4,8 @@ import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
 import javax.swing.JButton;
@@ -32,7 +34,7 @@ public class PanelPrincipal {
     public PanelPrincipal(String frameTitle, String tableTitle, int hight, int height, DbConfig myConfig) {
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
-        CreateUI(frameTitle, tableTitle, hight, height);
+        CreateUI(frameTitle, tableTitle, hight, height, myConfig);
     }
     public Object[][] TableContent() {
         ArrayList<Cuenta> cuentaList = cuentaDAO.ReadAll(new CuentaBuilder());
@@ -62,8 +64,14 @@ public class PanelPrincipal {
         controlPanel.add(scroll);
         return controlPanel;
     }
-    public JPanel OptionsComponent() {
+    public JPanel OptionsComponent(DbConfig myConfig) {
         JButton insertButton = new JButton("Insert");
+        insertButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                new PanelRegistro("Register", 500, 600, myConfig);
+            }
+        });
+
         JButton updateButton = new JButton("Update");
         JButton deleteButton = new JButton("delete");
 
@@ -74,7 +82,7 @@ public class PanelPrincipal {
         optionPanel.add(deleteButton);
         return optionPanel;
     }
-    public void CreateUI(String frameTitle, String tableTitle, int hight, int height) {
+    public void CreateUI(String frameTitle, String tableTitle, int hight, int height, DbConfig myConfig) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
@@ -93,7 +101,7 @@ public class PanelPrincipal {
 
         myFrame.add(headerLabel);
         myFrame.add(TableComponent(tableTitle));
-        myFrame.add(OptionsComponent());
+        myFrame.add(OptionsComponent(myConfig));
         
         myFrame.setVisible(true);
     }
