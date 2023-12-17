@@ -25,6 +25,7 @@ import Utils.QueryUtils;
 
 public class PanelPrincipal {
 
+    private JTable mTable;
     private JFrame myFrame;
     private JLabel headerLabel;
     private JPanel controlPanel;
@@ -36,19 +37,23 @@ public class PanelPrincipal {
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
         CreateUI(frameTitle, tableTitle, hight, height, myConfig);
     }
-    public Object[][] TableContent() {
+    public Object[][] TableContent(String[] columns) {
         ArrayList<Cuenta> cuentaList = cuentaDAO.ReadAll(new CuentaBuilder());
         String results = "";
         for(Cuenta miCuenta: cuentaList) {
             if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
-                results = queryUtils.GetModelType(miCuenta.GetAllProperties(), true);
+                results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true) + "\n";
             } else {
-                results = queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + ",null";
+                results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + ",null\n";
             }
         }
-        Object[][] data = {
-            results.split(",")
-        };
+        String[] datos = results.split("\n");
+        Object[][] data = new String[datos.length][columns.length];
+        for(int i=0; i<datos.length; ++i) {
+            String[] mData = datos[i].split(",");
+            data[i] = mData;
+
+        }
         return data;
     }
     public JPanel TableComponent(String tableText) {
@@ -57,7 +62,7 @@ public class PanelPrincipal {
 
         String[] columns = modelColumns.split(",");
 
-        JTable mTable = new JTable(TableContent(), columns);
+        mTable = new JTable(TableContent(columns), columns);
         JScrollPane scroll = new JScrollPane(mTable);
         scroll.setSize(300, 300);
         mTable.setFillsViewportHeight(true);
