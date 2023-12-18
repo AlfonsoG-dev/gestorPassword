@@ -45,13 +45,13 @@ public class PanelRegistro {
     private JPanel OptionsComponent() {
         JPanel pOptions = new JPanel();
         pOptions.setLayout(new GridLayout(4, 2));
-        pOptions.add(new JLabel(" nombre"));
+        pOptions.add(new JLabel(" Nombre"));
         pOptions.add(txtNombre = new JTextField());
-        pOptions.add(new JLabel(" email"));
+        pOptions.add(new JLabel(" Email"));
         pOptions.add(txtEmail = new JTextField());
-        pOptions.add(new JLabel(" user_id"));
+        pOptions.add(new JLabel(" User_id"));
         pOptions.add(cbxUser = new JComboBox<String>(ComboBoxUsers()));
-        pOptions.add(new JLabel(" password"));
+        pOptions.add(new JLabel(" Password"));
         pOptions.add(txtPassword = new JTextField());
 
         return pOptions;

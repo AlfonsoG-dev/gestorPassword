@@ -14,12 +14,13 @@
 - [x] add, delete, update passwords
 
 ## TODO'S
-- [ ] add passwords
+- [x] add passwords
 - [ ] delete passwords
-- [ ] update passwords
+- [x] update passwords
 - [x] GUI management for passwords
-- [ ] GUI event or action handler
+- [x] GUI event or action handler
 - [ ] add usage in README
+- [ ] add error or exception handler
 
 ## Disclaimer
 >- this proyect is for educational purposes

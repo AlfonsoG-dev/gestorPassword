@@ -69,6 +69,14 @@ public class PanelPrincipal {
         controlPanel.add(scroll);
         return controlPanel;
     }
+    public Cuenta BuildCuentaFromTable(int tbIndex) {
+        String nombre = mTable.getValueAt(tbIndex, 1).toString();
+        String email = mTable.getValueAt(tbIndex, 2).toString();
+        int user_id = Integer.parseInt(mTable.getValueAt(tbIndex, 3).toString());
+        String password = mTable.getValueAt(tbIndex, 4).toString();
+        Cuenta mia = new Cuenta(nombre, email, user_id, password);
+        return mia;
+    }
     private JPanel OptionsComponent(DbConfig myConfig, int hight, int height) {
         JButton insertButton = new JButton("Insert");
         insertButton.addActionListener(new ActionListener() {
@@ -79,7 +87,18 @@ public class PanelPrincipal {
         });
 
         JButton updateButton = new JButton("Update");
+        updateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int tbIndex = mTable.getSelectedRow();
+                Cuenta updateCuenta = BuildCuentaFromTable(tbIndex);
+                new PanelUpdate("Update", hight, height, updateCuenta);
+                myFrame.setVisible(false);
+            }
+        });
+
+
         JButton deleteButton = new JButton("Delete");
+        // TODO: add delete panel implementation
 
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());
@@ -107,7 +126,7 @@ public class PanelPrincipal {
 
         myFrame.add(headerLabel);
         myFrame.add(TableComponent(tableTitle));
-        myFrame.add(OptionsComponent(myConfig, hight - 300, height - 100));
+        myFrame.add(OptionsComponent(myConfig, 600, 700));
         
         myFrame.setVisible(true);
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
