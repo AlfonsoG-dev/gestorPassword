@@ -34,7 +34,7 @@ public class PanelRegistro {
         userDAO = new QueryDAO<User>("user", myConfig);
         CreateUI(frameTitle, hight, height, myConfig);
     }
-    public String[] ComboBoxUsers() {
+    private String[] ComboBoxUsers() {
         String result = "select a user...,";
         ArrayList<User> users = userDAO.ReadAll(new UserBuilder());
         for(User u: users) {
@@ -42,7 +42,7 @@ public class PanelRegistro {
         }
         return result.split(",");
     }
-    public JPanel OptionsComponent() {
+    private JPanel OptionsComponent() {
         JPanel pOptions = new JPanel();
         pOptions.setLayout(new GridLayout(4, 2));
         pOptions.add(new JLabel(" nombre"));

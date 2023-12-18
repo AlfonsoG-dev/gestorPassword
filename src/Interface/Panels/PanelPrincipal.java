@@ -37,7 +37,7 @@ public class PanelPrincipal {
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
         CreateUI("table example", "Gestor Password", 960, 540, myConfig);
     }
-    public Object[][] TableContent(String[] columns) {
+    private Object[][] TableContent(String[] columns) {
         ArrayList<Cuenta> cuentaList = cuentaDAO.ReadAll(new CuentaBuilder());
         String results = "";
         for(Cuenta miCuenta: cuentaList) {
@@ -56,7 +56,7 @@ public class PanelPrincipal {
         }
         return data;
     }
-    public JPanel TableComponent(String tableText) {
+    private JPanel TableComponent(String tableText) {
         headerLabel.setText(tableText);
         String modelColumns = queryUtils.GetModelColumns(new Cuenta().InitModel(), true);
 
@@ -69,7 +69,7 @@ public class PanelPrincipal {
         controlPanel.add(scroll);
         return controlPanel;
     }
-    public JPanel OptionsComponent(DbConfig myConfig, int hight, int height) {
+    private JPanel OptionsComponent(DbConfig myConfig, int hight, int height) {
         JButton insertButton = new JButton("Insert");
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
