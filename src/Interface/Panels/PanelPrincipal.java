@@ -110,5 +110,6 @@ public class PanelPrincipal {
         myFrame.add(OptionsComponent(myConfig, hight - 300, height - 100));
         
         myFrame.setVisible(true);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }

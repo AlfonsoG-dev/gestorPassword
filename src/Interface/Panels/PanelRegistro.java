@@ -10,6 +10,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -69,9 +70,12 @@ public class PanelRegistro {
                         Cuenta nueva = new Cuenta(nombre, email, selectedUserId, password);
                         nueva.setCreate_at();
                         String condition = "nombre: "  + nueva.getNombre();
-                        cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder());
-                        myFrame.setVisible(false);
-                        new PanelPrincipal(myConfig);
+                        if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                            cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder());
+                            myFrame.setVisible(false);
+                            new PanelPrincipal(myConfig);
+                        }
                     } catch(Exception ex) {
                         System.out.println(ex);
                     }
@@ -81,8 +85,11 @@ public class PanelRegistro {
     private void CancelButtonHandler(JButton cancelButton, DbConfig myConfig) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                myFrame.setVisible(false);
-                new PanelPrincipal(myConfig);
+                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                    myFrame.setVisible(false);
+                    new PanelPrincipal(myConfig);
+                }
             }
         });
     }
@@ -114,6 +121,6 @@ public class PanelRegistro {
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     }
 }
