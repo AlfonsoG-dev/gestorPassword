@@ -32,10 +32,10 @@ public class PanelPrincipal {
     private QueryUtils queryUtils;
     private QueryDAO<Cuenta> cuentaDAO;
 
-    public PanelPrincipal(String frameTitle, String tableTitle, int hight, int height, DbConfig myConfig) {
+    public PanelPrincipal(DbConfig myConfig) {
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
-        CreateUI(frameTitle, tableTitle, hight, height, myConfig);
+        CreateUI("table example", "Gestor Password", 960, 540, myConfig);
     }
     public Object[][] TableContent(String[] columns) {
         ArrayList<Cuenta> cuentaList = cuentaDAO.ReadAll(new CuentaBuilder());
@@ -74,6 +74,7 @@ public class PanelPrincipal {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 new PanelRegistro("Register", hight, height, myConfig);
+                myFrame.setVisible(false);
             }
         });
 

@@ -56,7 +56,7 @@ public class PanelRegistro {
         return pOptions;
     }
     // inserts a new element to the database
-    public void OkButtonHandler(JButton OKButton, DbConfig myConfig) {
+    private void OkButtonHandler(JButton OKButton, DbConfig myConfig) {
         QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
             OKButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -70,12 +70,21 @@ public class PanelRegistro {
                         nueva.setCreate_at();
                         String condition = "nombre: "  + nueva.getNombre();
                         cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder());
-                        System.exit(0);
+                        myFrame.setVisible(false);
+                        new PanelPrincipal(myConfig);
                     } catch(Exception ex) {
                         System.out.println(ex);
                     }
                 }
             });
+    }
+    private void CancelButtonHandler(JButton cancelButton, DbConfig myConfig) {
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                myFrame.setVisible(false);
+                new PanelPrincipal(myConfig);
+            }
+        });
     }
     public void CreateUI(String frameTitle,int hight, int height, DbConfig myConfig) {
         myFrame = new JFrame(frameTitle);
@@ -96,7 +105,10 @@ public class PanelRegistro {
         JButton OKButton = new JButton("OK");
         options.add(OKButton);
         OkButtonHandler(OKButton, myConfig);
-        options.add(new JButton("cancel"));
+
+        JButton cancelButton = new JButton("cancel");
+        options.add(cancelButton);
+        CancelButtonHandler(cancelButton, myConfig);
         pPrincipal.add(options);
 
         myFrame.add(headerLabel);
