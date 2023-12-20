@@ -69,13 +69,12 @@ public class PanelPrincipal {
         controlPanel.add(scroll);
         return controlPanel;
     }
-    public Cuenta BuildCuentaFromTable(int tbIndex) {
-        String nombre = mTable.getValueAt(tbIndex, 1).toString();
-        String email = mTable.getValueAt(tbIndex, 2).toString();
-        int user_id = Integer.parseInt(mTable.getValueAt(tbIndex, 3).toString());
-        String password = mTable.getValueAt(tbIndex, 4).toString();
-        Cuenta mia = new Cuenta(nombre, email, user_id, password);
-        return mia;
+    public Cuenta BuildCuentaFromTable(int row, int column, DbConfig myConfig) {
+        String columName = mTable.getColumnName(column);
+        String options = columName + ": " + mTable.getValueAt(row, column).toString();
+        QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
+        Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "or", new CuentaBuilder());
+        return myCuenta;
     }
     private JPanel OptionsComponent(DbConfig myConfig, int hight, int height) {
         JButton insertButton = new JButton("Insert");
@@ -89,9 +88,10 @@ public class PanelPrincipal {
         JButton updateButton = new JButton("Update");
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int tbIndex = mTable.getSelectedRow();
-                Cuenta updateCuenta = BuildCuentaFromTable(tbIndex);
-                new PanelUpdate("Update", hight, height, updateCuenta);
+                int row = mTable.getSelectedRow();
+                int column = mTable.getSelectedColumn();
+                Cuenta updateCuenta = BuildCuentaFromTable(row, column, myConfig);
+                new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
                 myFrame.setVisible(false);
             }
         });
