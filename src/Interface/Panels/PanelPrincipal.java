@@ -94,7 +94,7 @@ public class PanelPrincipal {
                     if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                         tableModel.removeRow(row);
-                        // TODO: remove the cuenta from the database
+                        cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
                     }
                 } catch(Exception er) {
                     System.err.println(er);
