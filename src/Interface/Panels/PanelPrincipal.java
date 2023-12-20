@@ -83,6 +83,7 @@ public class PanelPrincipal {
         return myCuenta;
     }
     private void DeleteButtonHandler(JButton deleteButton, DbConfig myConfig) {
+        // TODO: exception handler when no row or column is selected
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
@@ -116,6 +117,7 @@ public class PanelPrincipal {
                 int row = mTable.getSelectedRow();
                 int column = mTable.getSelectedColumn();
                 Cuenta updateCuenta = BuildCuentaFromTable(row, column, myConfig);
+                // TODO: exception handler hen no row or column is selected
                 new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
                 myFrame.setVisible(false);
             }
