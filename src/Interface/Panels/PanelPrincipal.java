@@ -106,18 +106,22 @@ public class PanelPrincipal {
         JButton insertButton = new JButton("Insert");
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // TODO: if 1 or more rows are not present in the database the click event insert the new data
+                // other wise redirects to PanelRegistro
                 new PanelRegistro("Register", hight, height, myConfig);
                 myFrame.setVisible(false);
             }
         });
 
+        // TODO: if 1 or more columns of row are edited the click event updates the data doesn't redirect to PanelUpdate
         JButton updateButton = new JButton("Update");
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
                 int column = mTable.getSelectedColumn();
                 Cuenta updateCuenta = BuildCuentaFromTable(row, column, myConfig);
-                // TODO: exception handler hen no row or column is selected
+                // TODO: exception handler when no row or column is selected
+                // if no columns of selected row are edited the click event redirects to PanelUpdate
                 new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
                 myFrame.setVisible(false);
             }

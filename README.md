@@ -13,6 +13,10 @@
 
 - [x] list, add, delete and update passwords
 
+## TODO'S
+- [ ] allow update cuenta directly from table
+- [ ] allow insert cuenta directly from table
+
 ## Disclaimer
 >- this proyect is for educational purposes
 >- securitty issues are not taken into account
