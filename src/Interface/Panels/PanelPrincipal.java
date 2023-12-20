@@ -90,7 +90,6 @@ public class PanelPrincipal {
                 String columName = mTable.getColumnName(column);
                 String options = columName + ": " + mTable.getValueAt(row, column).toString();
                 try {
-                    System.out.println(options);
                     if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                         tableModel.removeRow(row);

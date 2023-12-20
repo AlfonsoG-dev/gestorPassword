@@ -84,7 +84,7 @@ public class PanelUpdate {
     private void CancelButtonHandler(JButton cancelButton, DbConfig myConfig) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
+                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                     myFrame.setVisible(false);
                     new PanelPrincipal(myConfig);

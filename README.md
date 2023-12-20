@@ -11,16 +11,7 @@
 
 ## Features
 
-- [x] add, delete, update passwords
-
-## TODO'S
-- [x] add passwords
-- [ ] delete passwords
-- [x] update passwords
-- [x] GUI management for passwords
-- [x] GUI event or action handler
-- [ ] add usage in README
-- [ ] add error or exception handler
+- [x] list, add, delete and update passwords
 
 ## Disclaimer
 >- this proyect is for educational purposes
