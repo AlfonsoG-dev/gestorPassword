@@ -11,9 +11,12 @@ import java.util.ArrayList;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.DefaultTableModel;
 
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
@@ -26,6 +29,7 @@ import Utils.QueryUtils;
 public class PanelPrincipal {
 
     private JTable mTable;
+    private DefaultTableModel tableModel;
     private JFrame myFrame;
     private JLabel headerLabel;
     private JPanel controlPanel;
@@ -42,7 +46,7 @@ public class PanelPrincipal {
         String results = "";
         for(Cuenta miCuenta: cuentaList) {
             if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
-                results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true) + "\n";
+                results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + "\n";
             } else {
                 results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + ",null\n";
             }
@@ -62,19 +66,41 @@ public class PanelPrincipal {
 
         String[] columns = modelColumns.split(",");
 
-        mTable = new JTable(TableContent(columns), columns);
+        
+        tableModel = new DefaultTableModel(TableContent(columns), columns);
+        mTable = new JTable(tableModel);
+        mTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         JScrollPane scroll = new JScrollPane(mTable);
         scroll.setSize(300, 300);
         mTable.setFillsViewportHeight(true);
         controlPanel.add(scroll);
         return controlPanel;
     }
-    public Cuenta BuildCuentaFromTable(int row, int column, DbConfig myConfig) {
+    private Cuenta BuildCuentaFromTable(int row, int column, DbConfig myConfig) {
         String columName = mTable.getColumnName(column);
         String options = columName + ": " + mTable.getValueAt(row, column).toString();
-        QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
         Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "or", new CuentaBuilder());
         return myCuenta;
+    }
+    private void DeleteButtonHandler(JButton deleteButton, DbConfig myConfig) {
+        deleteButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int row = mTable.getSelectedRow();
+                int column = mTable.getSelectedColumn();
+                String columName = mTable.getColumnName(column);
+                String options = columName + ": " + mTable.getValueAt(row, column).toString();
+                try {
+                    System.out.println(options);
+                    if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                        tableModel.removeRow(row);
+                        // TODO: remove the cuenta from the database
+                    }
+                } catch(Exception er) {
+                    System.err.println(er);
+                }
+            }
+        });
     }
     private JPanel OptionsComponent(DbConfig myConfig, int hight, int height) {
         JButton insertButton = new JButton("Insert");
@@ -98,7 +124,7 @@ public class PanelPrincipal {
 
 
         JButton deleteButton = new JButton("Delete");
-        // TODO: add delete panel implementation
+        DeleteButtonHandler(deleteButton, myConfig);
 
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());
