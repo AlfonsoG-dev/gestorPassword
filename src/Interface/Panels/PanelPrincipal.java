@@ -70,6 +70,7 @@ public class PanelPrincipal {
         tableModel = new DefaultTableModel(TableContent(columns), columns);
         mTable = new JTable(tableModel);
         mTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+        mTable.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
         JScrollPane scroll = new JScrollPane(mTable);
         scroll.setSize(300, 300);
         mTable.setFillsViewportHeight(true);
@@ -142,7 +143,6 @@ public class PanelPrincipal {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
-        myFrame.setLocationRelativeTo(null);
 
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
@@ -153,7 +153,7 @@ public class PanelPrincipal {
         headerLabel = new JLabel("", JLabel.CENTER);
 
         controlPanel = new JPanel();
-        controlPanel.setLayout(new FlowLayout());
+        controlPanel.setLayout(new GridLayout(1, 1));
 
         myFrame.add(headerLabel);
         myFrame.add(TableComponent(tableTitle));
@@ -161,5 +161,6 @@ public class PanelPrincipal {
         
         myFrame.setVisible(true);
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setResizable(true);
     }
 }
