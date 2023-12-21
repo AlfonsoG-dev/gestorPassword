@@ -87,18 +87,19 @@ public class PanelPrincipal {
         return myCuenta;
     }
     private void DeleteButtonHandler(JButton deleteButton, DbConfig myConfig) {
-        // TODO: exception handler when no row or column is selected
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
                 int column = mTable.getSelectedColumn();
                 String columName = mTable.getColumnName(column);
-                String options = columName + ": " + mTable.getValueAt(row, column).toString();
                 try {
                     if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
+                        String options = columName + ": " + mTable.getValueAt(row, column).toString();
                         tableModel.removeRow(row);
                         cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
+                    } else {
+                        JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
                     }
                 } catch(Exception er) {
                     System.err.println(er);
@@ -123,11 +124,13 @@ public class PanelPrincipal {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
                 int column = mTable.getSelectedColumn();
-                Cuenta updateCuenta = BuildCuentaFromTable(row, column, myConfig);
-                // TODO: exception handler when no row or column is selected
-                // if no columns of selected row are edited the click event redirects to PanelUpdate
-                new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
-                myFrame.setVisible(false);
+                if(row != -1 || column != -1) {
+                    Cuenta updateCuenta = BuildCuentaFromTable(row, column, myConfig);
+                    new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
+                    myFrame.setVisible(false);
+                } else {
+                    JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
+                }
             }
         });
 
