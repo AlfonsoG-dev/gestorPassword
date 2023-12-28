@@ -89,6 +89,7 @@ public class PanelPrincipal {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
+                // TODO: if the selected column is create_at or update_at rise an error
                 int column = mTable.getSelectedColumn();
                 String columName = mTable.getColumnName(column);
                 try {

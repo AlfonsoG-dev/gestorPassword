@@ -69,6 +69,7 @@ public class PanelUpdate {
                 try {
                     QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
                     String condition = "id_pk: " + toUpdate.getId_pk();
+                    //TODO: if the selected column is create_at or update_at rise an exception
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                         cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder());
