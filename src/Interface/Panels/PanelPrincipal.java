@@ -72,7 +72,6 @@ public class PanelPrincipal {
 
         mTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         mTable.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        // TODO: set editable to false when column equals: id_Pk, user_id_pk, create_at, update_at
 
         JScrollPane scroll = new JScrollPane(mTable);
         scroll.setSize(300, 300);
