@@ -89,11 +89,12 @@ public class PanelPrincipal {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
-                // TODO: if the selected column is create_at or update_at rise an error
                 int column = mTable.getSelectedColumn();
                 String columName = mTable.getColumnName(column);
                 try {
-                    if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
+                    if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
+                        JOptionPane.showMessageDialog(myFrame, "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
                         String options = columName + ": " + mTable.getValueAt(row, column).toString();
                         tableModel.removeRow(row);
@@ -124,7 +125,10 @@ public class PanelPrincipal {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
                 int column = mTable.getSelectedColumn();
-                if(row != -1 || column != -1) {
+                String columName = mTable.getColumnName(column);
+                if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
+                        JOptionPane.showMessageDialog(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
+                } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column, myConfig);
                     new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
                     myFrame.setVisible(false);
