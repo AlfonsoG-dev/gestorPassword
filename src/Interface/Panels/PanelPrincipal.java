@@ -1,6 +1,7 @@
 package Interface.Panels;
 
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -39,7 +40,7 @@ public class PanelPrincipal {
     public PanelPrincipal(DbConfig myConfig) {
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
-        CreateUI("table example", "Gestor Password", 960, 540, myConfig);
+        CreateUI("table example", "Gestor Password", 1100, 540, myConfig);
     }
     private Object[][] TableContent(String[] columns) {
         ArrayList<Cuenta> cuentaList = cuentaDAO.ReadAll(new CuentaBuilder());
@@ -78,6 +79,36 @@ public class PanelPrincipal {
         mTable.setFillsViewportHeight(true);
         controlPanel.add(scroll);
         return controlPanel;
+    }
+    private JPanel TableOptionComponents() {
+        JPanel tableOptions = new JPanel();
+        tableOptions.setLayout(new GridLayout(2, 1));
+
+        JButton agregar = new JButton("+");
+        tableOptions.add(agregar);
+        agregar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String[] data = {"", "", "", "", "", "", ""};
+                tableModel.addRow(data);
+            }
+        });
+
+
+        JButton eliminar = new JButton("-");
+        tableOptions.add(eliminar);
+        eliminar.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int tableSize = mTable.getRowCount()-1;
+                String cNombre = mTable.getValueAt(tableSize, 1).toString();
+                if(cNombre.isEmpty() || cNombre.isBlank()) {
+                    tableModel.removeRow(tableSize);
+                } else {
+                    JOptionPane.showMessageDialog(myFrame, "Cannot remove!", "Error", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        });
+
+        return tableOptions;
     }
     private Cuenta BuildCuentaFromTable(int row, int column, DbConfig myConfig) {
         String columName = mTable.getColumnName(column);
@@ -163,10 +194,11 @@ public class PanelPrincipal {
         headerLabel = new JLabel("", JLabel.CENTER);
 
         controlPanel = new JPanel();
-        controlPanel.setLayout(new GridLayout(1, 1));
+        controlPanel.setLayout(new BorderLayout());
+        controlPanel.add(TableOptionComponents(), BorderLayout.EAST);
 
         myFrame.add(headerLabel);
-        myFrame.add(TableComponent(tableTitle));
+        myFrame.add(TableComponent(tableTitle), BorderLayout.CENTER);
         myFrame.add(OptionsComponent(myConfig, 600, 700));
         
         myFrame.setVisible(true);
