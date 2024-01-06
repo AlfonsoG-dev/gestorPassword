@@ -11,6 +11,8 @@
 
 ## Features
 
+- [x] loggin 
+- [x] account list of the logged user
 - [x] list, add, delete and update passwords
 
 ## TODO'S
