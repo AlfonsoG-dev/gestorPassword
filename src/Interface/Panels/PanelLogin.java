@@ -6,6 +6,7 @@ import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -56,6 +57,7 @@ public class PanelLogin {
         option.setLayout(new FlowLayout());
         btnIngreso = new JButton("OK");
         option.add(btnIngreso);
+        btnIngreso.setMnemonic(KeyEvent.VK_ENTER);
 
         btnIngreso.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
