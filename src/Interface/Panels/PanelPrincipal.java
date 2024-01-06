@@ -36,8 +36,10 @@ public class PanelPrincipal {
     private JPanel controlPanel;
     private QueryUtils queryUtils;
     private QueryDAO<Cuenta> cuentaDAO;
+    private int loggedUser;
 
-    public PanelPrincipal(DbConfig myConfig) {
+    public PanelPrincipal(DbConfig myConfig, int pLoggedUser) {
+        loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
         CreateUI("table example", "Gestor Password", 1100, 540, myConfig);
@@ -46,9 +48,9 @@ public class PanelPrincipal {
         ArrayList<Cuenta> cuentaList = cuentaDAO.ReadAll(new CuentaBuilder());
         String results = "";
         for(Cuenta miCuenta: cuentaList) {
-            if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
+            if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false && miCuenta.getUser_id_fk() == loggedUser) {
                 results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + "\n";
-            } else {
+            } else if(miCuenta.getUpdate_at() == null && miCuenta.getUser_id_fk() == loggedUser) {
                 results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + ",null\n";
             }
         }
@@ -145,7 +147,7 @@ public class PanelPrincipal {
             public void actionPerformed(ActionEvent e) {
                 // TODO: if 1 or more rows are not present in the database the click event insert the new data
                 // other wise redirects to PanelRegistro
-                new PanelRegistro("Register", hight, height, myConfig);
+                new PanelRegistro("Register", hight, height, myConfig, loggedUser);
                 myFrame.setVisible(false);
             }
         });

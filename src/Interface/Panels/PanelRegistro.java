@@ -24,13 +24,15 @@ import Mundo.Users.UserBuilder;
 public class PanelRegistro {
     private JFrame myFrame;
     private QueryDAO<User> userDAO;
+    private int loggedUser;
     private JLabel headerLabel;
     private JTextField txtNombre;
     private JTextField txtEmail;
     private JTextField txtPassword;
     private JComboBox<String> cbxUser;
     private JPanel pPrincipal;
-    public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig) {
+    public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig, int pLoggedUser) {
+        loggedUser = pLoggedUser;
         userDAO = new QueryDAO<User>("user", myConfig);
         CreateUI(frameTitle, hight, height, myConfig);
     }
@@ -38,7 +40,9 @@ public class PanelRegistro {
         String result = "select a user...,";
         ArrayList<User> users = userDAO.ReadAll(new UserBuilder());
         for(User u: users) {
-            result += u.getNombre() + ",";
+            if(u.getId_pk() == loggedUser) {
+                result += u.getNombre() + ",";
+            }
         }
         return result.split(",");
     }
@@ -74,7 +78,7 @@ public class PanelRegistro {
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                             cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder());
                             myFrame.setVisible(false);
-                            new PanelPrincipal(myConfig);
+                            new PanelPrincipal(myConfig, loggedUser);
                         }
                     } catch(Exception ex) {
                         System.out.println(ex);
@@ -88,7 +92,7 @@ public class PanelRegistro {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                     myFrame.setVisible(false);
-                    new PanelPrincipal(myConfig);
+                    new PanelPrincipal(myConfig, loggedUser);
                 }
             }
         });

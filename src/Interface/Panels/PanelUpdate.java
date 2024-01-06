@@ -20,6 +20,7 @@ import Mundo.Cuentas.CuentaBuilder;
 public class PanelUpdate {
 
     private JFrame myFrame;
+    private int loggedUser;
     private JPanel pPrincipal;
     private JTextField txtIdPk;
     private JTextField txtNombre;
@@ -28,6 +29,7 @@ public class PanelUpdate {
     private JTextField txtPassword;
 
     public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig) {
+        loggedUser = updateCuenta.getUser_id_fk();
         CreateUI(frameTitle, hight, height, updateCuenta, myConfig);
     }
     private JPanel OptionsComponent(Cuenta updateCuenta) {
@@ -72,7 +74,7 @@ public class PanelUpdate {
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                         cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder());
-                        new PanelPrincipal(myConfig);
+                        new PanelPrincipal(myConfig, loggedUser);
                         myFrame.setVisible(false);
                     }
                 } catch(Exception er) {
@@ -87,7 +89,7 @@ public class PanelUpdate {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                     myFrame.setVisible(false);
-                    new PanelPrincipal(myConfig);
+                    new PanelPrincipal(myConfig, loggedUser);
                 }
             }
         });
