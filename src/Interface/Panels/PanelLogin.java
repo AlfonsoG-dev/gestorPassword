@@ -17,6 +17,7 @@ import javax.swing.JTextField;
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
 import Mundo.Users.User;
+import Mundo.Users.UserBuilder;
 
 public class PanelLogin {
 
@@ -31,7 +32,7 @@ public class PanelLogin {
 
     public PanelLogin(DbConfig myConfig) {
         userDAO = new QueryDAO<>("user", myConfig);
-        CreateUI("Loggin");
+        CreateUI("Loggin", myConfig);
     }
 
     private JPanel LoginContent() {
@@ -49,12 +50,33 @@ public class PanelLogin {
         return pPrincipal;
     }
 
-    private JPanel LoginOptions() {
+    private JPanel LoginOptions(DbConfig myConfig) {
 
         JPanel option = new JPanel();
         option.setLayout(new FlowLayout());
         btnIngreso = new JButton("OK");
         option.add(btnIngreso);
+
+        btnIngreso.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                String userName = "";
+                String userPassword = "";
+                if(txtUserName.getText().isEmpty() || txtUserPassword.getText().isEmpty()) {
+                    JOptionPane.showMessageDialog(myFrame, "invalid user or password", "Error", JOptionPane.ERROR_MESSAGE);
+                } else {
+                    userName = txtUserName.getText();
+                    userPassword = txtUserPassword.getText();
+                    String condition = "nombre: " + userName + ", password: " + userPassword;
+                    User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
+                    if(mio != null) {
+                        myFrame.setVisible(false);
+                        new PanelPrincipal(myConfig, mio.getId_pk());
+                    } else {
+                        JOptionPane.showMessageDialog(myFrame, "invalid user or password", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
 
         btnCancel = new JButton("Cancel");
         option.add(btnCancel);
@@ -69,13 +91,13 @@ public class PanelLogin {
         return option;
     }
 
-    public void CreateUI(String frameTitle) {
+    public void CreateUI(String frameTitle, DbConfig myConfig) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(400, 200);
         myFrame.setLayout(new BorderLayout());
 
         myFrame.add(LoginContent(), BorderLayout.CENTER);
-        myFrame.add(LoginOptions(), BorderLayout.SOUTH);
+        myFrame.add(LoginOptions(myConfig), BorderLayout.SOUTH);
 
 
         myFrame.setVisible(true);
