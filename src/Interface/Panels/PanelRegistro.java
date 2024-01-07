@@ -75,7 +75,7 @@ public class PanelRegistro {
                         String password = txtPassword.getText();
                         Cuenta nueva = new Cuenta(nombre, email, selectedUserId, password);
                         nueva.setCreate_at();
-                        String condition = "email: "  + nueva.getEmail() + ", user_id_fk: " + nueva.getUser_id_fk();
+                        String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk" + nueva.getUser_id_fk();
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                             cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder());
