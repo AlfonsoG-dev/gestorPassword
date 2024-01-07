@@ -12,6 +12,8 @@
 ![panelRegistro](.\docs\registro.png)
 ![panelUpdate](.\docs\update.png)
 
+------
+
 ## Dependencies
 >- [java-mysql-orm](https://github.com/AlfonsoG-dev/java-mysql-eje)
 >- [java-build-tool](https://github.com/AlfonsoG-dev/javaBuild)
