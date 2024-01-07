@@ -3,6 +3,7 @@ package Interface.Panels;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
@@ -63,6 +64,7 @@ public class PanelRegistro {
     // inserts a new element to the database
     private void OkButtonHandler(JButton OKButton, DbConfig myConfig) {
         QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
+        OKButton.setMnemonic(KeyEvent.VK_ENTER);
             OKButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
@@ -73,7 +75,7 @@ public class PanelRegistro {
                         String password = txtPassword.getText();
                         Cuenta nueva = new Cuenta(nombre, email, selectedUserId, password);
                         nueva.setCreate_at();
-                        String condition = "nombre: "  + nueva.getNombre();
+                        String condition = "email: "  + nueva.getEmail() + ", user_id_fk: " + nueva.getUser_id_fk();
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                             cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder());

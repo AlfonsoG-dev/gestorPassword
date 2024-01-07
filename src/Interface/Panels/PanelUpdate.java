@@ -3,6 +3,7 @@ package Interface.Panels;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
@@ -56,6 +57,7 @@ public class PanelUpdate {
     }
 
     private void OkButtonHandler(JButton OKButton, DbConfig myConfig, Cuenta toUpdate) {
+        OKButton.setMnemonic(KeyEvent.VK_ENTER);
         OKButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(txtNombre.getText() != null && txtNombre.getText() != toUpdate.getNombre()) {
