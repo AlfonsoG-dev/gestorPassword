@@ -2,6 +2,16 @@
 >- simple GUI App for password management.
 >- created using MYSQL, JAVA SWING and AWT.
 
+![panelLogin](.\docs\login.png)
+
+------
+
+![panelPrincipal](.\docs\principal.png)
+
+------
+![panelRegistro](.\docs\registro.png)
+![panelUpdate](.\docs\update.png)
+
 ## Dependencies
 >- [java-mysql-orm](https://github.com/AlfonsoG-dev/java-mysql-eje)
 >- [java-build-tool](https://github.com/AlfonsoG-dev/javaBuild)

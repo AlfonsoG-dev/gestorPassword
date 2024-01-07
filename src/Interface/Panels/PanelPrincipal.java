@@ -115,8 +115,8 @@ public class PanelPrincipal {
     }
     private Cuenta BuildCuentaFromTable(int row, int column, DbConfig myConfig) {
         String columName = mTable.getColumnName(column);
-        String options = columName + ": " + mTable.getValueAt(row, column).toString();
-        Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "or", new CuentaBuilder());
+        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
+        Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "and", new CuentaBuilder());
         return myCuenta;
     }
     private void DeleteButtonHandler(JButton deleteButton, DbConfig myConfig) {
