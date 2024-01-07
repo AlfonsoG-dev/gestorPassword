@@ -2,15 +2,15 @@
 >- simple GUI App for password management.
 >- created using MYSQL, JAVA SWING and AWT.
 
-![panelLogin](.\docs\login.png)
+![panelLogin](./docs/login.png)
 
 ------
 
-![panelPrincipal](.\docs\principal.png)
+![panelPrincipal](./docs/principal.png)
 
 ------
-![panelRegistro](.\docs\registro.png)
-![panelUpdate](.\docs\update.png)
+![panelRegistro](./docs/registro.png)
+![panelUpdate](./docs/update.png)
 
 ------
 

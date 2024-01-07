@@ -34,5 +34,5 @@
 >- the date is for tracking the update and creation date of the account
 
 ### Realtion Diagram
-[diagram](.\gestor_password_relation_diagram.drawio)
-![digram_img](.\diagram_image.png)
+[diagram](./gestor_password_relation_diagram.drawio)
+![digram_img](./diagram_image.png)
