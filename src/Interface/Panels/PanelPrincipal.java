@@ -68,6 +68,7 @@ public class PanelPrincipal {
         headerLabel.setText(tableText);
         String modelColumns = queryUtils.GetModelColumns(new Cuenta().InitModel(), true);
 
+        // TODO: disable the PK and FK columns for edition
         String[] columns = modelColumns.split(",");
         
         tableModel = new DefaultTableModel(TableContent(columns), columns);
@@ -174,6 +175,8 @@ public class PanelPrincipal {
 
         JButton deleteButton = new JButton("Delete");
         DeleteButtonHandler(deleteButton, myConfig);
+
+        // TODO: create cancel button go back and login whit other account
 
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());

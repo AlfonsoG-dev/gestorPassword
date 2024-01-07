@@ -1,6 +1,6 @@
 # Gestor Password
 >- simple GUI App for password management.
->- created using MYSQL and JAVA.
+>- created using MYSQL, JAVA SWING and AWT.
 
 ## Dependencies
 >- [java-mysql-orm](https://github.com/AlfonsoG-dev/java-mysql-eje)
@@ -15,9 +15,11 @@
 - [x] account list of the logged user
 - [x] list, add, delete and update passwords
 
+
 ## TODO'S
 - [ ] allow update cuenta directly from table
 - [ ] allow insert cuenta directly from table
+- [ ] create usage instructions
 
 ## Disclaimer
 >- this proyect is for educational purposes
