@@ -30,6 +30,7 @@
 
 
 ## TODO'S
+- [ ] add a reload button to the table
 - [ ] create usage instructions
 
 ## Disclaimer

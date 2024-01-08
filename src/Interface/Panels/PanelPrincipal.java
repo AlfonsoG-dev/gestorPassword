@@ -254,6 +254,7 @@ public class PanelPrincipal {
         optionPanel.add(insertButton);
         optionPanel.add(updateButton);
         optionPanel.add(deleteButton);
+        // TODO: add a reload button, has to reload the table content
         optionPanel.add(cancelButton);
         return optionPanel;
     }
