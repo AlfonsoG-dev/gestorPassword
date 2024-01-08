@@ -8,7 +8,9 @@ import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
+import java.util.EventObject;
 
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -16,6 +18,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableModel;
 
@@ -68,7 +71,6 @@ public class PanelPrincipal {
         headerLabel.setText(tableText);
         String modelColumns = queryUtils.GetModelColumns(new Cuenta().InitModel(), true);
 
-        // TODO: disable the PK and FK columns for edition
         String[] columns = modelColumns.split(",");
         
         tableModel = new DefaultTableModel(TableContent(columns), columns);
@@ -76,6 +78,12 @@ public class PanelPrincipal {
 
         mTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         mTable.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
+
+        //disable the PK and FK columns for edition
+        mTable.getColumnModel().getColumn(0).setCellEditor(new NonEditableCell());
+        mTable.getColumnModel().getColumn(3).setCellEditor(new NonEditableCell());
+        mTable.getColumnModel().getColumn(5).setCellEditor(new NonEditableCell());
+        mTable.getColumnModel().getColumn(6).setCellEditor(new NonEditableCell());
 
         JScrollPane scroll = new JScrollPane(mTable);
         scroll.setSize(300, 300);
@@ -130,6 +138,7 @@ public class PanelPrincipal {
                         JOptionPane.showMessageDialog(myFrame, "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
                     } else if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
+                        // TODO: use the user_id_fk to delete the account
                         String options = columName + ": " + mTable.getValueAt(row, column).toString();
                         tableModel.removeRow(row);
                         cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
@@ -209,5 +218,18 @@ public class PanelPrincipal {
         myFrame.setVisible(true);
         myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myFrame.setResizable(true);
+    }
+}
+
+// to disable cell edition
+class NonEditableCell extends DefaultCellEditor {
+
+    public NonEditableCell() {
+        super(new JTextField());
+    }
+
+    @Override
+    public boolean isCellEditable(EventObject e) {
+        return false;
     }
 }
