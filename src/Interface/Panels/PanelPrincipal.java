@@ -79,7 +79,13 @@ public class PanelPrincipal {
         mTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         mTable.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
-        //disable the PK and FK columns for edition
+        /** 
+         * disable the PK and FK columns for edition.
+         * 1. id_pk
+         * 2. user_id_fk
+         * 3. create_at
+         * 4. update_at
+         */
         mTable.getColumnModel().getColumn(0).setCellEditor(new NonEditableCell());
         mTable.getColumnModel().getColumn(3).setCellEditor(new NonEditableCell());
         mTable.getColumnModel().getColumn(5).setCellEditor(new NonEditableCell());
@@ -139,7 +145,7 @@ public class PanelPrincipal {
                     } else if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
                         // TODO: use the user_id_fk to delete the account
-                        String options = columName + ": " + mTable.getValueAt(row, column).toString();
+                        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + mTable.getValueAt(row, 3);
                         tableModel.removeRow(row);
                         cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
                     } else {
