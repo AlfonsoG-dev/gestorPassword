@@ -105,7 +105,7 @@ public class PanelPrincipal {
         tableOptions.add(agregar);
         agregar.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String[] data = {"", "", "", "", "", "", ""};
+                String[] data = {"", "", "", String.valueOf(loggedUser), "", "", ""};
                 tableModel.addRow(data);
             }
         });
@@ -133,6 +133,42 @@ public class PanelPrincipal {
         Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "and", new CuentaBuilder());
         return myCuenta;
     }
+    private ArrayList<Cuenta> misCuentas() {
+        ArrayList<Cuenta> nuevas = new ArrayList<>();
+        ArrayList<Cuenta> nCuentas = cuentaDAO.ReadAll(new CuentaBuilder());
+        for(Cuenta c: nCuentas) {
+            if(c.getUser_id_fk() == loggedUser) {
+                nuevas.add(c);
+            }
+        }
+        return nuevas;
+    }
+    private ArrayList<Cuenta> ListaFaltantes() {
+        ArrayList<Cuenta> faltante = new ArrayList<>();
+        int rows = mTable.getRowCount();
+        ArrayList<Cuenta> nCuentas = misCuentas();
+        Cuenta mia = null;
+        if(nCuentas.size() < rows) {
+        outter: for(int i=0; i<rows; ++i) {
+                String cNombre = mTable.getValueAt(i, 1).toString();
+                String cEmail = mTable.getValueAt(i, 2).toString();
+                String cUserFk = mTable.getValueAt(i, 3).toString();
+                String cPassword = mTable.getValueAt(i, 4).toString();
+                if(cNombre.isEmpty() || cEmail.isEmpty() || cPassword.isEmpty()) {
+                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    break outter;
+                }
+                String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
+                Cuenta buscada = cuentaDAO.FindByColumnName(condition, "and", new CuentaBuilder());
+                if(buscada == null) {
+                    mia = new Cuenta(cNombre, cEmail, Integer.parseInt(cUserFk), cPassword);
+                    mia.setCreate_at();
+                    faltante.add(mia);
+                }
+            }
+        }
+        return faltante;
+    }
     private void DeleteButtonHandler(JButton deleteButton, DbConfig myConfig) {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -144,7 +180,6 @@ public class PanelPrincipal {
                         JOptionPane.showMessageDialog(myFrame, "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
                     } else if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
-                        // TODO: use the user_id_fk to delete the account
                         String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + mTable.getValueAt(row, 3);
                         tableModel.removeRow(row);
                         cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
@@ -161,14 +196,26 @@ public class PanelPrincipal {
         JButton insertButton = new JButton("Insert");
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: if 1 or more rows are not present in the database the click event insert the new data
-                // other wise redirects to PanelRegistro
-                new PanelRegistro("Register", hight, height, myConfig, loggedUser);
-                myFrame.setVisible(false);
+                if(ListaFaltantes().size() > 0) {
+                    try {
+                        for(Cuenta c: ListaFaltantes()) {
+                            String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
+                            if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation", 
+                                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                                cuentaDAO.InsertNewRegister(c, condition, "and", new CuentaBuilder());
+                            }
+                            JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        }
+                    } catch(Exception er) {
+                        System.err.println(er);
+                    }
+                } else {
+                    new PanelRegistro("Register", hight, height, myConfig, loggedUser);
+                    myFrame.setVisible(false);
+                }
             }
         });
 
-        // TODO: if 1 or more columns of row are edited the click event updates the data doesn't redirect to PanelUpdate
         JButton updateButton = new JButton("Update");
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -191,13 +238,23 @@ public class PanelPrincipal {
         JButton deleteButton = new JButton("Delete");
         DeleteButtonHandler(deleteButton, myConfig);
 
-        // TODO: create cancel button go back and login whit other account
+        JButton cancelButton = new JButton("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to go back to login?", "Cancel operation",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                    new PanelLogin(myConfig);
+                    myFrame.setVisible(false);
+                }
+            }
+        });
 
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());
         optionPanel.add(insertButton);
         optionPanel.add(updateButton);
         optionPanel.add(deleteButton);
+        optionPanel.add(cancelButton);
         return optionPanel;
     }
     public void CreateUI(String frameTitle, String tableTitle, int hight, int height, DbConfig myConfig) {

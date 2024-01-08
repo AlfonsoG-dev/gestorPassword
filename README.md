@@ -26,11 +26,10 @@
 - [x] loggin 
 - [x] account list of the logged user
 - [x] list, add, delete and update passwords
+- [x] allow insert cuenta directly from table
 
 
 ## TODO'S
-- [ ] allow update cuenta directly from table
-- [ ] allow insert cuenta directly from table
 - [ ] create usage instructions
 
 ## Disclaimer

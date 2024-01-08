@@ -103,7 +103,7 @@ public class PanelLogin {
 
 
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         myFrame.setResizable(false);
     }
 }
