@@ -84,6 +84,8 @@ public class PanelRegistro {
                         }
                     } catch(Exception ex) {
                         System.out.println(ex);
+                    } finally {
+                        JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                     }
                 }
             });

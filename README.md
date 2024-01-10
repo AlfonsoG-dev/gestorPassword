@@ -24,13 +24,11 @@
 ## Features
 
 - [x] loggin 
-- [x] account list of the logged user
 - [x] list, add, delete and update passwords
 - [x] allow insert cuenta directly from table
 
 
 ## TODO'S
-- [ ] add a reload button to the table
 - [ ] create usage instructions
 
 ## Disclaimer

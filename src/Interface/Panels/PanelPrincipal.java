@@ -76,8 +76,6 @@ public class PanelPrincipal {
         tableModel = new DefaultTableModel(TableContent(columns), columns);
         mTable = new JTable(tableModel);
 
-        mTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-        mTable.sizeColumnsToFit(JTable.AUTO_RESIZE_ALL_COLUMNS);
 
         /** 
          * disable the PK and FK columns for edition.
@@ -97,13 +95,40 @@ public class PanelPrincipal {
         controlPanel.add(scroll);
         return controlPanel;
     }
+    private void setNewDataTableModel() {
+        String modelColumns = queryUtils.GetModelColumns(new Cuenta().InitModel(), true);
+        String[] columns = modelColumns.split(",");
+        Object[][] contenido = TableContent(columns);
+        tableModel = new DefaultTableModel(contenido, columns);
+        mTable.setModel(tableModel);
+
+        /** 
+         * disable the PK and FK columns for edition.
+         * 0. id_pk
+         * 3. user_id_fk
+         * 5. create_at
+         * 6. update_at
+         */
+        mTable.getColumnModel().getColumn(0).setCellEditor(new NonEditableCell());
+        mTable.getColumnModel().getColumn(3).setCellEditor(new NonEditableCell());
+        mTable.getColumnModel().getColumn(5).setCellEditor(new NonEditableCell());
+        mTable.getColumnModel().getColumn(6).setCellEditor(new NonEditableCell());
+    }
     private JPanel TableOptionComponents() {
         JPanel tableOptions = new JPanel();
-        tableOptions.setLayout(new GridLayout(2, 1));
+        tableOptions.setLayout(new GridLayout(3, 1));
+         
+        JButton reloadButton = new JButton("R");
+        tableOptions.add(reloadButton);
+        reloadButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                setNewDataTableModel();
+            }
+        });
 
-        JButton agregar = new JButton("+");
-        tableOptions.add(agregar);
-        agregar.addActionListener(new ActionListener() {
+        JButton agregarButton = new JButton("+");
+        tableOptions.add(agregarButton);
+        agregarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String[] data = {"", "", "", String.valueOf(loggedUser), "", "", ""};
                 tableModel.addRow(data);
@@ -111,9 +136,9 @@ public class PanelPrincipal {
         });
 
 
-        JButton eliminar = new JButton("-");
-        tableOptions.add(eliminar);
-        eliminar.addActionListener(new ActionListener() {
+        JButton eliminarButton = new JButton("-");
+        tableOptions.add(eliminarButton);
+        eliminarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int tableSize = mTable.getRowCount()-1;
                 String cNombre = mTable.getValueAt(tableSize, 1).toString();
@@ -204,10 +229,11 @@ public class PanelPrincipal {
                                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                                 cuentaDAO.InsertNewRegister(c, condition, "and", new CuentaBuilder());
                             }
-                            JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                         }
                     } catch(Exception er) {
                         System.err.println(er);
+                    } finally {
+                        JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
                     new PanelRegistro("Register", hight, height, myConfig, loggedUser);
@@ -254,7 +280,6 @@ public class PanelPrincipal {
         optionPanel.add(insertButton);
         optionPanel.add(updateButton);
         optionPanel.add(deleteButton);
-        // TODO: add a reload button, has to reload the table content
         optionPanel.add(cancelButton);
         return optionPanel;
     }
