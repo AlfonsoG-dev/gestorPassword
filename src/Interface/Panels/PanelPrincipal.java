@@ -38,21 +38,37 @@ public class PanelPrincipal {
     private JPanel controlPanel;
     private QueryUtils queryUtils;
     private QueryDAO<Cuenta> cuentaDAO;
+    private DbConfig myConfig;
     private int loggedUser;
 
-    public PanelPrincipal(DbConfig myConfig, int pLoggedUser) {
+    public PanelPrincipal(DbConfig mConfig, int pLoggedUser) {
+        myConfig = mConfig;
         loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
-        CreateUI("table example", "Gestor Password", 1100, 540, myConfig);
+        if(misCuentas().size() > 0) {
+            CreateUI("table example", "Gestor Password", 1100, 540);
+        } else {
+            new PanelRegistro("Register", 400, 900, myConfig, loggedUser);
+        }
+    }
+    private ArrayList<Cuenta> misCuentas() {
+        ArrayList<Cuenta> nuevas = new ArrayList<>();
+        ArrayList<Cuenta> nCuentas = cuentaDAO.ReadAll(new CuentaBuilder());
+        for(Cuenta c: nCuentas) {
+            if(c.getUser_id_fk() == loggedUser) {
+                nuevas.add(c);
+            }
+        }
+        return nuevas;
     }
     private Object[][] TableContent(String[] columns) {
-        ArrayList<Cuenta> cuentaList = cuentaDAO.ReadAll(new CuentaBuilder());
+        ArrayList<Cuenta> cuentaList = misCuentas();
         String results = "";
         for(Cuenta miCuenta: cuentaList) {
-            if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false && miCuenta.getUser_id_fk() == loggedUser) {
+            if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
                 results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + "\n";
-            } else if(miCuenta.getUpdate_at() == null && miCuenta.getUser_id_fk() == loggedUser) {
+            } else if(miCuenta.getUpdate_at() == null) {
                 results += queryUtils.GetModelType(miCuenta.GetAllProperties(), true).replace("'", "") + ",null\n";
             }
         }
@@ -61,7 +77,6 @@ public class PanelPrincipal {
         for(int i=0; i<datos.length; ++i) {
             String[] mData = datos[i].split(",");
             data[i] = mData;
-
         }
         return data;
     }
@@ -151,21 +166,11 @@ public class PanelPrincipal {
 
         return tableOptions;
     }
-    private Cuenta BuildCuentaFromTable(int row, int column, DbConfig myConfig) {
+    private Cuenta BuildCuentaFromTable(int row, int column) {
         String columName = mTable.getColumnName(column);
         String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
         Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "and", new CuentaBuilder());
         return myCuenta;
-    }
-    private ArrayList<Cuenta> misCuentas() {
-        ArrayList<Cuenta> nuevas = new ArrayList<>();
-        ArrayList<Cuenta> nCuentas = cuentaDAO.ReadAll(new CuentaBuilder());
-        for(Cuenta c: nCuentas) {
-            if(c.getUser_id_fk() == loggedUser) {
-                nuevas.add(c);
-            }
-        }
-        return nuevas;
     }
     private ArrayList<Cuenta> ListaFaltantes() {
         ArrayList<Cuenta> faltante = new ArrayList<>();
@@ -182,6 +187,10 @@ public class PanelPrincipal {
                     JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
                     break outter;
                 }
+                if(cNombre == null || cEmail == null || cPassword == null) {
+                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    break outter;
+                }
                 String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
                 Cuenta buscada = cuentaDAO.FindByColumnName(condition, "and", new CuentaBuilder());
                 if(buscada == null) {
@@ -193,7 +202,7 @@ public class PanelPrincipal {
         }
         return faltante;
     }
-    private void DeleteButtonHandler(JButton deleteButton, DbConfig myConfig) {
+    private void DeleteButtonHandler(JButton deleteButton) {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
@@ -216,7 +225,7 @@ public class PanelPrincipal {
             }
         });
     }
-    private JPanel OptionsComponent(DbConfig myConfig, int hight, int height) {
+    private JPanel OptionsComponent(int hight, int height) {
         JButton insertButton = new JButton("Insert");
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -250,7 +259,7 @@ public class PanelPrincipal {
                 if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
                         JOptionPane.showMessageDialog(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
                 } else if(row != -1 || column != -1) {
-                    Cuenta updateCuenta = BuildCuentaFromTable(row, column, myConfig);
+                    Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
                     myFrame.setVisible(false);
                 } else {
@@ -261,7 +270,7 @@ public class PanelPrincipal {
 
 
         JButton deleteButton = new JButton("Delete");
-        DeleteButtonHandler(deleteButton, myConfig);
+        DeleteButtonHandler(deleteButton);
 
         JButton cancelButton = new JButton("Cancel");
         cancelButton.addActionListener(new ActionListener() {
@@ -282,7 +291,7 @@ public class PanelPrincipal {
         optionPanel.add(cancelButton);
         return optionPanel;
     }
-    public void CreateUI(String frameTitle, String tableTitle, int hight, int height, DbConfig myConfig) {
+    public void CreateUI(String frameTitle, String tableTitle, int hight, int height) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
@@ -301,10 +310,9 @@ public class PanelPrincipal {
 
         myFrame.add(headerLabel);
         myFrame.add(TableComponent(tableTitle), BorderLayout.CENTER);
-        myFrame.add(OptionsComponent(myConfig, 600, 700));
-        
+        myFrame.add(OptionsComponent(600, 700));
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         myFrame.setResizable(true);
     }
 }
