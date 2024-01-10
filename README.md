@@ -2,14 +2,21 @@
 >- simple GUI App for password management.
 >- created using MYSQL, JAVA SWING and AWT.
 
+
+- use the user and password
 ![panelLogin](./docs/login.png)
 
 ------
-
+- panel that contains the table and funcionallity
+- the table have to the right side 3 button that represents: 
+>- reload, insert row, delete row
 ![panelPrincipal](./docs/principal.png)
 
 ------
+- if no new row has been inserted or the inserted row have no data, insert button redirect to another frame
+- if you insert a row you must press enter when finish the register of the data
 ![panelRegistro](./docs/registro.png)
+- a column must be selected before click update button
 ![panelUpdate](./docs/update.png)
 
 ------
