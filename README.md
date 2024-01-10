@@ -35,14 +35,14 @@
 ```java
 
 // create the DbConfig instance with the correspondent data
-new DbConfig(dataBase, host, port, user, password);
+DbConfig miConfig = new DbConfig(dataBase, host, port, user, password);
 
 // Create the DAO instance for each of the tables
 // user table
-new MigrationDAO("user", new DbConfig("", "", "", "", ""));
+new MigrationDAO("user", miConfig);
 
 // cuenta table
-new MigrationDAO("cuenta", new DbConfig("", "", "", "", ""));
+new MigrationDAO("cuenta", miConfig);
 
 ```
 
