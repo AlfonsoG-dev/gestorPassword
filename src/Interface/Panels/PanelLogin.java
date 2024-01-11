@@ -26,7 +26,7 @@ public class PanelLogin {
 
     private JFrame myFrame;
     private JPanel pPrincipal;
-    private JComboBox<String> txtUserName;
+    private JComboBox<String> cbxUserName;
     private JTextField txtUserPassword;
     private JButton btnIngreso;
     private JButton btnCancel;
@@ -54,9 +54,9 @@ public class PanelLogin {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 2));
         
-        txtUserName = new JComboBox<String>(ComboBoxUsers());
+        cbxUserName = new JComboBox<String>(ComboBoxUsers());
         pPrincipal.add(new JLabel("name"));
-        pPrincipal.add(txtUserName);
+        pPrincipal.add(cbxUserName);
 
         txtUserPassword = new JTextField();
         pPrincipal.add(new JLabel("password"));
@@ -77,10 +77,10 @@ public class PanelLogin {
             public void actionPerformed(ActionEvent e) {
                 String userName = "";
                 String userPassword = "";
-                if(txtUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
+                if(cbxUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(myFrame, "invalid user or password", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    userName = txtUserName.getSelectedItem().toString();
+                    userName = cbxUserName.getSelectedItem().toString();
                     userPassword = txtUserPassword.getText();
                     String condition = "nombre: " + userName + ", password: " + userPassword;
                     User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
