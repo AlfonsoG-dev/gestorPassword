@@ -7,8 +7,10 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
+import java.util.ArrayList;
 
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,7 +26,7 @@ public class PanelLogin {
 
     private JFrame myFrame;
     private JPanel pPrincipal;
-    private JTextField txtUserName;
+    private JComboBox<String> txtUserName;
     private JTextField txtUserPassword;
     private JButton btnIngreso;
     private JButton btnCancel;
@@ -36,11 +38,23 @@ public class PanelLogin {
         CreateUI("Loggin", myConfig);
     }
 
+    private String[] ComboBoxUsers() {
+        String res = "Select user...,";
+        ArrayList<User> myUsers = userDAO.ReadAll(new UserBuilder());
+        if(myUsers.size() > 0) {
+            for(User u: myUsers) {
+                res += u.getNombre() + ",";
+            }
+        } else {
+            JOptionPane.showMessageDialog(myFrame, "No users found!", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+        return res.split(",");
+    }
     private JPanel LoginContent() {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 2));
         
-        txtUserName = new JTextField();
+        txtUserName = new JComboBox<String>(ComboBoxUsers());
         pPrincipal.add(new JLabel("name"));
         pPrincipal.add(txtUserName);
 
@@ -63,10 +77,10 @@ public class PanelLogin {
             public void actionPerformed(ActionEvent e) {
                 String userName = "";
                 String userPassword = "";
-                if(txtUserName.getText().isEmpty() || txtUserPassword.getText().isEmpty()) {
+                if(txtUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
                     JOptionPane.showMessageDialog(myFrame, "invalid user or password", "Error", JOptionPane.ERROR_MESSAGE);
                 } else {
-                    userName = txtUserName.getText();
+                    userName = txtUserName.getSelectedItem().toString();
                     userPassword = txtUserPassword.getText();
                     String condition = "nombre: " + userName + ", password: " + userPassword;
                     User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
