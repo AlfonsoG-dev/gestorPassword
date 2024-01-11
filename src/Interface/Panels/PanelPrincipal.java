@@ -1,6 +1,8 @@
 package Interface.Panels;
 
 import java.awt.GridLayout;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
@@ -11,6 +13,7 @@ import java.util.ArrayList;
 import java.util.EventObject;
 
 import javax.swing.DefaultCellEditor;
+import javax.swing.DropMode;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -19,6 +22,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
 import Conexion.Query.QueryDAO;
@@ -89,8 +93,9 @@ public class PanelPrincipal {
         
         tableModel = new DefaultTableModel(TableContent(columns), columns);
         mTable = new JTable(tableModel);
-
-
+        mTable.setDragEnabled(true);
+        mTable.setDropMode(DropMode.INSERT_ROWS);
+        mTable.setTransferHandler(new TableTransferable());
         /** 
          * disable the PK and FK columns for edition.
          * 1. id_pk
@@ -327,5 +332,29 @@ class NonEditableCell extends DefaultCellEditor {
     @Override
     public boolean isCellEditable(EventObject e) {
         return false;
+    }
+}
+class TableTransferable extends TransferHandler {
+    @Override
+    public boolean canImport(TransferSupport support) {
+        return support.isDataFlavorSupported(DataFlavor.stringFlavor);
+    }
+    @Override
+    public boolean importData(TransferHandler.TransferSupport support) {
+        if (!canImport(support)) {
+            return false;
+        }
+
+        JTable table = (JTable) support.getComponent();
+        Transferable transferable = support.getTransferable();
+
+        try {
+            String data = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+            ((DefaultTableModel) table.getModel()).addRow(data.split(","));
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 }
