@@ -19,6 +19,11 @@
 # Usage
 
 - use the user and password
+- to use drag and drop to the table.
+>- the drag text format must bee: 
+```console
+id,nombre,email,user_id_fk,password,null,null
+```
 
 ![panelLogin](./docs/login.png)
 
@@ -42,6 +47,8 @@
 ![panelUpdate](./docs/update.png)
 
 ------
+
+# Aditional options to use
 
 >- Create the database and tables.
 >>- using the [java-mysql-orm](https://github.com/AlfonsoG-dev/java-mysql-eje)
