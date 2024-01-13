@@ -154,7 +154,13 @@ public class PanelPrincipal {
         tableOptions.add(reloadButton);
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                setNewDataTableModel();
+                try {
+                    cursor.commit();
+                    cursor.releaseSavepoint(miSave);
+                    setNewDataTableModel();
+                } catch(Exception er) {
+                    System.err.println(er);
+                }
             }
         });
 
