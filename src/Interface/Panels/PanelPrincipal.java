@@ -7,6 +7,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.sql.Connection;
+import java.sql.Savepoint;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
@@ -25,6 +27,7 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
+import Conexion.Conector;
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
 import Mundo.Cuentas.Cuenta;
@@ -44,12 +47,22 @@ public class PanelPrincipal {
     private QueryDAO<Cuenta> cuentaDAO;
     private DbConfig myConfig;
     private int loggedUser;
+    private Connection cursor;
+    private Savepoint miSave;
 
     public PanelPrincipal(DbConfig mConfig, int pLoggedUser) {
         myConfig = mConfig;
         loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
+        cursor = new Conector(myConfig).conectarMySQL();
+        try {
+            cursor.setAutoCommit(false);
+            miSave = cursor.setSavepoint();
+        } catch(Exception e) {
+            System.err.println(e);
+        }
+
         if(misCuentas().size() > 0) {
             CreateUI("table example", "Gestor Password", 1100, 540);
         } else {
@@ -251,7 +264,7 @@ public class PanelPrincipal {
                             String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
                             if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation", 
                                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                                cuentaDAO.InsertNewRegister(c, condition, "and", new CuentaBuilder());
+                                cuentaDAO.InsertNewRegister(c, condition, "and", new CuentaBuilder(), cursor);
                             }
                         }
                     } catch(Exception er) {
@@ -316,6 +329,17 @@ public class PanelPrincipal {
 
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
+                try {
+                    if(JOptionPane.showConfirmDialog(myFrame, "save changes before exit?", "save changes", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                        cursor.commit();
+                        cursor.releaseSavepoint(miSave);
+                    } else {
+                        cursor.rollback();
+                        cursor.releaseSavepoint(miSave);
+                    }
+                } catch(Exception e) {
+                    System.err.println(e);
+                }
                 System.exit(0);
             }
         });
