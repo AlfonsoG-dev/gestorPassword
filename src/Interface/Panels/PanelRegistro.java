@@ -88,9 +88,8 @@ public class PanelRegistro {
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                             cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder(), cursor);
-                            myFrame.setVisible(false);
                             mainFrame.setEnabled(true);
-                            //new PanelPrincipal(myConfig, loggedUser);
+                            myFrame.setVisible(false);
                         }
                     } catch(Exception ex) {
                         System.out.println(ex);
@@ -105,8 +104,8 @@ public class PanelRegistro {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                    mainFrame.setEnabled(true);
                     myFrame.setVisible(false);
-                    new PanelPrincipal(myConfig, loggedUser);
                 }
             }
         });
@@ -119,8 +118,8 @@ public class PanelRegistro {
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                myFrame.setVisible(false);
                 mainFrame.setEnabled(true);
+                myFrame.setVisible(false);
             }
         });
 

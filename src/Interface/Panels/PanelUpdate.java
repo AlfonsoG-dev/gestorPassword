@@ -99,8 +99,8 @@ public class PanelUpdate {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                    mainFrame.setEnabled(true);
                     myFrame.setVisible(false);
-                    new PanelPrincipal(myConfig, loggedUser);
                 }
             }
         });
