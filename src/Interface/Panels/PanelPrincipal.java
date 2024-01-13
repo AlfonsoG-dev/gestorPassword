@@ -175,7 +175,12 @@ public class PanelPrincipal {
         String columName = mTable.getColumnName(column);
         String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
         Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "and", new CuentaBuilder());
-        return myCuenta;
+        if(myCuenta == null) {
+            JOptionPane.showMessageDialog(myFrame, "invalid value of field", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else {
+            return myCuenta;
+        }
     }
     private ArrayList<Cuenta> ListaFaltantes() {
         ArrayList<Cuenta> faltante = new ArrayList<>();
@@ -203,7 +208,7 @@ public class PanelPrincipal {
                     mia.setCreate_at();
                     faltante.add(mia);
                 }
-            }
+        }
         }
         return faltante;
     }
@@ -265,8 +270,10 @@ public class PanelPrincipal {
                         JOptionPane.showMessageDialog(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
-                    new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
-                    myFrame.setVisible(false);
+                    if(updateCuenta != null) {
+                        new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
+                        myFrame.setVisible(false);
+                    }
                 } else {
                     JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
                 }
