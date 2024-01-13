@@ -223,9 +223,15 @@ public class PanelPrincipal {
                         JOptionPane.showMessageDialog(myFrame, "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
                     } else if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
-                        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + mTable.getValueAt(row, 3);
-                        tableModel.removeRow(row);
-                        cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
+                        String valueOfColumn = mTable.getValueAt(row, column).toString();
+                        String options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
+                        boolean eliminado = cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
+                        if(eliminado == true) {
+                            tableModel.removeRow(row);
+                        } else {
+                            JOptionPane.showMessageDialog(myFrame, String.format("Column: %s with value of: %s not found", columName, valueOfColumn),
+                                    "Error", JOptionPane.ERROR_MESSAGE);
+                        }
                     } else {
                         JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
                     }
