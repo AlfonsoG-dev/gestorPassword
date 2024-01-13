@@ -1,10 +1,13 @@
 package Interface.Panels;
 
+import java.sql.Connection;
+
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
@@ -119,6 +122,14 @@ public class PanelUpdate {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
+
+        myFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                myFrame.setVisible(false);
+                mainFrame.setEnabled(true);
+            }
+        });
 
         JLabel headerLabel = new JLabel("Update", JLabel.CENTER);
 

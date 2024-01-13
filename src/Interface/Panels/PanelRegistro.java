@@ -1,12 +1,17 @@
 package Interface.Panels;
 
+import java.sql.Connection;
+
+import java.util.ArrayList;
+import java.util.jar.JarFile;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.sql.Connection;
 import java.awt.event.ActionEvent;
-import java.util.ArrayList;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -112,6 +117,13 @@ public class PanelRegistro {
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
 
+        myFrame.addWindowListener(new WindowAdapter() {
+            public void windowClosing(WindowEvent we) {
+                myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+                myFrame.setVisible(false);
+                mainFrame.setEnabled(true);
+            }
+        });
 
         headerLabel = new JLabel("Register", JLabel.CENTER);
 
