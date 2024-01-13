@@ -3,7 +3,6 @@ package Interface.Panels;
 import java.sql.Connection;
 
 import java.util.ArrayList;
-import java.util.jar.JarFile;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
