@@ -316,13 +316,7 @@ public class PanelPrincipal {
 
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
-                // TODO: add transaction commit when JOptionPane.YES_OPTION, otherwise rollback
-                if(JOptionPane.showConfirmDialog(myFrame, "do you want to save changes before close?", "save changes",
-                            JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
-                    System.exit(0);
-                } else {
-                    System.exit(0);
-                }
+                System.exit(0);
             }
         });
         
