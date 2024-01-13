@@ -155,7 +155,7 @@ public class PanelPrincipal {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int option = JOptionPane.showConfirmDialog(myFrame, "apply changes before reload?", "REALOAD", JOptionPane.YES_NO_OPTION);
+                    int option = JOptionPane.showConfirmDialog(myFrame, "apply changes before reload?", "REALOAD", JOptionPane.YES_NO_CANCEL_OPTION);
                     if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
                         cursor.releaseSavepoint(miSave);
