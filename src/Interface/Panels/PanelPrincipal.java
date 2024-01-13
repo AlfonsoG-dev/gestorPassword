@@ -27,6 +27,8 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
+import com.mysql.cj.x.protobuf.MysqlxCrud.Update;
+
 import Conexion.Conector;
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
@@ -269,8 +271,7 @@ public class PanelPrincipal {
             }
         });
     }
-    private JPanel OptionsComponent(int hight, int height) {
-        JButton insertButton = new JButton("Insert");
+    private void InsertButtonHandler(JButton insertButton, int weight, int height) {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(ListaFaltantes().size() > 0) {
@@ -288,13 +289,13 @@ public class PanelPrincipal {
                         JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
-                    new PanelRegistro("Register", hight, height, myConfig, loggedUser, cursor, myFrame);
+                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame);
                     myFrame.setEnabled(false);
                 }
             }
         });
-
-        JButton updateButton = new JButton("Update");
+    }
+    private void UpdateButtonHandler(JButton updateButton, int weight, int height) {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
@@ -305,7 +306,7 @@ public class PanelPrincipal {
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     if(updateCuenta != null) {
-                        new PanelUpdate("Update", hight, height, updateCuenta, myConfig, cursor, myFrame);
+                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, cursor, myFrame);
                         myFrame.setEnabled(false);
                     }
                 } else {
@@ -313,12 +314,8 @@ public class PanelPrincipal {
                 }
             }
         });
-
-
-        JButton deleteButton = new JButton("Delete");
-        DeleteButtonHandler(deleteButton);
-
-        JButton cancelButton = new JButton("Cancel");
+    }
+    private void CancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to go back to login?", "Cancel operation",
@@ -334,13 +331,28 @@ public class PanelPrincipal {
                 }
             }
         });
-
+    }
+    private JPanel OptionsComponent(int hight, int height) {
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());
+
+        JButton insertButton = new JButton("Insert");
+        InsertButtonHandler(insertButton, height, height);
         optionPanel.add(insertButton);
+
+        JButton updateButton = new JButton("Update");
+        UpdateButtonHandler(updateButton, height, height);
         optionPanel.add(updateButton);
+
+
+        JButton deleteButton = new JButton("Delete");
+        DeleteButtonHandler(deleteButton);
         optionPanel.add(deleteButton);
+
+        JButton cancelButton = new JButton("Cancel");
+        CancelButtonHandler(cancelButton);
         optionPanel.add(cancelButton);
+
         return optionPanel;
     }
     public void CreateUI(String frameTitle, String tableTitle, int hight, int height) {
