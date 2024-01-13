@@ -24,20 +24,47 @@ import Mundo.Users.UserBuilder;
 
 public class PanelLogin {
 
+    /**
+     * login frame
+     */
     private JFrame myFrame;
+    /**
+     * principal panel of the frame
+     */
     private JPanel pPrincipal;
+    /**
+     * user name options to log in
+     */
     private JComboBox<String> cbxUserName;
+    /**
+     * field to digit user password
+     */
     private JTextField txtUserPassword;
+    /**
+     * button to log in
+     */
     private JButton btnIngreso;
+    /**
+     * button to cancel log in
+     */
     private JButton btnCancel;
-
+    /**
+     * DAO class for user
+     */
     private QueryDAO<User> userDAO;
 
+    /**
+     * Constructor
+     * @param myConfig: data base configuration
+     */
     public PanelLogin(DbConfig myConfig) {
-        userDAO = new QueryDAO<>("user", myConfig);
+        userDAO = new QueryDAO<User>("user", myConfig);
         CreateUI("Loggin", myConfig);
     }
-
+    /**
+     * set the users to select in the comboBox
+     * @return the comboBox with the users names
+     */
     private String[] ComboBoxUsers() {
         String res = "Select user...,";
         ArrayList<User> myUsers = userDAO.ReadAll(new UserBuilder());
@@ -50,6 +77,10 @@ public class PanelLogin {
         }
         return res.split(",");
     }
+    /**
+     * set the content of the principal panel 
+     * @return the panel with its content
+     */
     private JPanel LoginContent() {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 2));
@@ -64,7 +95,11 @@ public class PanelLogin {
 
         return pPrincipal;
     }
-
+    /**
+     * the login options that correspond to ingreso and calcel
+     * @param myConfig: data base configuration
+     * @return the options panel with ist logic
+     */
     private JPanel LoginOptions(DbConfig myConfig) {
 
         JPanel option = new JPanel();
@@ -106,7 +141,11 @@ public class PanelLogin {
         });
         return option;
     }
-
+    /**
+     * initialize the panel frame with its content 
+     * @param frameTitle: title of the frame
+     * @param myConfig: database configuration
+     */
     public void CreateUI(String frameTitle, DbConfig myConfig) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(400, 200);

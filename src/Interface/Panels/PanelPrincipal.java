@@ -1,5 +1,8 @@
 package Interface.Panels;
 
+import java.sql.Connection;
+import java.sql.Savepoint;
+
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -7,10 +10,9 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.sql.Connection;
-import java.sql.Savepoint;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+
 import java.util.ArrayList;
 import java.util.EventObject;
 
@@ -27,8 +29,6 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
-import com.mysql.cj.x.protobuf.MysqlxCrud.Update;
-
 import Conexion.Conector;
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
@@ -36,28 +36,64 @@ import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
 import Utils.QueryUtils;
 
-
-
 public class PanelPrincipal {
 
+    /**
+     * the data table for the panel
+     */
     private JTable mTable;
+    /**
+     * the model for the table
+     */
     private DefaultTableModel tableModel;
+    /**
+     * the panel frame
+     */
     private JFrame myFrame;
+    /**
+     * label that describes the panel
+     */
     private JLabel headerLabel;
+    /**
+     * panel of options
+     */
     private JPanel controlPanel;
+    /**
+     * utils that uses the queryUtils for build DAO operations
+     */
     private QueryUtils queryUtils;
+    /**
+     * DAO class for cuenta
+     */
     private QueryDAO<Cuenta> cuentaDAO;
+    /**
+     * database configuration
+     */
     private DbConfig myConfig;
+    /**
+     * user that had been logged
+     */
     private int loggedUser;
+    /**
+     * Connection instance for transaction use
+     */
     private Connection cursor;
+    /**
+     * point to rollback or commit changes
+     */
     private Savepoint miSave;
-
+    /**
+     * constructor
+     * @param mConfig: database configuration
+     * @param pLoggedUser: logged user for reference
+     */
     public PanelPrincipal(DbConfig mConfig, int pLoggedUser) {
         myConfig = mConfig;
         loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
         cursor = new Conector(myConfig).conectarMySQL();
+        // set the save point to rollback or commit changes
         try {
             cursor.setAutoCommit(false);
             miSave = cursor.setSavepoint();
@@ -71,6 +107,10 @@ public class PanelPrincipal {
             new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame);
         }
     }
+    /**
+     * list of cuentas that verify the user_id_fk with the loggedUser
+     * @return the cuentas with the same user_id_fk
+     */
     private ArrayList<Cuenta> misCuentas() {
         ArrayList<Cuenta> nuevas = new ArrayList<>();
         ArrayList<Cuenta> nCuentas = cuentaDAO.ReadAll(new CuentaBuilder());
@@ -81,6 +121,11 @@ public class PanelPrincipal {
         }
         return nuevas;
     }
+    /**
+     * creates the table content from database
+     * @param columns: the columns of the table cuenta
+     * @return the table content like Object[][]
+     */
     private Object[][] TableContent(String[] columns) {
         ArrayList<Cuenta> cuentaList = misCuentas();
         String results = "";
@@ -99,6 +144,63 @@ public class PanelPrincipal {
         }
         return data;
     }
+    /**
+     * build the cuenta using the table row and column
+     * @param row: table row
+     * @param column: table column
+     * @return the cuenta fron the table using row and column
+     */
+    private Cuenta BuildCuentaFromTable(int row, int column) {
+        String columName = mTable.getColumnName(column);
+        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
+        Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "and", new CuentaBuilder());
+        if(myCuenta == null) {
+            JOptionPane.showMessageDialog(myFrame, "invalid value of field", "Error", JOptionPane.ERROR_MESSAGE);
+            return null;
+        } else {
+            return myCuenta;
+        }
+    }
+    /**
+     * list the created cuentas from table that are not present in the database
+     * the list of cuentas only works when you insert a new row with its content directly in the table
+     * @return the list of cuentas that are not present in the database
+     */
+    private ArrayList<Cuenta> ListaFaltantes() {
+        ArrayList<Cuenta> faltante = new ArrayList<>();
+        int rows = mTable.getRowCount();
+        ArrayList<Cuenta> nCuentas = misCuentas();
+        Cuenta mia = null;
+        if(nCuentas.size() < rows) {
+        outter: for(int i=0; i<rows; ++i) {
+                String cNombre = mTable.getValueAt(i, 1).toString();
+                String cEmail = mTable.getValueAt(i, 2).toString();
+                String cUserFk = mTable.getValueAt(i, 3).toString();
+                String cPassword = mTable.getValueAt(i, 4).toString();
+                if(cNombre.isEmpty() || cEmail.isEmpty() || cPassword.isEmpty()) {
+                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    break outter;
+                }
+                if(cNombre == null || cEmail == null || cPassword == null) {
+                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    break outter;
+                }
+                String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
+                Cuenta buscada = cuentaDAO.FindByColumnName(condition, "and", new CuentaBuilder());
+                if(buscada == null) {
+                    mia = new Cuenta(cNombre, cEmail, Integer.parseInt(cUserFk), cPassword);
+                    mia.setCreate_at();
+                    faltante.add(mia);
+                }
+            }
+        }
+        return faltante;
+    }
+    /**
+     * sets the panel with the table component and its content
+     * @param tableText: table component title
+     * @param the panel with the table
+     */
     private JPanel TableComponent(String tableText) {
 
         headerLabel.setText(tableText);
@@ -129,6 +231,9 @@ public class PanelPrincipal {
         controlPanel.add(scroll);
         return controlPanel;
     }
+    /**
+     * changes the data for the table model, making a request to the database
+     */
     private void setNewDataTableModel() {
         String modelColumns = queryUtils.GetModelColumns(new Cuenta().InitModel(), true);
         String[] columns = modelColumns.split(",");
@@ -148,12 +253,17 @@ public class PanelPrincipal {
         mTable.getColumnModel().getColumn(5).setCellEditor(new NonEditableCell());
         mTable.getColumnModel().getColumn(6).setCellEditor(new NonEditableCell());
     }
+    /**
+     * set the panel with the options to manipulate the table like add rows, delete rows or reload
+     * @return the panel with the table options
+     */
     private JPanel TableOptionComponents() {
         JPanel tableOptions = new JPanel();
         tableOptions.setLayout(new GridLayout(3, 1));
          
         JButton reloadButton = new JButton("R");
         tableOptions.add(reloadButton);
+        // reload the table content
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
@@ -177,6 +287,7 @@ public class PanelPrincipal {
 
         JButton agregarButton = new JButton("+");
         tableOptions.add(agregarButton);
+        // add a new row for the table
         agregarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String[] data = {"", "", "", String.valueOf(loggedUser), "", "", ""};
@@ -187,6 +298,7 @@ public class PanelPrincipal {
 
         JButton eliminarButton = new JButton("-");
         tableOptions.add(eliminarButton);
+        // delete the row from the table
         eliminarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int tableSize = mTable.getRowCount()-1;
@@ -201,47 +313,11 @@ public class PanelPrincipal {
 
         return tableOptions;
     }
-    private Cuenta BuildCuentaFromTable(int row, int column) {
-        String columName = mTable.getColumnName(column);
-        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "and", new CuentaBuilder());
-        if(myCuenta == null) {
-            JOptionPane.showMessageDialog(myFrame, "invalid value of field", "Error", JOptionPane.ERROR_MESSAGE);
-            return null;
-        } else {
-            return myCuenta;
-        }
-    }
-    private ArrayList<Cuenta> ListaFaltantes() {
-        ArrayList<Cuenta> faltante = new ArrayList<>();
-        int rows = mTable.getRowCount();
-        ArrayList<Cuenta> nCuentas = misCuentas();
-        Cuenta mia = null;
-        if(nCuentas.size() < rows) {
-        outter: for(int i=0; i<rows; ++i) {
-                String cNombre = mTable.getValueAt(i, 1).toString();
-                String cEmail = mTable.getValueAt(i, 2).toString();
-                String cUserFk = mTable.getValueAt(i, 3).toString();
-                String cPassword = mTable.getValueAt(i, 4).toString();
-                if(cNombre.isEmpty() || cEmail.isEmpty() || cPassword.isEmpty()) {
-                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
-                    break outter;
-                }
-                if(cNombre == null || cEmail == null || cPassword == null) {
-                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
-                    break outter;
-                }
-                String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
-                Cuenta buscada = cuentaDAO.FindByColumnName(condition, "and", new CuentaBuilder());
-                if(buscada == null) {
-                    mia = new Cuenta(cNombre, cEmail, Integer.parseInt(cUserFk), cPassword);
-                    mia.setCreate_at();
-                    faltante.add(mia);
-                }
-        }
-        }
-        return faltante;
-    }
+    /**
+     * implements the action handler for the delete button.
+     * <br> pre: </br> only works if the selected table column is not: create_at, update_at or password
+     * @param deleteButton: panel deleteButton to delte or truncate the cuenta for the database
+     */
     private void DeleteButtonHandler(JButton deleteButton) {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -271,6 +347,13 @@ public class PanelPrincipal {
             }
         });
     }
+    /**
+     * implements the action handler for the insert button.
+     * <br> post: </br> when the table have ListaFaltantes.size() > 0 insert the data, otherwise redirects to PanelRegistro
+     * @param insertButton: panel insertButton to register a new cuenta for the database
+     * @param weight: weight of the PanelRegistro
+     * @param height: height of the PanelRegistro
+     */
     private void InsertButtonHandler(JButton insertButton, int weight, int height) {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -295,6 +378,13 @@ public class PanelPrincipal {
             }
         });
     }
+    /**
+     * implements the action handler for the updateButton.
+     * <br> post: </br> redirects to PanelUpdate
+     * @param updateButton: panel button to update the cuenta
+     * @param weight: weight of the PanelUpdate
+     * @param height: height of the PanelUpdate
+     */
     private void UpdateButtonHandler(JButton updateButton, int weight, int height) {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -315,6 +405,11 @@ public class PanelPrincipal {
             }
         });
     }
+    /**
+     * implements the action handler for the cancelButton.
+     * <br> post: </br> redirects to login or do nothing
+     * @param cancelButton: panel cancelButton to add the action handler
+     */
     private void CancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -332,6 +427,12 @@ public class PanelPrincipal {
             }
         });
     }
+    /**
+     * panel that its content if the panel buttons and its action handlers
+     * @param hight: hight of the panel
+     * @param height: height of the panel
+     * @return the panel with the content setted
+     */
     private JPanel OptionsComponent(int hight, int height) {
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());
@@ -355,6 +456,13 @@ public class PanelPrincipal {
 
         return optionPanel;
     }
+    /**
+     * creates the ui for the current frame
+     * @param frameTitle: the frame title
+     * @param tableTitle: the table name
+     * @param hight: the frame hight
+     * @param height: the frame height
+     */
     public void CreateUI(String frameTitle, String tableTitle, int hight, int height) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
@@ -396,7 +504,9 @@ public class PanelPrincipal {
     }
 }
 
-// to disable cell edition
+/**
+ * helper class to disable cell edition
+ */
 class NonEditableCell extends DefaultCellEditor {
 
     public NonEditableCell() {
@@ -408,6 +518,9 @@ class NonEditableCell extends DefaultCellEditor {
         return false;
     }
 }
+/**
+ * helper class to enable drag and drop for the table
+ */
 class TableTransferable extends TransferHandler {
     @Override
     public boolean canImport(TransferSupport support) {
@@ -424,6 +537,7 @@ class TableTransferable extends TransferHandler {
 
         try {
             String data = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+            // the data must have this format: id,nombre,email,user_id_fk,password,null,null
             ((DefaultTableModel) table.getModel()).addRow(data.split(","));
             return true;
         } catch (Exception e) {

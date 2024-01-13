@@ -28,17 +28,53 @@ import Mundo.Users.User;
 import Mundo.Users.UserBuilder;
 
 public class PanelRegistro {
+    /**
+     * the panel frame
+     */
     private JFrame myFrame;
+    /**
+     * DAO class for the user
+     */
     private QueryDAO<User> userDAO;
+    /**
+     * the logged user
+     */
     private int loggedUser;
+    /**
+     * the label for the panel name
+     */
     private JLabel headerLabel;
+    /**
+     * the nombre text field
+     */
     private JTextField txtNombre;
+    /**
+     * the email text field
+     */
     private JTextField txtEmail;
+    /**
+     * the password text field
+     */
     private JTextField txtPassword;
+    /**
+     * the list of users to select when using fk
+     */
     private JComboBox<String> cbxUser;
+    /**
+     * the current principal panel
+     */
     private JPanel pPrincipal;
+    /**
+     * the cursor to allow transaction for commit or rollback
+     */
     private Connection cursor;
+    /**
+     * the frame of the main panel
+     */
     private JFrame mainFrame;
+    /**
+     * constructor
+     */
     public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame) {
         loggedUser = pLoggedUser;
         cursor = miCursor;
@@ -46,6 +82,10 @@ public class PanelRegistro {
         userDAO = new QueryDAO<User>("user", myConfig);
         CreateUI(frameTitle, hight, height, myConfig);
     }
+    /**
+     * list of users for the fk field
+     * @return a string list of the users name
+     */
     private String[] ComboBoxUsers() {
         String result = "select a user...,";
         ArrayList<User> users = userDAO.ReadAll(new UserBuilder());
@@ -56,6 +96,10 @@ public class PanelRegistro {
         }
         return result.split(",");
     }
+    /**
+     * set the panel components and its content
+     * @return the panel with the content setted
+     */
     private JPanel OptionsComponent() {
         JPanel pOptions = new JPanel();
         pOptions.setLayout(new GridLayout(4, 2));
@@ -70,7 +114,13 @@ public class PanelRegistro {
 
         return pOptions;
     }
-    // inserts a new element to the database
+    /**
+     * implements the OKButton handler
+     * <br> pre: </br> disable the main frame to insert the new register
+     * <br> post: </br> enables the main frame and close the current frame
+     * @param OKButton: panel OKButton to insert a new register to the database
+     * @param myConfig: database configuration
+     */
     private void OkButtonHandler(JButton OKButton, DbConfig myConfig) {
         QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
         OKButton.setMnemonic(KeyEvent.VK_ENTER);
@@ -99,6 +149,12 @@ public class PanelRegistro {
                 }
             });
     }
+    /**
+     * implements the cancelButton handler
+     * <br> post: </br> close the current frame and enables the main frame
+     * @param cancelButton: panel cancelButton to go back to the mainFrame
+     * @param myConfig: database configuration
+     */
     private void CancelButtonHandler(JButton cancelButton, DbConfig myConfig) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -110,12 +166,20 @@ public class PanelRegistro {
             }
         });
     }
-    public void CreateUI(String frameTitle,int hight, int height, DbConfig myConfig) {
+    /**
+     * creates the ui for the current frame
+     * @param frameTitle: frame title
+     * @param hight: frame hight
+     * @param height: frame height
+     * @param DbConfig: database configuration
+     */
+    public void CreateUI(String frameTitle, int hight, int height, DbConfig myConfig) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
 
         myFrame.addWindowListener(new WindowAdapter() {
+            // changes the close operation
             public void windowClosing(WindowEvent we) {
                 myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
                 mainFrame.setEnabled(true);
