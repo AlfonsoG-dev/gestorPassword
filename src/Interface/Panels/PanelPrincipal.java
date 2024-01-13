@@ -155,9 +155,18 @@ public class PanelPrincipal {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    cursor.commit();
-                    cursor.releaseSavepoint(miSave);
-                    setNewDataTableModel();
+                    int option = JOptionPane.showConfirmDialog(myFrame, "apply changes before reload?", "REALOAD", JOptionPane.YES_NO_OPTION);
+                    if(option == JOptionPane.YES_OPTION) {
+                        cursor.commit();
+                        cursor.releaseSavepoint(miSave);
+                        setNewDataTableModel();
+                    } else if(option == JOptionPane.NO_OPTION) {
+                        cursor.rollback();
+                        cursor.releaseSavepoint(miSave);
+                        setNewDataTableModel();
+                    } else if(option == JOptionPane.CANCEL_OPTION) {
+                        // do nothing
+                    }
                 } catch(Exception er) {
                     System.err.println(er);
                 }
@@ -244,7 +253,7 @@ public class PanelPrincipal {
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
                         String valueOfColumn = mTable.getValueAt(row, column).toString();
                         String options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
-                        boolean eliminado = cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
+                        boolean eliminado = cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder(), cursor);
                         if(eliminado == true) {
                             tableModel.removeRow(row);
                         } else {
@@ -296,8 +305,8 @@ public class PanelPrincipal {
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     if(updateCuenta != null) {
-                        new PanelUpdate("Update", hight, height, updateCuenta, myConfig);
-                        myFrame.setVisible(false);
+                        new PanelUpdate("Update", hight, height, updateCuenta, myConfig, cursor, myFrame);
+                        myFrame.setEnabled(false);
                     }
                 } else {
                     JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
@@ -342,17 +351,21 @@ public class PanelPrincipal {
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 try {
-                    if(JOptionPane.showConfirmDialog(myFrame, "save changes before exit?", "save changes", JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                    int option = JOptionPane.showConfirmDialog(myFrame, "save changes before exit?", "save changes", JOptionPane.YES_NO_CANCEL_OPTION);
+                    if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
                         cursor.releaseSavepoint(miSave);
-                    } else {
+                        System.exit(0);
+                    } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
                         cursor.releaseSavepoint(miSave);
+                        System.exit(0);
+                    } else if(option == JOptionPane.CANCEL_OPTION) {
+                        myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                     }
                 } catch(Exception e) {
                     System.err.println(e);
                 }
-                System.exit(0);
             }
         });
         

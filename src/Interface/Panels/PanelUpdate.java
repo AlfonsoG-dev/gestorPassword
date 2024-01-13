@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JButton;
@@ -28,9 +29,13 @@ public class PanelUpdate {
     private JTextField txtEmail;
     private JTextField txtUserId;
     private JTextField txtPassword;
+    private JFrame mainFrame;
+    private Connection cursor;
 
-    public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig) {
+    public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig, Connection miCursor, JFrame nMainFrame) {
         loggedUser = updateCuenta.getUser_id_fk();
+        mainFrame = nMainFrame;
+        cursor = miCursor;
         CreateUI(frameTitle, hight, height, updateCuenta, myConfig);
     }
     private JPanel OptionsComponent(Cuenta updateCuenta) {
@@ -75,8 +80,9 @@ public class PanelUpdate {
                     String condition = "id_pk: " + toUpdate.getId_pk();
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                        cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder());
-                        new PanelPrincipal(myConfig, loggedUser);
+                        cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder(), cursor);
+                        //new PanelPrincipal(myConfig, loggedUser);
+                        mainFrame.setEnabled(true);
                         myFrame.setVisible(false);
                     }
                 } catch(Exception er) {
