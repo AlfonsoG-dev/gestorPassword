@@ -4,6 +4,7 @@ import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
+import java.sql.Connection;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 
@@ -32,8 +33,12 @@ public class PanelRegistro {
     private JTextField txtPassword;
     private JComboBox<String> cbxUser;
     private JPanel pPrincipal;
-    public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig, int pLoggedUser) {
+    private Connection cursor;
+    private JFrame mainFrame;
+    public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame) {
         loggedUser = pLoggedUser;
+        cursor = miCursor;
+        mainFrame = nMainFrame;
         userDAO = new QueryDAO<User>("user", myConfig);
         CreateUI(frameTitle, hight, height, myConfig);
     }
@@ -78,9 +83,10 @@ public class PanelRegistro {
                         String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk" + nueva.getUser_id_fk();
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                            cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder(), null);
+                            cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder(), cursor);
                             myFrame.setVisible(false);
-                            new PanelPrincipal(myConfig, loggedUser);
+                            mainFrame.setEnabled(true);
+                            //new PanelPrincipal(myConfig, loggedUser);
                         }
                     } catch(Exception ex) {
                         System.out.println(ex);

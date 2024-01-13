@@ -66,7 +66,7 @@ public class PanelPrincipal {
         if(misCuentas().size() > 0) {
             CreateUI("table example", "Gestor Password", 1100, 540);
         } else {
-            new PanelRegistro("Register", 400, 900, myConfig, loggedUser);
+            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame);
         }
     }
     private ArrayList<Cuenta> misCuentas() {
@@ -273,8 +273,8 @@ public class PanelPrincipal {
                         JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                     }
                 } else {
-                    new PanelRegistro("Register", hight, height, myConfig, loggedUser);
-                    myFrame.setVisible(false);
+                    new PanelRegistro("Register", hight, height, myConfig, loggedUser, cursor, myFrame);
+                    myFrame.setEnabled(false);
                 }
             }
         });
@@ -308,8 +308,14 @@ public class PanelPrincipal {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to go back to login?", "Cancel operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                    new PanelLogin(myConfig);
-                    myFrame.setVisible(false);
+                    try {
+                        cursor.rollback();
+                        cursor.releaseSavepoint(miSave);
+                        new PanelLogin(myConfig);
+                        myFrame.setVisible(false);
+                    } catch(Exception er) {
+                        System.err.println(er);
+                    }
                 }
             }
         });
