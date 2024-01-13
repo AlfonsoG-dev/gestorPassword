@@ -15,6 +15,7 @@
 - [x] loggin 
 - [x] list, add, delete and update passwords
 - [x] allow insert cuenta directly from table
+- [x] allow to commit changes o rollback if wanted
 
 # Usage
 
