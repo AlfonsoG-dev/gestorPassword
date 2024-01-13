@@ -316,7 +316,13 @@ public class PanelPrincipal {
 
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
-                System.exit(0);
+                // TODO: add transaction commit when JOptionPane.YES_OPTION, otherwise rollback
+                if(JOptionPane.showConfirmDialog(myFrame, "do you want to save changes before close?", "save changes",
+                            JOptionPane.YES_NO_OPTION)== JOptionPane.YES_OPTION){
+                    System.exit(0);
+                } else {
+                    System.exit(0);
+                }
             }
         });
         
@@ -330,7 +336,6 @@ public class PanelPrincipal {
         myFrame.add(TableComponent(tableTitle), BorderLayout.CENTER);
         myFrame.add(OptionsComponent(600, 700));
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         myFrame.setResizable(true);
     }
 }
