@@ -335,6 +335,7 @@ public class PanelPrincipal {
         myFrame.add(headerLabel);
         myFrame.add(TableComponent(tableTitle), BorderLayout.CENTER);
         myFrame.add(OptionsComponent(600, 700));
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         myFrame.setVisible(true);
         myFrame.setResizable(true);
     }
