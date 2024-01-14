@@ -133,7 +133,7 @@ public class PanelLogin {
                     User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
                     if(mio != null) {
                         new PanelPrincipal(myConfig, mio.getId_pk(), myFrame, cursor, cuentaDAO);
-                        myFrame.setEnabled(false);
+                        myFrame.dispose();
                     } else {
                         JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
                     }
@@ -168,7 +168,7 @@ public class PanelLogin {
 
 
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         myFrame.setResizable(false);
     }
 }
