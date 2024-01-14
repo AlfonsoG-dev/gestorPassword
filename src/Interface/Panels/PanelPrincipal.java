@@ -29,11 +29,12 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
-import Conexion.Conector;
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
+
 import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
+
 import Utils.QueryUtils;
 
 public class PanelPrincipal {
@@ -87,12 +88,12 @@ public class PanelPrincipal {
      * @param mConfig: database configuration
      * @param pLoggedUser: logged user for reference
      */
-    public PanelPrincipal(DbConfig mConfig, int pLoggedUser) {
+    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, Connection miConnection) {
         myConfig = mConfig;
         loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
         cuentaDAO = new QueryDAO<>("cuenta", myConfig);
-        cursor = new Conector(myConfig).conectarMySQL();
+        cursor = miConnection;
         // set the save point to rollback or commit changes
         try {
             cursor.setAutoCommit(false);
@@ -104,7 +105,7 @@ public class PanelPrincipal {
         if(misCuentas().size() > 0) {
             CreateUI("table example", "Gestor Password", 1100, 540);
         } else {
-            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame);
+            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame, cuentaDAO);
         }
     }
     /**
@@ -356,7 +357,7 @@ public class PanelPrincipal {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(ListaFaltantes().size() == 0) {
-                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame);
+                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame, cuentaDAO);
                     myFrame.setEnabled(false);
                 } else {
                     try {
@@ -394,33 +395,11 @@ public class PanelPrincipal {
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     if(updateCuenta != null) {
-                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, cursor, myFrame);
+                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, cursor, myFrame, cuentaDAO);
                         myFrame.setEnabled(false);
                     }
                 } else {
                     JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
-                }
-            }
-        });
-    }
-    /**
-     * implements the action handler for the cancelButton.
-     * <br> post: </br> redirects to login or do nothing
-     * @param cancelButton: panel cancelButton to add the action handler
-     */
-    private void CancelButtonHandler(JButton cancelButton) {
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to go back to login?", "Cancel operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                    try {
-                        cursor.rollback();
-                        cursor.releaseSavepoint(miSave);
-                        new PanelLogin(myConfig);
-                        myFrame.setVisible(false);
-                    } catch(Exception er) {
-                        System.err.println(er);
-                    }
                 }
             }
         });
@@ -447,10 +426,6 @@ public class PanelPrincipal {
         JButton deleteButton = new JButton("Delete");
         DeleteButtonHandler(deleteButton);
         optionPanel.add(deleteButton);
-
-        JButton cancelButton = new JButton("Cancel");
-        CancelButtonHandler(cancelButton);
-        optionPanel.add(cancelButton);
 
         return optionPanel;
     }

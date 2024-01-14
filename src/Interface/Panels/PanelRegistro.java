@@ -19,7 +19,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Conexion.Query.QueryDAO;
+
 import Config.DbConfig;
+
 import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
 
@@ -65,12 +67,16 @@ public class PanelRegistro {
      */
     private JFrame mainFrame;
     /**
+     */
+    private QueryDAO<Cuenta> cuentaDAO;
+    /**
      * constructor
      */
-    public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame) {
+    public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuetaDAO) {
         loggedUser = pLoggedUser;
         cursor = miCursor;
         mainFrame = nMainFrame;
+        cuentaDAO = nCuetaDAO;
         CreateUI(frameTitle, hight, height, myConfig);
     }
     /**
@@ -115,7 +121,6 @@ public class PanelRegistro {
                         String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk" + nueva.getUser_id_fk();
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                            QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
                             cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder(), cursor);
                             mainFrame.setEnabled(true);
                             myFrame.setVisible(false);

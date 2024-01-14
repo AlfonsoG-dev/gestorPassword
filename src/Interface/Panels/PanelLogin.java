@@ -1,5 +1,8 @@
 package Interface.Panels;
 
+import java.sql.Connection;
+
+import java.util.ArrayList;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -7,7 +10,6 @@ import java.awt.BorderLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -17,8 +19,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import Conexion.Conector;
 import Conexion.Query.QueryDAO;
+
 import Config.DbConfig;
+
 import Mundo.Users.User;
 import Mundo.Users.UserBuilder;
 
@@ -110,6 +115,7 @@ public class PanelLogin {
 
         btnIngreso.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                Connection cursor = new Conector(myConfig).conectarMySQL();
                 String userName = "";
                 String userPassword = "";
                 if(cbxUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
@@ -121,9 +127,9 @@ public class PanelLogin {
                     User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
                     if(mio != null) {
                         myFrame.setVisible(false);
-                        new PanelPrincipal(myConfig, mio.getId_pk());
+                        new PanelPrincipal(myConfig, mio.getId_pk(), cursor);
                     } else {
-                        JOptionPane.showMessageDialog(myFrame, "invalid user or password", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
                     }
                 }
             }

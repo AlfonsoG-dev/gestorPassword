@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 
 import Conexion.Query.QueryDAO;
 import Config.DbConfig;
+
 import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
 
@@ -65,12 +66,17 @@ public class PanelUpdate {
      */
     private Connection cursor;
     /**
+     */
+    private QueryDAO<Cuenta> cuentaDAO;
+    /**
      * constructor
      */
-    public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig, Connection miCursor, JFrame nMainFrame) {
+    public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig,
+            Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuentaDAO) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cursor = miCursor;
+        cuentaDAO = nCuentaDAO;
         CreateUI(frameTitle, hight, height, updateCuenta, myConfig);
     }
     /**
@@ -121,7 +127,6 @@ public class PanelUpdate {
                 }
                 toUpdate.setUpdate_at();
                 try {
-                    QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
                     String condition = "id_pk: " + toUpdate.getId_pk();
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
