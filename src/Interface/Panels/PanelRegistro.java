@@ -122,8 +122,13 @@ public class PanelRegistro {
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                             cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder(), cursor);
-                            mainFrame.setEnabled(true);
-                            myFrame.setVisible(false);
+                            if(mainFrame != null) {
+                                mainFrame.setEnabled(true);
+                                myFrame.dispose();
+                            } else {
+                                new PanelPrincipal(myConfig, loggedUser, myFrame, cursor, cuentaDAO);
+                                myFrame.dispose();
+                            }
                         }
                     } catch(Exception ex) {
                         System.out.println(ex);
@@ -144,8 +149,12 @@ public class PanelRegistro {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                    mainFrame.setEnabled(true);
-                    myFrame.setVisible(false);
+                    if(mainFrame != null) {
+                        mainFrame.setEnabled(true);
+                        myFrame.dispose();
+                    } else {
+                        myFrame.dispose();
+                    }
                 }
             }
         });
@@ -179,8 +188,7 @@ public class PanelRegistro {
         myFrame.addWindowListener(new WindowAdapter() {
             // changes the close operation
             public void windowClosing(WindowEvent we) {
-                myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                myFrame.setVisible(false);
+                myFrame.dispose();
                 mainFrame.setEnabled(true);
             }
         });
@@ -197,6 +205,6 @@ public class PanelRegistro {
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 }
