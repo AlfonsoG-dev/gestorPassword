@@ -12,6 +12,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.Component;
 
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -52,6 +53,10 @@ public class PanelPrincipal {
      */
     private JFrame myFrame;
     /**
+     * the main frame of login
+     */
+    private JFrame mainFrame;
+    /**
      * label that describes the panel
      */
     private JLabel headerLabel;
@@ -88,12 +93,13 @@ public class PanelPrincipal {
      * @param mConfig: database configuration
      * @param pLoggedUser: logged user for reference
      */
-    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, Connection miConnection, QueryDAO<Cuenta> nCuentaDAO) {
+    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame, Connection miConnection, QueryDAO<Cuenta> nCuentaDAO) {
         myConfig = mConfig;
         loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
         cuentaDAO = nCuentaDAO;
         cursor = miConnection;
+        mainFrame = nMainFrame;
         // set the save point to rollback or commit changes
         try {
             cursor.setAutoCommit(false);
@@ -408,8 +414,8 @@ public class PanelPrincipal {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                    mainFrame.setEnabled(true);
                     myFrame.setVisible(false);
-                    new PanelLogin(myConfig);
                 }
             }
         });

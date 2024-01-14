@@ -132,8 +132,8 @@ public class PanelLogin {
                     String condition = "nombre: " + userName + ", password: " + userPassword;
                     User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
                     if(mio != null) {
-                        myFrame.setVisible(false);
-                        new PanelPrincipal(myConfig, mio.getId_pk(), cursor, cuentaDAO);
+                        new PanelPrincipal(myConfig, mio.getId_pk(), myFrame, cursor, cuentaDAO);
+                        myFrame.setEnabled(false);
                     } else {
                         JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
                     }
