@@ -88,11 +88,11 @@ public class PanelPrincipal {
      * @param mConfig: database configuration
      * @param pLoggedUser: logged user for reference
      */
-    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, Connection miConnection) {
+    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, Connection miConnection, QueryDAO<Cuenta> nCuentaDAO) {
         myConfig = mConfig;
         loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
-        cuentaDAO = new QueryDAO<>("cuenta", myConfig);
+        cuentaDAO = nCuentaDAO;
         cursor = miConnection;
         // set the save point to rollback or commit changes
         try {
@@ -404,6 +404,16 @@ public class PanelPrincipal {
             }
         });
     }
+    private void CancelButtonHandler(JButton cancelButton) {
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                if(JOptionPane.showConfirmDialog(myFrame, "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                    myFrame.setVisible(false);
+                    new PanelLogin(myConfig);
+                }
+            }
+        });
+    }
     /**
      * panel that its content if the panel buttons and its action handlers
      * @param hight: hight of the panel
@@ -422,10 +432,13 @@ public class PanelPrincipal {
         UpdateButtonHandler(updateButton, height, height);
         optionPanel.add(updateButton);
 
-
         JButton deleteButton = new JButton("Delete");
         DeleteButtonHandler(deleteButton);
         optionPanel.add(deleteButton);
+
+        JButton cancelButton = new JButton("Cancel");
+        CancelButtonHandler(cancelButton);
+        optionPanel.add(cancelButton);
 
         return optionPanel;
     }

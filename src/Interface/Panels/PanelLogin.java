@@ -23,7 +23,7 @@ import Conexion.Conector;
 import Conexion.Query.QueryDAO;
 
 import Config.DbConfig;
-
+import Mundo.Cuentas.Cuenta;
 import Mundo.Users.User;
 import Mundo.Users.UserBuilder;
 
@@ -54,16 +54,23 @@ public class PanelLogin {
      */
     private JButton btnCancel;
     /**
+    */
+    private Connection cursor;
+    /**
      * DAO class for user
      */
     private QueryDAO<User> userDAO;
-
+    /**
+     */
+    private QueryDAO<Cuenta> cuentaDAO;
     /**
      * Constructor
      * @param myConfig: data base configuration
      */
     public PanelLogin(DbConfig myConfig) {
-        userDAO = new QueryDAO<User>("user", myConfig);
+        cursor = new Conector(myConfig).conectarMySQL();
+        userDAO = new QueryDAO<User>("user", myConfig, cursor);
+        cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig, cursor);
         CreateUI("Loggin", myConfig);
     }
     /**
@@ -115,7 +122,6 @@ public class PanelLogin {
 
         btnIngreso.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                Connection cursor = new Conector(myConfig).conectarMySQL();
                 String userName = "";
                 String userPassword = "";
                 if(cbxUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
@@ -127,7 +133,7 @@ public class PanelLogin {
                     User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
                     if(mio != null) {
                         myFrame.setVisible(false);
-                        new PanelPrincipal(myConfig, mio.getId_pk(), cursor);
+                        new PanelPrincipal(myConfig, mio.getId_pk(), cursor, cuentaDAO);
                     } else {
                         JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
                     }
