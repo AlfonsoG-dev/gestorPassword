@@ -270,11 +270,9 @@ public class PanelPrincipal {
                     int option = JOptionPane.showConfirmDialog(myFrame, "apply changes before reload?", "REALOAD", JOptionPane.YES_NO_CANCEL_OPTION);
                     if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
-                        cursor.releaseSavepoint(miSave);
                         setNewDataTableModel();
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
-                        cursor.releaseSavepoint(miSave);
                         setNewDataTableModel();
                     } else if(option == JOptionPane.CANCEL_OPTION) {
                         // do nothing
@@ -488,7 +486,7 @@ public class PanelPrincipal {
                 }
             }
         });
-        
+
         headerLabel = new JLabel("", JLabel.CENTER);
 
         controlPanel = new JPanel();
