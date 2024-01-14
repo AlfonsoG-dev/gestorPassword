@@ -131,6 +131,8 @@ public class PanelUpdate {
                     }
                 } catch(Exception er) {
                     System.err.println(er);
+                } finally {
+                        JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                 }
             }
         });

@@ -2,7 +2,6 @@ package Interface.Panels;
 
 import java.sql.Connection;
 
-import java.util.ArrayList;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
@@ -13,7 +12,6 @@ import java.awt.event.WindowEvent;
 
 
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -24,18 +22,12 @@ import Conexion.Query.QueryDAO;
 import Config.DbConfig;
 import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
-import Mundo.Users.User;
-import Mundo.Users.UserBuilder;
 
 public class PanelRegistro {
     /**
      * the panel frame
      */
     private JFrame myFrame;
-    /**
-     * DAO class for the user
-     */
-    private QueryDAO<User> userDAO;
     /**
      * the logged user
      */
@@ -53,13 +45,13 @@ public class PanelRegistro {
      */
     private JTextField txtEmail;
     /**
+     * logged user text field 
+     */
+    private JTextField txtLoggedUser;
+    /**
      * the password text field
      */
     private JTextField txtPassword;
-    /**
-     * the list of users to select when using fk
-     */
-    private JComboBox<String> cbxUser;
     /**
      * the current principal panel
      */
@@ -79,22 +71,7 @@ public class PanelRegistro {
         loggedUser = pLoggedUser;
         cursor = miCursor;
         mainFrame = nMainFrame;
-        userDAO = new QueryDAO<User>("user", myConfig);
         CreateUI(frameTitle, hight, height, myConfig);
-    }
-    /**
-     * list of users for the fk field
-     * @return a string list of the users name
-     */
-    private String[] ComboBoxUsers() {
-        String result = "select a user...,";
-        ArrayList<User> users = userDAO.ReadAll(new UserBuilder());
-        for(User u: users) {
-            if(u.getId_pk() == loggedUser) {
-                result += u.getNombre() + ",";
-            }
-        }
-        return result.split(",");
     }
     /**
      * set the panel components and its content
@@ -103,12 +80,16 @@ public class PanelRegistro {
     private JPanel OptionsComponent() {
         JPanel pOptions = new JPanel();
         pOptions.setLayout(new GridLayout(4, 2));
+
         pOptions.add(new JLabel(" Nombre"));
         pOptions.add(txtNombre = new JTextField());
         pOptions.add(new JLabel(" Email"));
         pOptions.add(txtEmail = new JTextField());
         pOptions.add(new JLabel(" User_id"));
-        pOptions.add(cbxUser = new JComboBox<String>(ComboBoxUsers()));
+
+        pOptions.add(txtLoggedUser = new JTextField(String.valueOf(loggedUser)));
+        txtLoggedUser.setEnabled(false);
+
         pOptions.add(new JLabel(" Password"));
         pOptions.add(txtPassword = new JTextField());
 
@@ -122,21 +103,19 @@ public class PanelRegistro {
      * @param myConfig: database configuration
      */
     private void OkButtonHandler(JButton OKButton, DbConfig myConfig) {
-        QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
         OKButton.setMnemonic(KeyEvent.VK_ENTER);
             OKButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
                         String nombre = txtNombre.getText();
                         String email = txtEmail.getText();
-                        String selectedUser = cbxUser.getSelectedItem().toString();
-                        int selectedUserId = userDAO.FindByColumnName("nombre: " + selectedUser, "and", new UserBuilder()).getId_pk();
                         String password = txtPassword.getText();
-                        Cuenta nueva = new Cuenta(nombre, email, selectedUserId, password);
+                        Cuenta nueva = new Cuenta(nombre, email, loggedUser, password);
                         nueva.setCreate_at();
                         String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk" + nueva.getUser_id_fk();
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                            QueryDAO<Cuenta> cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig);
                             cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder(), cursor);
                             mainFrame.setEnabled(true);
                             myFrame.setVisible(false);
@@ -166,6 +145,20 @@ public class PanelRegistro {
             }
         });
     }
+    private JPanel OperationOptions(DbConfig myConfig) {
+
+        JPanel options = new JPanel();
+        options.setLayout(new FlowLayout());
+
+        JButton OKButton = new JButton("OK");
+        options.add(OKButton);
+        OkButtonHandler(OKButton, myConfig);
+
+        JButton cancelButton = new JButton("cancel");
+        options.add(cancelButton);
+        CancelButtonHandler(cancelButton, myConfig);
+        return options;
+    }
     /**
      * creates the ui for the current frame
      * @param frameTitle: frame title
@@ -182,8 +175,8 @@ public class PanelRegistro {
             // changes the close operation
             public void windowClosing(WindowEvent we) {
                 myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                mainFrame.setEnabled(true);
                 myFrame.setVisible(false);
+                mainFrame.setEnabled(true);
             }
         });
 
@@ -194,17 +187,7 @@ public class PanelRegistro {
 
         pPrincipal.add(OptionsComponent());
 
-        JPanel options = new JPanel();
-        options.setLayout(new FlowLayout());
-
-        JButton OKButton = new JButton("OK");
-        options.add(OKButton);
-        OkButtonHandler(OKButton, myConfig);
-
-        JButton cancelButton = new JButton("cancel");
-        options.add(cancelButton);
-        CancelButtonHandler(cancelButton, myConfig);
-        pPrincipal.add(options);
+        pPrincipal.add(OperationOptions(myConfig));
 
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
