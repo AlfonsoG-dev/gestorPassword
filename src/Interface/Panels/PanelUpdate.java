@@ -132,7 +132,7 @@ public class PanelUpdate {
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                         cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder(), cursor);
                         mainFrame.setEnabled(true);
-                        myFrame.setVisible(false);
+                        myFrame.dispose();
                     }
                 } catch(Exception er) {
                     System.err.println(er);
@@ -153,7 +153,7 @@ public class PanelUpdate {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
                     mainFrame.setEnabled(true);
-                    myFrame.setVisible(false);
+                    myFrame.dispose();
                 }
             }
         });
@@ -191,9 +191,8 @@ public class PanelUpdate {
 
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
-                myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-                myFrame.setVisible(false);
                 mainFrame.setEnabled(true);
+                myFrame.dispose();
             }
         });
 
@@ -208,6 +207,6 @@ public class PanelUpdate {
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     }
 }
