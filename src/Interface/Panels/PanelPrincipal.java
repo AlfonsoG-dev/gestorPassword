@@ -355,7 +355,10 @@ public class PanelPrincipal {
     private void InsertButtonHandler(JButton insertButton, int weight, int height) {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(ListaFaltantes().size() > 0) {
+                if(ListaFaltantes().size() == 0) {
+                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame);
+                    myFrame.setEnabled(false);
+                } else {
                     try {
                         for(Cuenta c: ListaFaltantes()) {
                             String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
@@ -369,9 +372,6 @@ public class PanelPrincipal {
                     } finally {
                         JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                     }
-                } else {
-                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame);
-                    myFrame.setEnabled(false);
                 }
             }
         });
