@@ -417,9 +417,16 @@ public class PanelPrincipal {
     private void CancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(JOptionPane.showConfirmDialog(myFrame, "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
-                    mainFrame.setVisible(true);;
-                    myFrame.dispose();
+                try {
+                    if(JOptionPane.showConfirmDialog(myFrame, "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                        mainFrame.setVisible(true);
+                        cursor.rollback();
+                        SetAutoImcrement();
+                        cursor.releaseSavepoint(miSave);
+                        myFrame.dispose();
+                    }
+                } catch(Exception er) {
+                    System.err.println(er);
                 }
             }
         });
