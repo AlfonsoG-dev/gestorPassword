@@ -130,7 +130,7 @@ public class PanelUpdate {
                     String condition = "id_pk: " + toUpdate.getId_pk();
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                        cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder(), cursor);
+                        cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder());
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
                     }

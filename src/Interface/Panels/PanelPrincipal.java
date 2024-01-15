@@ -2,7 +2,7 @@ package Interface.Panels;
 
 import java.sql.Connection;
 import java.sql.Savepoint;
-
+import java.sql.Statement;
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -110,6 +110,12 @@ public class PanelPrincipal {
         } else {
             new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame, cuentaDAO);
         }
+    }
+    private void SetAutoImcrement() throws Exception {
+        int tableSize = cuentaDAO.ReadAll(new CuentaBuilder()).size()+1;
+        String sql = "alter table cuenta AUTO_INCREMENT=" + tableSize;
+        Statement stm = cursor.createStatement();
+        stm.executeUpdate(sql);
     }
     /**
      * list of cuentas that verify the user_id_fk with the loggedUser
@@ -277,6 +283,7 @@ public class PanelPrincipal {
                         setNewDataTableModel();
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
+                        SetAutoImcrement();
                         setNewDataTableModel();
                     } else if(option == JOptionPane.CANCEL_OPTION) {
                         // do nothing
@@ -333,7 +340,7 @@ public class PanelPrincipal {
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
                         String valueOfColumn = mTable.getValueAt(row, column).toString();
                         String options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
-                        boolean eliminado = cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder(), cursor);
+                        boolean eliminado = cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
                         if(eliminado == true) {
                             tableModel.removeRow(row);
                         } else {
@@ -368,7 +375,7 @@ public class PanelPrincipal {
                             String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
                             if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation", 
                                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                                cuentaDAO.InsertNewRegister(c, condition, "and", new CuentaBuilder(), cursor);
+                                cuentaDAO.InsertNewRegister(c, condition, "and", new CuentaBuilder());
                             }
                         }
                     } catch(Exception er) {
@@ -467,6 +474,7 @@ public class PanelPrincipal {
                         System.exit(0);
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
+                        SetAutoImcrement();
                         cursor.releaseSavepoint(miSave);
                         System.exit(0);
                     } else if(option == JOptionPane.CANCEL_OPTION) {
