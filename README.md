@@ -13,7 +13,7 @@
 
 # Features
 
-- [x] loggin 
+- [x] login 
 - [x] list, add, delete and update passwords
 - [x] allow insert cuenta directly from table
 - [x] allow to commit changes o rollback if wanted
@@ -31,7 +31,7 @@ id,nombre,email,user_id_fk,password,null,null
 
 ------
 
-- panel that contains the table and funcionallity
+- panel that contains the table and functionality
 - the table have to the right side 3 button that represents: 
 >- reload, insert row, delete row
 
@@ -94,15 +94,15 @@ java -jar app.jar
 
 >- if using the powershell script
 >>- Extraction of the jar file dependencies
-1. download the *java-mysql-eje* proyect inside the lib folder of the proyect
-2. inside java-musql-eje proyect create a jar file
+1. download the *java-mysql-eje* project inside the lib folder of the project
+2. inside java-musql-eje project create a jar file
 3. create a folder with the name of *extractionFiles*
 4. in the extractionFiles folder create a folder with the name *java_mysql_eje*
 5. move the jar file to *extractionFiles/java_mysql_eje/* folder
 6. extract the content of the jar file using the *java -xf command*
 
->>- Compile the proyect
-1. using powershell create a *java-exe.ps1* file in the root of the proyect
+>>- Compile the project
+1. using powershell create a *java-exe.ps1* file in the root of the project
 2. create the script to compile and execute the program
 
 ``` powershell
@@ -114,5 +114,5 @@ Invoke-Expression $runCommand
 ```
 
 # Disclaimer
->- this proyect is for educational purposes
->- securitty issues are not taken into account
+>- this project is for educational purposes
+>- security issues are not taken into account
