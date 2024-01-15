@@ -1,7 +1,5 @@
 package Interface.Panels;
 
-import java.sql.Connection;
-
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
@@ -62,20 +60,15 @@ public class PanelUpdate {
      */
     private JFrame mainFrame;
     /**
-     * cursor to allow transaction for commit or rollback 
-     */
-    private Connection cursor;
-    /**
      */
     private QueryDAO<Cuenta> cuentaDAO;
     /**
      * constructor
      */
     public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig,
-            Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuentaDAO) {
+            JFrame nMainFrame, QueryDAO<Cuenta> nCuentaDAO) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
-        cursor = miCursor;
         cuentaDAO = nCuentaDAO;
         CreateUI(frameTitle, hight, height, updateCuenta, myConfig);
     }

@@ -405,7 +405,7 @@ public class PanelPrincipal {
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     if(updateCuenta != null) {
-                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, cursor, myFrame, cuentaDAO);
+                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, myFrame, cuentaDAO);
                         myFrame.setEnabled(false);
                     }
                 } else {
