@@ -56,6 +56,9 @@ public class PanelLogin {
     */
     private Connection cursor;
     /**
+     */
+    private DbConfig db_config;
+    /**
      * DAO class for user
      */
     private QueryDAO<User> userDAO;
@@ -68,9 +71,14 @@ public class PanelLogin {
      */
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
+        db_config = myConfig;
         userDAO = new QueryDAO<User>("user", myConfig, cursor);
         cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig, cursor);
-        CreateUI("Loggin", myConfig);
+        if(userDAO.ReadAll(new UserBuilder()).size() > 0) {
+            CreateUI("Loggin");
+        } else {
+            new PanelLoginUser(db_config, cursor, userDAO);
+        }
     }
     /**
      * set the users to select in the comboBox
@@ -83,8 +91,6 @@ public class PanelLogin {
             for(User u: myUsers) {
                 res += u.getNombre() + ",";
             }
-        } else {
-            JOptionPane.showMessageDialog(myFrame, "No users found!", "Error", JOptionPane.ERROR_MESSAGE);
         }
         return res.split(",");
     }
@@ -111,7 +117,7 @@ public class PanelLogin {
      * @param myConfig: data base configuration
      * @return the options panel with ist logic
      */
-    private JPanel LoginOptions(DbConfig myConfig) {
+    private JPanel LoginOptions() {
 
         JPanel option = new JPanel();
         option.setLayout(new FlowLayout());
@@ -131,7 +137,7 @@ public class PanelLogin {
                     String condition = "nombre: " + userName + ", password: " + userPassword;
                     User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
                     if(mio != null) {
-                        new PanelPrincipal(myConfig, mio.getId_pk(), myFrame, cursor, cuentaDAO);
+                        new PanelPrincipal(db_config, mio.getId_pk(), myFrame, cursor, cuentaDAO);
                         myFrame.dispose();
                     } else {
                         JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
@@ -157,13 +163,13 @@ public class PanelLogin {
      * @param frameTitle: title of the frame
      * @param myConfig: database configuration
      */
-    public void CreateUI(String frameTitle, DbConfig myConfig) {
+    public void CreateUI(String frameTitle) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(400, 200);
         myFrame.setLayout(new BorderLayout());
 
         myFrame.add(LoginContent(), BorderLayout.CENTER);
-        myFrame.add(LoginOptions(myConfig), BorderLayout.SOUTH);
+        myFrame.add(LoginOptions(), BorderLayout.SOUTH);
 
 
         myFrame.setVisible(true);
