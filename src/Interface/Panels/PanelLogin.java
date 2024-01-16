@@ -19,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Conexion.Conector;
 import Conexion.Query.QueryDAO;
 
 import Config.DbConfig;
@@ -67,8 +66,8 @@ public class PanelLogin {
      * Constructor
      * @param myConfig: data base configuration
      */
-    public PanelLogin(DbConfig myConfig) {
-        cursor = new Conector(myConfig).conectarMySQL();
+    public PanelLogin(DbConfig myConfig, Connection miConector) {
+        cursor = miConector;
         userDAO = new QueryDAO<User>("user", myConfig, cursor);
         cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig, cursor);
         CreateUI("Loggin", myConfig);
