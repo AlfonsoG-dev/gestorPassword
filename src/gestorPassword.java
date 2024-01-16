@@ -17,7 +17,7 @@ class gestorPassword {
         DbConfig mConfig = new DbConfig("", "localhost", "3306", "test_user", "5x5W12");
         try {
             Connection con = new Conector(mConfig).conectarMySQL();
-            MigrationDAO miDAO = new MigrationDAO("", null, con);
+            MigrationDAO miDAO = new MigrationDAO("", con);
             miDAO.CreateDataBase(db_name);
             con.close();
             return new DbConfig(db_name, mConfig.hostname(), mConfig.port(), mConfig.username(), mConfig.password());
@@ -27,7 +27,7 @@ class gestorPassword {
         }
     }
     private final static void InitTable(String tbName, ModelMethods model, DbConfig miConfig, Connection cursor) {
-        MigrationDAO miDAO = new MigrationDAO(tbName, miConfig, cursor);
+        MigrationDAO miDAO = new MigrationDAO(tbName, cursor);
         miDAO.CreateTable(model);
     }
     private final static void LogginUser() {
