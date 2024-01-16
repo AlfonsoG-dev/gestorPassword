@@ -87,7 +87,6 @@ public class PanelLoginUser {
         });
     }
     private void CancelButtonHandler(JButton cancelButton) {
-        cancelButton.setMnemonic(KeyEvent.VK_ENTER);
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",

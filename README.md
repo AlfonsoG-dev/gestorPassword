@@ -54,29 +54,24 @@ id,nombre,email,user_id_fk,password,null,null
 
 >- Create the database and tables.
 >>- using the [java-mysql-orm](https://github.com/AlfonsoG-dev/java-mysql-eje)
-
+>>- first you need to digit the DbConfig parameters
 ```java
-
-// create the DbConfig instance with the correspondent data
-DbConfig miConfig = new DbConfig(dataBase, host, port, user, password);
-
-// Create the DAO instance for each of the tables
-// user table
-new MigrationDAO("user", miConfig);
-
-// cuenta table
-new MigrationDAO("cuenta", miConfig);
-
+private final static DbConfig InitDB(String db_name) {
+    String emptyValue = "this always need to be empty"
+    DbConfig mConfig = new DbConfig(emptyValue, "host", "port", "db_user", "db_user_password");
+}
 ```
-
->- insert manually the user for login purposes
-
+>>- second you need to change the name of the database to create
 ```java
-User admin = new User(Nombre, Email, Password, Rol);
-admin.setCreate_at();
-String condition = "nombre: " + admin.getNombre() + ", password: " + admin.getPassword();
-new QueryDAO<User>("user", DbConfig).InsertNewRegister(admin, condition, "and", new UserBuilder());
+private final static void LogginUser() {
+    try {
+        DbConfig miConfig = InitDB("name of the database");
+    } catch(Exception e) {
+        System.err.println(e);
+    }
+}
 ```
+>>- at launch you register the user for the accounts
 
 # Compile and execute
 >- using [java-build-tool](https://github.com/AlfonsoG-dev/javaBuild)
