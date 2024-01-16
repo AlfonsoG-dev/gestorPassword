@@ -52,10 +52,12 @@ public class PanelLogin {
      * button to cancel log in
      */
     private JButton btnCancel;
-    /**
+    /** 
+     * database connection
     */
     private Connection cursor;
     /**
+     * database configuration
      */
     private DbConfig db_config;
     /**
@@ -63,17 +65,17 @@ public class PanelLogin {
      */
     private QueryDAO<User> userDAO;
     /**
+     * DAO class for account
      */
     private QueryDAO<Cuenta> cuentaDAO;
     /**
      * Constructor
-     * @param myConfig: data base configuration
      */
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         db_config = myConfig;
-        userDAO = new QueryDAO<User>("user", myConfig, cursor);
-        cuentaDAO = new QueryDAO<Cuenta>("cuenta", myConfig, cursor);
+        userDAO = new QueryDAO<User>("user", cursor);
+        cuentaDAO = new QueryDAO<Cuenta>("cuenta", cursor);
         if(userDAO.ReadAll(new UserBuilder()).size() > 0) {
             CreateUI("Loggin");
         } else {
@@ -114,7 +116,6 @@ public class PanelLogin {
     }
     /**
      * the login options that correspond to ingreso and calcel
-     * @param myConfig: data base configuration
      * @return the options panel with ist logic
      */
     private JPanel LoginOptions() {
@@ -161,7 +162,6 @@ public class PanelLogin {
     /**
      * initialize the panel frame with its content 
      * @param frameTitle: title of the frame
-     * @param myConfig: database configuration
      */
     public void CreateUI(String frameTitle) {
         myFrame = new JFrame(frameTitle);

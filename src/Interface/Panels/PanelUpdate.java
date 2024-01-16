@@ -60,17 +60,18 @@ public class PanelUpdate {
      */
     private JFrame mainFrame;
     /**
+     * DAO class for account
      */
     private QueryDAO<Cuenta> cuentaDAO;
     /**
      * constructor
      */
-    public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig,
+    public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig nConfig,
             JFrame nMainFrame, QueryDAO<Cuenta> nCuentaDAO) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cuentaDAO = nCuentaDAO;
-        CreateUI(frameTitle, hight, height, updateCuenta, myConfig);
+        CreateUI(frameTitle, hight, height, updateCuenta);
     }
     /**
      * set the content for the principal panel of the current frame
@@ -105,7 +106,7 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      * @param toUpdate: selected cuenta of the main frame table
      */
-    private void OkButtonHandler(JButton OKButton, DbConfig myConfig, Cuenta toUpdate) {
+    private void OkButtonHandler(JButton OKButton, Cuenta toUpdate) {
         OKButton.setMnemonic(KeyEvent.VK_ENTER);
         OKButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -140,7 +141,7 @@ public class PanelUpdate {
      * @param cancelButton: panel cancelButton to go back to the mainFrame panel
      * @param myConfig: database configuration
      */
-    private void CancelButtonHandler(JButton cancelButton, DbConfig myConfig) {
+    private void CancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Update operation",
@@ -156,17 +157,17 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      * @param toUpdate: selected cuenta of the main frame table 
      */
-    private JPanel OperationsComponent(DbConfig myConfig, Cuenta toUpdate) {
+    private JPanel OperationsComponent(Cuenta toUpdate) {
         JPanel pOperations = new JPanel();
         pOperations.setLayout(new FlowLayout());
         JButton oKButton = new JButton("OK");
         pOperations.add(oKButton);
-        OkButtonHandler(oKButton, myConfig, toUpdate);
+        OkButtonHandler(oKButton, toUpdate);
 
 
         JButton cancelButton = new JButton("Cancel");
         pOperations.add(cancelButton);
-        CancelButtonHandler(cancelButton, myConfig);
+        CancelButtonHandler(cancelButton);
         return pOperations;
     }
     /**
@@ -177,7 +178,7 @@ public class PanelUpdate {
      * @param updateCuenta: selected cuenta from the main frame table
      * @param myConfig: database configuration
      */
-    public void CreateUI(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig myConfig) {
+    public void CreateUI(String frameTitle, int hight, int height, Cuenta updateCuenta) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
@@ -195,7 +196,7 @@ public class PanelUpdate {
         pPrincipal.setLayout(new GridLayout(2, 1));
 
         pPrincipal.add(OptionsComponent(updateCuenta));
-        pPrincipal.add(OperationsComponent(myConfig, updateCuenta));
+        pPrincipal.add(OperationsComponent(updateCuenta));
 
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);

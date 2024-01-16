@@ -209,7 +209,6 @@ public class PanelPrincipal {
     /**
      * sets the panel with the table component and its content
      * @param tableText: table component title
-     * @param the panel with the table
      */
     private JPanel TableComponent(String tableText) {
 
@@ -414,6 +413,11 @@ public class PanelPrincipal {
             }
         });
     }
+    /**
+     * implements the action hanlder for cancelButton
+     * <br> post: </br> rollback to savepoint and redirects to Login or register if its the firts time
+     * @param cancelButton: panel button to cancel the operation
+     */
     private void CancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {

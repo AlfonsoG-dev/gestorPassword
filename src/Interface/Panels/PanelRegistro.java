@@ -67,17 +67,23 @@ public class PanelRegistro {
      */
     private JFrame mainFrame;
     /**
+     * DAO class for account
      */
     private QueryDAO<Cuenta> cuentaDAO;
     /**
+     * database configuration
+     */
+    private DbConfig myConfig;
+    /**
      * constructor
      */
-    public PanelRegistro(String frameTitle, int hight, int height, DbConfig myConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuetaDAO) {
+    public PanelRegistro(String frameTitle, int hight, int height, DbConfig nConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuetaDAO) {
         loggedUser = pLoggedUser;
+        myConfig = nConfig;
         cursor = miCursor;
         mainFrame = nMainFrame;
         cuentaDAO = nCuetaDAO;
-        CreateUI(frameTitle, hight, height, myConfig);
+        CreateUI(frameTitle, hight, height);
     }
     /**
      * set the panel components and its content
@@ -106,9 +112,8 @@ public class PanelRegistro {
      * <br> pre: </br> disable the main frame to insert the new register
      * <br> post: </br> enables the main frame and close the current frame
      * @param OKButton: panel OKButton to insert a new register to the database
-     * @param myConfig: database configuration
      */
-    private void OkButtonHandler(JButton OKButton, DbConfig myConfig) {
+    private void OkButtonHandler(JButton OKButton) {
         OKButton.setMnemonic(KeyEvent.VK_ENTER);
             OKButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
@@ -142,9 +147,8 @@ public class PanelRegistro {
      * implements the cancelButton handler
      * <br> post: </br> close the current frame and enables the main frame
      * @param cancelButton: panel cancelButton to go back to the mainFrame
-     * @param myConfig: database configuration
      */
-    private void CancelButtonHandler(JButton cancelButton, DbConfig myConfig) {
+    private void CancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
@@ -159,18 +163,22 @@ public class PanelRegistro {
             }
         });
     }
-    private JPanel OperationOptions(DbConfig myConfig) {
+    /**
+     * sets the panel content for the options
+     * <br> post: </br> ok button insert data cancel redirects to main frame
+     */
+    private JPanel OperationOptions() {
 
         JPanel options = new JPanel();
         options.setLayout(new FlowLayout());
 
         JButton OKButton = new JButton("OK");
         options.add(OKButton);
-        OkButtonHandler(OKButton, myConfig);
+        OkButtonHandler(OKButton);
 
         JButton cancelButton = new JButton("cancel");
         options.add(cancelButton);
-        CancelButtonHandler(cancelButton, myConfig);
+        CancelButtonHandler(cancelButton);
         return options;
     }
     /**
@@ -178,9 +186,8 @@ public class PanelRegistro {
      * @param frameTitle: frame title
      * @param hight: frame hight
      * @param height: frame height
-     * @param DbConfig: database configuration
      */
-    public void CreateUI(String frameTitle, int hight, int height, DbConfig myConfig) {
+    public void CreateUI(String frameTitle, int hight, int height) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(hight, height);
         myFrame.setLayout(new GridLayout(3, 1));
@@ -200,7 +207,7 @@ public class PanelRegistro {
 
         pPrincipal.add(OptionsComponent());
 
-        pPrincipal.add(OperationOptions(myConfig));
+        pPrincipal.add(OperationOptions());
 
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
