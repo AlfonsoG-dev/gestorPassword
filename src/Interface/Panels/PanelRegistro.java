@@ -86,28 +86,6 @@ public class PanelRegistro {
         CreateUI(frameTitle, hight, height);
     }
     /**
-     * set the panel components and its content
-     * @return the panel with the content setted
-     */
-    private JPanel OptionsComponent() {
-        JPanel pOptions = new JPanel();
-        pOptions.setLayout(new GridLayout(4, 2));
-
-        pOptions.add(new JLabel(" Nombre"));
-        pOptions.add(txtNombre = new JTextField());
-        pOptions.add(new JLabel(" Email"));
-        pOptions.add(txtEmail = new JTextField());
-        pOptions.add(new JLabel(" User_id"));
-
-        pOptions.add(txtLoggedUser = new JTextField(String.valueOf(loggedUser)));
-        txtLoggedUser.setEnabled(false);
-
-        pOptions.add(new JLabel(" Password"));
-        pOptions.add(txtPassword = new JTextField());
-
-        return pOptions;
-    }
-    /**
      * implements the OKButton handler
      * <br> pre: </br> disable the main frame to insert the new register
      * <br> post: </br> enables the main frame and close the current frame
@@ -162,6 +140,42 @@ public class PanelRegistro {
                 }
             }
         });
+    }
+    private void GenerateButtonHandler(JButton generateButton) {
+        generateButton.setMnemonic(KeyEvent.VK_G);
+        generateButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                JOptionPane.showMessageDialog(myFrame, "NOT IMPLEMENTED YET", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+    }
+    /**
+     * set the panel components and its content
+     * @return the panel with the content setted
+     */
+    private JPanel OptionsComponent() {
+        JPanel pOptions = new JPanel();
+        pOptions.setLayout(new GridLayout(4, 2));
+
+        pOptions.add(new JLabel(" Nombre"));
+        pOptions.add(txtNombre = new JTextField());
+        pOptions.add(new JLabel(" Email"));
+        pOptions.add(txtEmail = new JTextField());
+        pOptions.add(new JLabel(" User_id"));
+
+        pOptions.add(txtLoggedUser = new JTextField(String.valueOf(loggedUser)));
+        txtLoggedUser.setEnabled(false);
+
+        pOptions.add(new JLabel(" Password"));
+        JPanel mip = new JPanel();
+        mip.setLayout(new GridLayout(1, 2));
+        mip.add(txtPassword = new JTextField());
+        JButton btnGenerate = new JButton("generate");
+        mip.add(btnGenerate);
+        GenerateButtonHandler(btnGenerate);
+        pOptions.add(mip);
+
+        return pOptions;
     }
     /**
      * sets the panel content for the options
