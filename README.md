@@ -18,6 +18,9 @@
 - [x] allow insert cuenta directly from table
 - [x] allow to commit changes o rollback if wanted
 
+## TODO'S
+- [ ] when register a new account, give the option in the password field to generate it automatically.
+
 # Usage
 
 - use the user and password

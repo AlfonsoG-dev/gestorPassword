@@ -3,6 +3,7 @@ package Interface.Panels;
 import java.sql.Connection;
 import java.sql.Savepoint;
 import java.sql.Statement;
+
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.Transferable;
@@ -12,6 +13,11 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.awt.Toolkit;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
 import java.util.EventObject;
@@ -206,6 +212,14 @@ public class PanelPrincipal {
         }
         return faltante;
     }
+    private void AllowCopyToClipBoard(int row, int column) {
+        Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+        Object value = mTable.getValueAt(row, column);
+        String msg = String.format("%s has been copied to system clip board.", mTable.getColumnName(column));
+        JOptionPane.showMessageDialog(myFrame, msg, "Copy", JOptionPane.INFORMATION_MESSAGE);
+        StringSelection selection = new StringSelection(value.toString());
+        clip.setContents(selection, null);
+    }
     /**
      * sets the panel with the table component and its content
      * @param tableText: table component title
@@ -222,6 +236,17 @@ public class PanelPrincipal {
         mTable.setDragEnabled(true);
         mTable.setDropMode(DropMode.INSERT_ROWS);
         mTable.setTransferHandler(new TableTransferable());
+        mTable.addMouseListener(new MouseAdapter() {
+            public void mouseClicked(MouseEvent e) {
+                if(e.getButton() == MouseEvent.BUTTON3) {
+                    int row = mTable.rowAtPoint(e.getPoint());
+                    int column = mTable.columnAtPoint(e.getPoint());
+                    if(row != -1 && column != -1) {
+                        AllowCopyToClipBoard(row, column);
+                    }
+                }
+            }
+        });
         /** 
          * disable the PK and FK columns for edition.
          * 1. id_pk
