@@ -20,6 +20,9 @@
 
 ## TODO'S
 - [ ] when register a new account, give the option in the password field to generate it automatically.
+- [ ] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
+- [ ] allow to create key files to store multiple passwords with share meta data.
+- [ ] allow to export all the save data to a file.
 
 # Usage
 
