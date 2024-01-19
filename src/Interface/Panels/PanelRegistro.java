@@ -143,9 +143,16 @@ public class PanelRegistro {
         generateButton.setMnemonic(KeyEvent.VK_G);
         generateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: add a dialog on click to build the password with the user liking
-                String pass = cuentaUtils.GeneratePassword(8, true, true, true).toString();
-                txtPassword.setText(pass);
+                if(txtPassword.getText().isEmpty()) {
+                    new PanelPassword(myFrame, txtPassword, cuentaUtils);
+                    myFrame.setEnabled(false);
+                } else {
+                    int size = cuentaUtils.getSize();
+                    boolean letter = cuentaUtils.isLetter();
+                    boolean simbol = cuentaUtils.isSimbol();
+                    boolean number = cuentaUtils.isNumber();
+                    txtPassword.setText(cuentaUtils.GeneratePassword(size, number, letter, simbol).toString());
+                }
             }
         });
     }

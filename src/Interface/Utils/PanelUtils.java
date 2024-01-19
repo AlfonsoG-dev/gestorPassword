@@ -19,10 +19,42 @@ public final class PanelUtils<T> {
 
     private QueryDAO<T> myQueryDAO;
     private Connection cursor;
+    private int size;
+    private boolean letter;
+    private boolean simbol;
+    private boolean number;
+
 
     public PanelUtils(QueryDAO<T> nQueryDAO, Connection nCursor) {
         myQueryDAO = nQueryDAO;
         cursor = nCursor;
+    }
+
+    /**
+     * @return the size
+     */
+    public int getSize() {
+        return size;
+    }
+
+    /**
+     * @return the number
+     */
+    public boolean isNumber() {
+        return number;
+    }
+    /**
+     * @return the simbol
+     */
+    public boolean isSimbol() {
+        return simbol;
+    }
+
+    /**
+     * @return the letter
+     */
+    public boolean isLetter() {
+        return letter;
     }
 
     public ArrayList<T> DataList(ModelBuilderMethods<T> build) {
@@ -75,6 +107,13 @@ public final class PanelUtils<T> {
     }
     public void ErrorMessage(JFrame myFrame, String message, String title) {
         JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.ERROR_MESSAGE);
+    }
+
+    public void SetPasswordValues(int nSize, boolean nLetter, boolean nSimbol, boolean nNumber) {
+        size = nSize;
+        letter = nLetter;
+        simbol = nSimbol;
+        number = nNumber;
     }
 }
 
