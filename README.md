@@ -14,21 +14,23 @@
 # Features
 
 - [x] login 
-- [x] list, add, delete and update passwords
-- [x] allow insert cuenta directly from table
-- [x] allow to commit changes o rollback if wanted
+- [x] list, add, delete and update passwords.
+- [x] allow insert cuenta directly from table.
+- [x] allow to commit changes o rollback if wanted.
+- [x] the password field is generated automatically.
 
 ## TODO'S
-- [ ] when register a new account, give the option in the password field to generate it automatically.
+
 - [ ] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
+-> [AES algorithm for java](https://www.baeldung.com/java-aes-encryption-decryption)
 - [ ] allow to create key files to store multiple passwords with share meta data.
 - [ ] allow to export all the save data to a file.
 
 # Usage
 
-- use the user and password
+- use the user and password.
 - to use drag and drop to the table.
->- the drag text format must bee: 
+>- the drag text format must be: 
 ```console
 id,nombre,email,user_id_fk,password,null,null
 ```
