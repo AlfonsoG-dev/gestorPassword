@@ -1,8 +1,9 @@
 package Interface.Panels;
 
+import Interface.Utils.PanelUtils;
+
 import java.sql.Connection;
 import java.sql.Savepoint;
-import java.sql.Statement;
 
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
@@ -35,7 +36,6 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
-import Conexion.Query.QueryDAO;
 import Config.DbConfig;
 
 import Mundo.Cuentas.Cuenta;
@@ -74,9 +74,8 @@ public class PanelPrincipal {
      */
     private QueryUtils queryUtils;
     /**
-     * DAO class for cuenta
      */
-    private QueryDAO<Cuenta> cuentaDAO;
+    private PanelUtils<Cuenta> cuentaUtils;
     /**
      * database configuration
      */
@@ -96,12 +95,13 @@ public class PanelPrincipal {
     /**
      * constructor
      */
-    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame, Connection miConnection, QueryDAO<Cuenta> nCuentaDAO) {
+    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame,
+            Connection miConnection, PanelUtils<Cuenta> nCuentaUtils) {
         myConfig = mConfig;
         loggedUser = pLoggedUser;
         queryUtils = new QueryUtils();
-        cuentaDAO = nCuentaDAO;
         cursor = miConnection;
+        cuentaUtils = nCuentaUtils;
         mainFrame = nMainFrame;
         // set the save point to rollback or commit changes
         try {
@@ -114,14 +114,8 @@ public class PanelPrincipal {
         if(misCuentas().size() > 0) {
             CreateUI("table example", "Gestor Password", 1100, 540);
         } else {
-            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame, cuentaDAO);
+            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
         }
-    }
-    private void SetAutoImcrement() throws Exception {
-        int tableSize = cuentaDAO.ReadAll(new CuentaBuilder()).size()+1;
-        String sql = "alter table cuenta AUTO_INCREMENT=" + tableSize;
-        Statement stm = cursor.createStatement();
-        stm.executeUpdate(sql);
     }
     /**
      * list of cuentas that verify the user_id_fk with the loggedUser
@@ -129,7 +123,7 @@ public class PanelPrincipal {
      */
     private ArrayList<Cuenta> misCuentas() {
         ArrayList<Cuenta> nuevas = new ArrayList<>();
-        ArrayList<Cuenta> nCuentas = cuentaDAO.ReadAll(new CuentaBuilder());
+        ArrayList<Cuenta> nCuentas = cuentaUtils.DataList(new CuentaBuilder());
         for(Cuenta c: nCuentas) {
             if(c.getUser_id_fk() == loggedUser) {
                 nuevas.add(c);
@@ -169,7 +163,7 @@ public class PanelPrincipal {
     private Cuenta BuildCuentaFromTable(int row, int column) {
         String columName = mTable.getColumnName(column);
         String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        Cuenta myCuenta = cuentaDAO.FindByColumnName(options, "and", new CuentaBuilder());
+        Cuenta myCuenta = cuentaUtils.FindOperation(options, "and", new CuentaBuilder());
         if(myCuenta == null) {
             JOptionPane.showMessageDialog(myFrame, "invalid value of field", "Error", JOptionPane.ERROR_MESSAGE);
             return null;
@@ -202,7 +196,7 @@ public class PanelPrincipal {
                     break outter;
                 }
                 String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
-                Cuenta buscada = cuentaDAO.FindByColumnName(condition, "and", new CuentaBuilder());
+                Cuenta buscada = cuentaUtils.FindOperation(condition, "and", new CuentaBuilder());
                 if(buscada == null) {
                     mia = new Cuenta(cNombre, cEmail, Integer.parseInt(cUserFk), cPassword);
                     mia.setCreate_at();
@@ -307,7 +301,7 @@ public class PanelPrincipal {
                         setNewDataTableModel();
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
-                        SetAutoImcrement();
+                        cuentaUtils.SetAutoImcrement(new CuentaBuilder());
                         setNewDataTableModel();
                     } else if(option == JOptionPane.CANCEL_OPTION) {
                         // do nothing
@@ -364,7 +358,7 @@ public class PanelPrincipal {
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
                         String valueOfColumn = mTable.getValueAt(row, column).toString();
                         String options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
-                        boolean eliminado = cuentaDAO.EliminarRegistro(options, "and", new CuentaBuilder());
+                        boolean eliminado = cuentaUtils.DeleteOperation(options, "and", new CuentaBuilder());
                         if(eliminado == true) {
                             tableModel.removeRow(row);
                         } else {
@@ -391,7 +385,7 @@ public class PanelPrincipal {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(ListaFaltantes().size() == 0) {
-                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame, cuentaDAO);
+                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
                     myFrame.setEnabled(false);
                 } else {
                     try {
@@ -399,7 +393,7 @@ public class PanelPrincipal {
                             String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
                             if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation", 
                                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                                cuentaDAO.InsertNewRegister(c, condition, "and", new CuentaBuilder());
+                                cuentaUtils.InsertOperation(c, condition, condition, null);
                             }
                         }
                     } catch(Exception er) {
@@ -429,7 +423,7 @@ public class PanelPrincipal {
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     if(updateCuenta != null) {
-                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, myFrame, cuentaDAO);
+                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, myFrame, cuentaUtils);
                         myFrame.setEnabled(false);
                     }
                 } else {
@@ -450,7 +444,7 @@ public class PanelPrincipal {
                     if(JOptionPane.showConfirmDialog(myFrame, "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                         mainFrame.setVisible(true);
                         cursor.rollback();
-                        SetAutoImcrement();
+                        cuentaUtils.SetAutoImcrement(new CuentaBuilder());
                         cursor.releaseSavepoint(miSave);
                         myFrame.dispose();
                     }
@@ -510,7 +504,7 @@ public class PanelPrincipal {
                         System.exit(0);
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
-                        SetAutoImcrement();
+                        cuentaUtils.SetAutoImcrement(new CuentaBuilder());
                         cursor.releaseSavepoint(miSave);
                         System.exit(0);
                     } else if(option == JOptionPane.CANCEL_OPTION) {

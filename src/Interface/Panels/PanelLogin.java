@@ -1,5 +1,7 @@
 package Interface.Panels;
 
+import Interface.Utils.PanelUtils;
+
 import java.sql.Connection;
 
 import java.util.ArrayList;
@@ -61,25 +63,25 @@ public class PanelLogin {
      */
     private DbConfig db_config;
     /**
-     * DAO class for user
+     * utils for the user DAO
      */
-    private QueryDAO<User> userDAO;
+    private PanelUtils<User> userUtils;
     /**
-     * DAO class for account
+     * utils for the account DAO
      */
-    private QueryDAO<Cuenta> cuentaDAO;
+    private PanelUtils<Cuenta> cuentaUtils;
     /**
      * Constructor
      */
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         db_config = myConfig;
-        userDAO = new QueryDAO<User>("user", cursor);
-        cuentaDAO = new QueryDAO<Cuenta>("cuenta", cursor);
-        if(userDAO.ReadAll(new UserBuilder()).size() > 0) {
+        userUtils = new PanelUtils<User>(new QueryDAO<User>("user", cursor), cursor);
+        cuentaUtils = new PanelUtils<Cuenta>(new QueryDAO<Cuenta>("cuenta", cursor), cursor);
+        if(userUtils.DataList(new UserBuilder()).size() > 0) {
             CreateUI("Loggin");
         } else {
-            new PanelLoginUser(db_config, cursor, userDAO);
+            new PanelLoginUser(db_config, cursor, userUtils);
         }
     }
     /**
@@ -88,7 +90,7 @@ public class PanelLogin {
      */
     private String[] ComboBoxUsers() {
         String res = "Select user...,";
-        ArrayList<User> myUsers = userDAO.ReadAll(new UserBuilder());
+        ArrayList<User> myUsers = userUtils.DataList(new UserBuilder());
         if(myUsers.size() > 0) {
             for(User u: myUsers) {
                 res += u.getNombre() + ",";
@@ -136,9 +138,9 @@ public class PanelLogin {
                     userName = cbxUserName.getSelectedItem().toString();
                     userPassword = txtUserPassword.getText();
                     String condition = "nombre: " + userName + ", password: " + userPassword;
-                    User mio = userDAO.FindByColumnName(condition, "and", new UserBuilder());
+                    User mio = userUtils.FindOperation(condition, "and", new UserBuilder());
                     if(mio != null) {
-                        new PanelPrincipal(db_config, mio.getId_pk(), myFrame, cursor, cuentaDAO);
+                        new PanelPrincipal(db_config, mio.getId_pk(), myFrame, cursor, cuentaUtils);
                         myFrame.dispose();
                     } else {
                         JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);

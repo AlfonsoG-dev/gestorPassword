@@ -2,8 +2,6 @@ package Interface.Panels;
 
 import java.sql.Connection;
 
-import java.security.SecureRandom;
-
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
@@ -12,7 +10,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -20,10 +17,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Conexion.Query.QueryDAO;
-
 import Config.DbConfig;
-
+import Interface.Utils.PanelUtils;
 import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
 
@@ -71,7 +66,7 @@ public class PanelRegistro {
     /**
      * DAO class for account
      */
-    private QueryDAO<Cuenta> cuentaDAO;
+    private PanelUtils<Cuenta> cuentaUtils;
     /**
      * database configuration
      */
@@ -79,27 +74,13 @@ public class PanelRegistro {
     /**
      * constructor
      */
-    public PanelRegistro(String frameTitle, int width, int height, DbConfig nConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuetaDAO) {
+    public PanelRegistro(String frameTitle, int width, int height, DbConfig nConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, PanelUtils<Cuenta> nCuentaUtils) {
         loggedUser = pLoggedUser;
         myConfig = nConfig;
         cursor = miCursor;
         mainFrame = nMainFrame;
-        cuentaDAO = nCuetaDAO;
+        cuentaUtils = nCuentaUtils;
         CreateUI(frameTitle, width, height);
-    }
-    private StringBuilder GeneratedPassword(int size, boolean addNumber, boolean addLetters, boolean addSimbols) {
-        StringBuilder pass = new StringBuilder();
-        SecureRandom random = new SecureRandom();
-        String letters = addLetters ? "abcdefghijklmnñopqrstuvwxyz" : "";
-        String simbols = addSimbols ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "";
-        String numbers = addNumber ? "0123456789" : "";
-
-        String combination = letters + simbols + numbers;
-        for(int i=0; i<size; ++i) {
-            int index = random.nextInt(combination.length());
-            pass.append(combination.charAt(index));
-        }
-        return pass;
     }
     /**
      * implements the OKButton handler
@@ -120,12 +101,12 @@ public class PanelRegistro {
                         String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk" + nueva.getUser_id_fk();
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                            cuentaDAO.InsertNewRegister(nueva, condition, "and", new CuentaBuilder());
+                            cuentaUtils.InsertOperation(nueva, condition, "and", new CuentaBuilder());
                             if(mainFrame != null) {
                                 mainFrame.setEnabled(true);
                                 myFrame.dispose();
                             } else {
-                                new PanelPrincipal(myConfig, loggedUser, myFrame, cursor, cuentaDAO);
+                                new PanelPrincipal(myConfig, loggedUser, myFrame, cursor, cuentaUtils);
                                 myFrame.dispose();
                             }
                         }
@@ -162,7 +143,7 @@ public class PanelRegistro {
         generateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // TODO: add a dialog on click to build the password with the user liking
-                String pass = GeneratedPassword(8, true, true, true).toString();
+                String pass = cuentaUtils.GeneratePassword(8, true, true, true).toString();
                 txtPassword.setText(pass);
             }
         });

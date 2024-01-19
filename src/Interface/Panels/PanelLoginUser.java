@@ -1,5 +1,7 @@
 package Interface.Panels;
 
+import Interface.Utils.PanelUtils;
+
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
@@ -14,13 +16,12 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+import javax.swing.JPanel;
 
-import Conexion.Query.QueryDAO;
 import Config.DbConfig;
+
 import Mundo.Users.User;
 import Mundo.Users.UserBuilder;
-
-import javax.swing.JPanel;
 
 public class PanelLoginUser {
 
@@ -32,12 +33,12 @@ public class PanelLoginUser {
     private JTextField txtRol;
     private DbConfig myConfig;
     private Connection cursor;
-    private QueryDAO<User> userDAO;
+    private PanelUtils<User> userUtils;
 
-    public PanelLoginUser(DbConfig nConfig, Connection nCursor, QueryDAO<User> nUserDAO) {
+    public PanelLoginUser(DbConfig nConfig, Connection nCursor, PanelUtils<User> nUserUtils) {
         cursor = nCursor;
         myConfig = nConfig;
-        userDAO = nUserDAO;
+        userUtils = nUserUtils;
         CreateUI(500, 600);
     }
     private JPanel OptionsComponent() {
@@ -75,7 +76,7 @@ public class PanelLoginUser {
                         String condition = "nombre: " + nombre + ", email: " + email;
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                            userDAO.InsertNewRegister(newUser, condition, "and", new UserBuilder());
+                            userUtils.InsertOperation(newUser, condition, rol, new UserBuilder());
                             myFrame.dispose();
                             new PanelLogin(myConfig, cursor);
                         }

@@ -15,9 +15,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Conexion.Query.QueryDAO;
 import Config.DbConfig;
-
+import Interface.Utils.PanelUtils;
 import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
 
@@ -62,15 +61,15 @@ public class PanelUpdate {
     /**
      * DAO class for account
      */
-    private QueryDAO<Cuenta> cuentaDAO;
+    private PanelUtils<Cuenta> cuentaUtils;
     /**
      * constructor
      */
     public PanelUpdate(String frameTitle, int width, int height, Cuenta updateCuenta, DbConfig nConfig,
-            JFrame nMainFrame, QueryDAO<Cuenta> nCuentaDAO) {
+            JFrame nMainFrame, PanelUtils<Cuenta> nCuentaUtils) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
-        cuentaDAO = nCuentaDAO;
+        cuentaUtils = nCuentaUtils;
         CreateUI(frameTitle, width, height, updateCuenta);
     }
     /**
@@ -124,7 +123,7 @@ public class PanelUpdate {
                     String condition = "id_pk: " + toUpdate.getId_pk();
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                        cuentaDAO.UpdateRegister(toUpdate, condition, "and", new CuentaBuilder());
+                        cuentaUtils.UpdateOperation(toUpdate, condition, "and", new CuentaBuilder());
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
                     }

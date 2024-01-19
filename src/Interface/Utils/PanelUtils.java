@@ -22,9 +22,8 @@ public final class PanelUtils<T> {
         cursor = nCursor;
     }
 
-    public ArrayList<T> DataList() {
-        ArrayList<T> myDataList = new ArrayList<T>();
-        return myDataList;
+    public ArrayList<T> DataList(ModelBuilderMethods<T> build) {
+        return myQueryDAO.ReadAll(build);
     }
 
     public T FindOperation(String condition, String type, ModelBuilderMethods<T> builer) {
@@ -64,5 +63,8 @@ public final class PanelUtils<T> {
         return pass;
     }
 
+    public QueryDAO<T> getMyQueryDAO() {
+        return myQueryDAO;
+    }
 }
 
