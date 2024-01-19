@@ -2,6 +2,8 @@ package Interface.Panels;
 
 import java.sql.Connection;
 
+import java.security.SecureRandom;
+
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
@@ -85,6 +87,20 @@ public class PanelRegistro {
         cuentaDAO = nCuetaDAO;
         CreateUI(frameTitle, width, height);
     }
+    private StringBuilder GeneratedPassword(int size, boolean addNumber, boolean addLetters, boolean addSimbols) {
+        StringBuilder pass = new StringBuilder();
+        SecureRandom random = new SecureRandom();
+        String letters = addLetters ? "abcdefghijklmnñopqrstuvwxyz" : "";
+        String simbols = addSimbols ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "";
+        String numbers = addNumber ? "0123456789" : "";
+
+        String combination = letters + simbols + numbers;
+        for(int i=0; i<size; ++i) {
+            int index = random.nextInt(combination.length());
+            pass.append(combination.charAt(index));
+        }
+        return pass;
+    }
     /**
      * implements the OKButton handler
      * <br> pre: </br> disable the main frame to insert the new register
@@ -145,7 +161,9 @@ public class PanelRegistro {
         generateButton.setMnemonic(KeyEvent.VK_G);
         generateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                JOptionPane.showMessageDialog(myFrame, "NOT IMPLEMENTED YET", "Error", JOptionPane.ERROR_MESSAGE);
+                // TODO: add a dialog on click to build the password with the user liking
+                String pass = GeneratedPassword(8, true, true, true).toString();
+                txtPassword.setText(pass);
             }
         });
     }
