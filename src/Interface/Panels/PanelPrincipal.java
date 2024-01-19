@@ -166,7 +166,7 @@ public class PanelPrincipal {
         String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
         Cuenta myCuenta = cuentaUtils.FindOperation(options, "and", new CuentaBuilder());
         if(myCuenta == null) {
-            JOptionPane.showMessageDialog(myFrame, "invalid value of field", "Error", JOptionPane.ERROR_MESSAGE);
+            cuentaUtils.ErrorMessage(myFrame, "invalid value of field", "Error");
             return null;
         } else {
             return myCuenta;
@@ -189,11 +189,11 @@ public class PanelPrincipal {
                 String cUserFk = mTable.getValueAt(i, 3).toString();
                 String cPassword = mTable.getValueAt(i, 4).toString();
                 if(cNombre.isEmpty() || cEmail.isEmpty() || cPassword.isEmpty()) {
-                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    cuentaUtils.ErrorMessage(myFrame, "invalid empty fields", "Error");
                     break outter;
                 }
                 if(cNombre == null || cEmail == null || cPassword == null) {
-                    JOptionPane.showMessageDialog(myFrame, "invalid empty fields", "Error", JOptionPane.ERROR_MESSAGE);
+                    cuentaUtils.ErrorMessage(myFrame, "invalid empty fields", "Error");
                     break outter;
                 }
                 String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
@@ -211,7 +211,7 @@ public class PanelPrincipal {
         Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
         Object value = mTable.getValueAt(row, column);
         String msg = String.format("%s has been copied to system clip board.", mTable.getColumnName(column));
-        JOptionPane.showMessageDialog(myFrame, msg, "Copy", JOptionPane.INFORMATION_MESSAGE);
+        cuentaUtils.InfoMessage(myFrame, msg, "Copy");
         StringSelection selection = new StringSelection(value.toString());
         clip.setContents(selection, null);
     }
@@ -335,7 +335,7 @@ public class PanelPrincipal {
                 if(cNombre.isEmpty() || cNombre.isBlank()) {
                     tableModel.removeRow(tableSize);
                 } else {
-                    JOptionPane.showMessageDialog(myFrame, "Cannot remove!", "Error", JOptionPane.ERROR_MESSAGE);
+                    cuentaUtils.ErrorMessage(myFrame, "Cannot remove!", "Error");
                 }
             }
         });
@@ -355,7 +355,7 @@ public class PanelPrincipal {
                 String columName = mTable.getColumnName(column);
                 try {
                     if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
-                        JOptionPane.showMessageDialog(myFrame, "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
+                        cuentaUtils.ErrorMessage(myFrame, "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Error");
                     } else if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
                         String valueOfColumn = mTable.getValueAt(row, column).toString();
@@ -364,11 +364,10 @@ public class PanelPrincipal {
                         if(eliminado == true) {
                             tableModel.removeRow(row);
                         } else {
-                            JOptionPane.showMessageDialog(myFrame, String.format("Column: %s with value of: %s not found", columName, valueOfColumn),
-                                    "Error", JOptionPane.ERROR_MESSAGE);
+                            cuentaUtils.ErrorMessage(myFrame, String.format("Column: %s with value of: %s not found"), "Error");
                         }
                     } else {
-                        JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
+                        cuentaUtils.ErrorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Error");
                     }
                 } catch(Exception er) {
                     er.printStackTrace();
@@ -403,7 +402,7 @@ public class PanelPrincipal {
                         er.printStackTrace();
                         cuentaUtils.ErrorMessage(myFrame, "Error while trying to inser a register", "Insert Error");
                     } finally {
-                        JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        cuentaUtils.InfoMessage(myFrame, "reload the window to see the changes", "INFO");
                     }
                 }
             }
@@ -423,7 +422,7 @@ public class PanelPrincipal {
                 int column = mTable.getSelectedColumn();
                 String columName = mTable.getColumnName(column);
                 if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
-                        JOptionPane.showMessageDialog(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error", JOptionPane.ERROR_MESSAGE);
+                        cuentaUtils.ErrorMessage(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error");
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     if(updateCuenta != null) {
@@ -431,7 +430,7 @@ public class PanelPrincipal {
                         myFrame.setEnabled(false);
                     }
                 } else {
-                    JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
+                    cuentaUtils.ErrorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Error");
                 }
             }
         });
