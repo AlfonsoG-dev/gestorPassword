@@ -47,16 +47,25 @@ public final class PanelPassword {
                 boolean simbols = cbxSimbol.isSelected();
                 boolean numbers = cbxNumber.isSelected();
                 cuentaUtils.SetPasswordValues(size, letters, simbols, numbers);
-                if(size != -1 && size > 4) {
-                    myFrame.dispose();
+                if(size != -1 && size > 4 && (letters || simbols || numbers)) {
                     txtPassword.setText(cuentaUtils.GeneratePassword(size, numbers, letters, simbols).toString());
                     mainFrame.setEnabled(true);
+                    myFrame.dispose();
+                } else {
+                    cuentaUtils.ErrorMessage(myFrame, "invalid password options", "Generator Error");
                 }
             }
         });
     }
 
     private void CancelButtonHandler(JButton cancelButton) {
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                txtPassword.setText("");
+                mainFrame.setEnabled(true);
+                myFrame.dispose();
+            }
+        });
     }
     private JPanel OptionComponent() {
         JPanel options = new JPanel();

@@ -56,6 +56,12 @@ public final class PanelUtils<T> {
     public boolean isLetter() {
         return letter;
     }
+    public void SetPasswordValues(int nSize, boolean nLetter, boolean nSimbol, boolean nNumber) {
+        size = nSize;
+        letter = nLetter;
+        simbol = nSimbol;
+        number = nNumber;
+    }
 
     public ArrayList<T> DataList(ModelBuilderMethods<T> build) {
         return myQueryDAO.ReadAll(build);
@@ -107,13 +113,6 @@ public final class PanelUtils<T> {
     }
     public void ErrorMessage(JFrame myFrame, String message, String title) {
         JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.ERROR_MESSAGE);
-    }
-
-    public void SetPasswordValues(int nSize, boolean nLetter, boolean nSimbol, boolean nNumber) {
-        size = nSize;
-        letter = nLetter;
-        simbol = nSimbol;
-        number = nNumber;
     }
 }
 
