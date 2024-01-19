@@ -77,13 +77,13 @@ public class PanelRegistro {
     /**
      * constructor
      */
-    public PanelRegistro(String frameTitle, int hight, int height, DbConfig nConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuetaDAO) {
+    public PanelRegistro(String frameTitle, int width, int height, DbConfig nConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, QueryDAO<Cuenta> nCuetaDAO) {
         loggedUser = pLoggedUser;
         myConfig = nConfig;
         cursor = miCursor;
         mainFrame = nMainFrame;
         cuentaDAO = nCuetaDAO;
-        CreateUI(frameTitle, hight, height);
+        CreateUI(frameTitle, width, height);
     }
     /**
      * implements the OKButton handler
@@ -198,12 +198,12 @@ public class PanelRegistro {
     /**
      * creates the ui for the current frame
      * @param frameTitle: frame title
-     * @param hight: frame hight
+     * @param width: frame width
      * @param height: frame height
      */
-    public void CreateUI(String frameTitle, int hight, int height) {
+    public void CreateUI(String frameTitle, int width, int height) {
         myFrame = new JFrame(frameTitle);
-        myFrame.setSize(hight, height);
+        myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));
 
         myFrame.addWindowListener(new WindowAdapter() {

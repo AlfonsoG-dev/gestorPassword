@@ -112,9 +112,9 @@ public class PanelLoginUser {
         return options;
     }
 
-    public void CreateUI(int hight, int height) {
+    public void CreateUI(int width, int height) {
         myFrame = new JFrame("Register User");
-        myFrame.setSize(hight, height);
+        myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));
         myFrame.addWindowListener(new WindowAdapter() {
             // changes the close operation

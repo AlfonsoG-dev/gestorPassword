@@ -66,12 +66,12 @@ public class PanelUpdate {
     /**
      * constructor
      */
-    public PanelUpdate(String frameTitle, int hight, int height, Cuenta updateCuenta, DbConfig nConfig,
+    public PanelUpdate(String frameTitle, int width, int height, Cuenta updateCuenta, DbConfig nConfig,
             JFrame nMainFrame, QueryDAO<Cuenta> nCuentaDAO) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cuentaDAO = nCuentaDAO;
-        CreateUI(frameTitle, hight, height, updateCuenta);
+        CreateUI(frameTitle, width, height, updateCuenta);
     }
     /**
      * set the content for the principal panel of the current frame
@@ -173,14 +173,14 @@ public class PanelUpdate {
     /**
      * creates the ui for the current frame
      * @param frameTitle: frame title
-     * @param hight: frame hight
+     * @param width: frame width
      * @param height: frame height
      * @param updateCuenta: selected cuenta from the main frame table
      * @param myConfig: database configuration
      */
-    public void CreateUI(String frameTitle, int hight, int height, Cuenta updateCuenta) {
+    public void CreateUI(String frameTitle, int width, int height, Cuenta updateCuenta) {
         myFrame = new JFrame(frameTitle);
-        myFrame.setSize(hight, height);
+        myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));
 
         myFrame.addWindowListener(new WindowAdapter() {

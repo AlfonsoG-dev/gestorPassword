@@ -462,11 +462,11 @@ public class PanelPrincipal {
     }
     /**
      * panel that its content if the panel buttons and its action handlers
-     * @param hight: hight of the panel
+     * @param width: width of the panel
      * @param height: height of the panel
      * @return the panel with the content setted
      */
-    private JPanel OptionsComponent(int hight, int height) {
+    private JPanel OptionsComponent(int width, int height) {
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());
 
@@ -492,12 +492,12 @@ public class PanelPrincipal {
      * creates the ui for the current frame
      * @param frameTitle: the frame title
      * @param tableTitle: the table name
-     * @param hight: the frame hight
+     * @param width: the frame width
      * @param height: the frame height
      */
-    public void CreateUI(String frameTitle, String tableTitle, int hight, int height) {
+    public void CreateUI(String frameTitle, String tableTitle, int width, int height) {
         myFrame = new JFrame(frameTitle);
-        myFrame.setSize(hight, height);
+        myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));
 
         myFrame.addWindowListener(new WindowAdapter() {
