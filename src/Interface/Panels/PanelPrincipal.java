@@ -108,7 +108,8 @@ public class PanelPrincipal {
             cursor.setAutoCommit(false);
             miSave = cursor.setSavepoint();
         } catch(Exception e) {
-            System.err.println(e);
+            e.printStackTrace();
+            cuentaUtils.ErrorMessage(null, "error while trying to create the connection to DB","Connection Error");
         }
 
         if(misCuentas().size() > 0) {
@@ -307,7 +308,8 @@ public class PanelPrincipal {
                         // do nothing
                     }
                 } catch(Exception er) {
-                    System.err.println(er);
+                    er.printStackTrace();
+                    cuentaUtils.ErrorMessage(myFrame, "Error while trying to reload the data", "Reload Error");
                 }
             }
         });
@@ -369,7 +371,8 @@ public class PanelPrincipal {
                         JOptionPane.showMessageDialog(myFrame, "NO TABLE ELEMENT SELECTED");
                     }
                 } catch(Exception er) {
-                    System.err.println(er);
+                    er.printStackTrace();
+                    cuentaUtils.ErrorMessage(myFrame, "Error while trying to delete a register", "Delete Error");
                 }
             }
         });
@@ -397,7 +400,8 @@ public class PanelPrincipal {
                             }
                         }
                     } catch(Exception er) {
-                        System.err.println(er);
+                        er.printStackTrace();
+                        cuentaUtils.ErrorMessage(myFrame, "Error while trying to inser a register", "Insert Error");
                     } finally {
                         JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                     }
@@ -449,7 +453,8 @@ public class PanelPrincipal {
                         myFrame.dispose();
                     }
                 } catch(Exception er) {
-                    System.err.println(er);
+                    er.printStackTrace();
+                    cuentaUtils.ErrorMessage(myFrame, "Error while trying to cancel the operation", "Cancel Error");
                 }
             }
         });
@@ -511,7 +516,8 @@ public class PanelPrincipal {
                         myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
                     }
                 } catch(Exception e) {
-                    System.err.println(e);
+                    e.printStackTrace();
+                    cuentaUtils.ErrorMessage(myFrame, "Error while trying to close the window", "Close Error");
                 }
             }
         });

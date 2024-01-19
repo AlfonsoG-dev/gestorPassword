@@ -111,9 +111,10 @@ public class PanelRegistro {
                             }
                         }
                     } catch(Exception ex) {
-                        System.out.println(ex);
+                        ex.printStackTrace();
+                        cuentaUtils.ErrorMessage(myFrame, "error while trying to insert registers", "Insert Error");
                     } finally {
-                        JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        cuentaUtils.InfoMessage(myFrame, "reload the window to see the changes","Cuenta Error"); 
                     }
                 }
             });

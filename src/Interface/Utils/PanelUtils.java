@@ -8,6 +8,9 @@ import java.sql.Connection;
 
 import java.util.ArrayList;
 
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+
 import Conexion.Query.QueryDAO;
 import Model.ModelBuilderMethods;
 import Model.ModelMethods;
@@ -65,6 +68,13 @@ public final class PanelUtils<T> {
 
     public QueryDAO<T> getMyQueryDAO() {
         return myQueryDAO;
+    }
+
+    public void InfoMessage(JFrame myFrame, String message, String title) {
+        JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.INFORMATION_MESSAGE);
+    }
+    public void ErrorMessage(JFrame myFrame, String message, String title) {
+        JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.ERROR_MESSAGE);
     }
 }
 
