@@ -21,7 +21,6 @@ import javax.swing.JPanel;
 import Config.DbConfig;
 
 import Mundo.Users.User;
-import Mundo.Users.UserBuilder;
 
 public class PanelLoginUser {
 
@@ -76,7 +75,7 @@ public class PanelLoginUser {
                         String condition = "nombre: " + nombre + ", email: " + email;
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                            userUtils.InsertOperation(newUser, condition, rol, new UserBuilder());
+                            userUtils.InsertOperation(newUser, condition, rol);
                             myFrame.dispose();
                             new PanelLogin(myConfig, cursor);
                         }

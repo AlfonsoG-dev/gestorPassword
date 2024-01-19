@@ -124,7 +124,7 @@ public class PanelPrincipal {
      */
     private ArrayList<Cuenta> misCuentas() {
         ArrayList<Cuenta> nuevas = new ArrayList<>();
-        ArrayList<Cuenta> nCuentas = cuentaUtils.DataList(new CuentaBuilder());
+        ArrayList<Cuenta> nCuentas = cuentaUtils.DataList();
         for(Cuenta c: nCuentas) {
             if(c.getUser_id_fk() == loggedUser) {
                 nuevas.add(c);
@@ -164,7 +164,7 @@ public class PanelPrincipal {
     private Cuenta BuildCuentaFromTable(int row, int column) {
         String columName = mTable.getColumnName(column);
         String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        Cuenta myCuenta = cuentaUtils.FindOperation(options, "and", new CuentaBuilder());
+        Cuenta myCuenta = cuentaUtils.FindOperation(options, "and");
         if(myCuenta == null) {
             cuentaUtils.ErrorMessage(myFrame, "invalid value of field", "Error");
             return null;
@@ -197,7 +197,7 @@ public class PanelPrincipal {
                     break outter;
                 }
                 String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
-                Cuenta buscada = cuentaUtils.FindOperation(condition, "and", new CuentaBuilder());
+                Cuenta buscada = cuentaUtils.FindOperation(condition, "and");
                 if(buscada == null) {
                     mia = new Cuenta(cNombre, cEmail, Integer.parseInt(cUserFk), cPassword);
                     mia.setCreate_at();
@@ -395,7 +395,7 @@ public class PanelPrincipal {
                             String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
                             if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation", 
                                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                                cuentaUtils.InsertOperation(c, condition, condition, null);
+                                cuentaUtils.InsertOperation(c, condition, condition);
                             }
                         }
                     } catch(Exception er) {

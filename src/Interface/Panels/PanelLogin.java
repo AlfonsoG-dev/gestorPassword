@@ -25,6 +25,7 @@ import Conexion.Query.QueryDAO;
 
 import Config.DbConfig;
 import Mundo.Cuentas.Cuenta;
+import Mundo.Cuentas.CuentaBuilder;
 import Mundo.Users.User;
 import Mundo.Users.UserBuilder;
 
@@ -76,9 +77,9 @@ public class PanelLogin {
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         db_config = myConfig;
-        userUtils = new PanelUtils<User>(new QueryDAO<User>("user", cursor), cursor);
-        cuentaUtils = new PanelUtils<Cuenta>(new QueryDAO<Cuenta>("cuenta", cursor), cursor);
-        if(userUtils.DataList(new UserBuilder()).size() > 0) {
+        userUtils = new PanelUtils<User>(new QueryDAO<User>("user", cursor, new UserBuilder()), cursor);
+        cuentaUtils = new PanelUtils<Cuenta>(new QueryDAO<Cuenta>("cuenta", cursor, new CuentaBuilder()), cursor);
+        if(userUtils.DataList().size() > 0) {
             CreateUI("Loggin");
         } else {
             new PanelLoginUser(db_config, cursor, userUtils);
@@ -90,7 +91,7 @@ public class PanelLogin {
      */
     private String[] ComboBoxUsers() {
         String res = "Select user...,";
-        ArrayList<User> myUsers = userUtils.DataList(new UserBuilder());
+        ArrayList<User> myUsers = userUtils.DataList();
         if(myUsers.size() > 0) {
             for(User u: myUsers) {
                 res += u.getNombre() + ",";
@@ -138,7 +139,7 @@ public class PanelLogin {
                     userName = cbxUserName.getSelectedItem().toString();
                     userPassword = txtUserPassword.getText();
                     String condition = "nombre: " + userName + ", password: " + userPassword;
-                    User mio = userUtils.FindOperation(condition, "and", new UserBuilder());
+                    User mio = userUtils.FindOperation(condition, "and");
                     if(mio != null) {
                         new PanelPrincipal(db_config, mio.getId_pk(), myFrame, cursor, cuentaUtils);
                         myFrame.dispose();

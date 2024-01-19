@@ -18,7 +18,6 @@ import javax.swing.JTextField;
 import Config.DbConfig;
 import Interface.Utils.PanelUtils;
 import Mundo.Cuentas.Cuenta;
-import Mundo.Cuentas.CuentaBuilder;
 
 public class PanelUpdate {
     /**
@@ -123,7 +122,7 @@ public class PanelUpdate {
                     String condition = "id_pk: " + toUpdate.getId_pk();
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                        cuentaUtils.UpdateOperation(toUpdate, condition, "and", new CuentaBuilder());
+                        cuentaUtils.UpdateOperation(toUpdate, condition, "and");
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
                     }

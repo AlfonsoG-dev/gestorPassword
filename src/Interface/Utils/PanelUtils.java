@@ -63,27 +63,27 @@ public final class PanelUtils<T> {
         number = nNumber;
     }
 
-    public ArrayList<T> DataList(ModelBuilderMethods<T> build) {
-        return myQueryDAO.ReadAll(build);
+    public ArrayList<T> DataList() {
+        return myQueryDAO.ReadAll();
     }
 
-    public T FindOperation(String condition, String type, ModelBuilderMethods<T> builer) {
-        return myQueryDAO.FindByColumnName(condition, type, builer);
+    public T FindOperation(String condition, String type) {
+        return myQueryDAO.FindByColumnName(condition, type);
     }
 
-    public boolean InsertOperation(ModelMethods model, String condition, String type, ModelBuilderMethods<T> builder) throws SQLException {
-        return myQueryDAO.InsertNewRegister(model, condition, type, builder);
+    public boolean InsertOperation(ModelMethods model, String condition, String type) throws SQLException {
+        return myQueryDAO.InsertNewRegister(model, condition, type);
     }
 
-    public boolean UpdateOperation(ModelMethods model, String condition, String type, ModelBuilderMethods<T> builder) throws SQLException {
-        return myQueryDAO.UpdateRegister(model, condition, type, builder);
+    public boolean UpdateOperation(ModelMethods model, String condition, String type) throws SQLException {
+        return myQueryDAO.UpdateRegister(model, condition, type);
     }
     public boolean DeleteOperation(String condition, String type, ModelBuilderMethods<T> builder) throws SQLException {
         return myQueryDAO.EliminarRegistro(condition, type, builder);
     }
 
     public void SetAutoImcrement(ModelBuilderMethods<T> builder) throws SQLException {
-        int tableSize = myQueryDAO.ReadAll(builder).size()+1;
+        int tableSize = myQueryDAO.ReadAll().size()+1;
         String sql = "alter table cuenta AUTO_INCREMENT=" + tableSize;
         Statement stm = cursor.createStatement();
         stm.executeUpdate(sql);
