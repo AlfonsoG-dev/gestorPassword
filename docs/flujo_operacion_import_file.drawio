@@ -1,0 +1,77 @@
+<mxfile host="Electron" modified="2024-01-20T01:52:25.616Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) draw.io/22.1.21 Chrome/120.0.6099.109 Electron/28.1.0 Safari/537.36" etag="u28GbMTuJ84IEqueyRb9" version="22.1.21" type="device">
+  <diagram name="Página-1" id="8XkXa7DuPDAUYb9FdcLV">
+    <mxGraphModel dx="1408" dy="851" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-16" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-1" target="QcOp-jtUg3a_dcg00lSk-19">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="200" y="280" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-1" value="Import operation" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.start_2;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="30" y="230" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-4" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-3" target="QcOp-jtUg3a_dcg00lSk-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;exitPerimeter=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-3" target="QcOp-jtUg3a_dcg00lSk-5">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-3" value="from file system" style="verticalLabelPosition=bottom;verticalAlign=top;html=1;shape=card;whiteSpace=wrap;size=20;arcSize=12;" vertex="1" parent="1">
+          <mxGeometry x="30" y="65" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-12" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-5" target="QcOp-jtUg3a_dcg00lSk-10">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-5" value="file.txt" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="200" y="65" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-9" value="text format" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="520" y="10" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-10" value="user:admin-&amp;gt;email:admin@gmail-&amp;gt;password:123-&amp;gt;rol:admin&lt;br&gt;name:personal-&amp;gt;email:pp@gmail-&amp;gt;password:123&lt;br&gt;name:falsa-&amp;gt;email:pp2@gmail-&amp;gt;password:123asd&lt;br&gt;" style="rounded=1;whiteSpace=wrap;html=1;align=left;" vertex="1" parent="1">
+          <mxGeometry x="400" y="40" width="329" height="110" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-17" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-19" target="QcOp-jtUg3a_dcg00lSk-18">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="430" y="280" as="targetPoint" />
+            <mxPoint x="300" y="280" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-18" value="load data from file.txt" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="360" y="230" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-19" value="click button" style="shape=parallelogram;html=1;strokeWidth=2;perimeter=parallelogramPerimeter;whiteSpace=wrap;rounded=1;arcSize=12;size=0.23;" vertex="1" parent="1">
+          <mxGeometry x="200" y="250" width="100" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-23" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=0;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0;entryY=0.25;entryDx=0;entryDy=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-20" target="QcOp-jtUg3a_dcg00lSk-22">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-25" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;exitPerimeter=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-20" target="QcOp-jtUg3a_dcg00lSk-26">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="580" y="390" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-20" value="" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
+          <mxGeometry x="530" y="230" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-21" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;entryPerimeter=0;" edge="1" parent="1" source="QcOp-jtUg3a_dcg00lSk-18" target="QcOp-jtUg3a_dcg00lSk-20">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-22" value="raise Exception" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="670" y="170" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-24" value="Error" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="575" y="158" width="50" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-26" value="populate the PanelPrincipal table" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+          <mxGeometry x="530" y="420" width="100" height="100" as="geometry" />
+        </mxCell>
+        <mxCell id="QcOp-jtUg3a_dcg00lSk-27" value="Success" style="text;html=1;align=center;verticalAlign=middle;resizable=0;points=[];autosize=1;strokeColor=none;fillColor=none;" vertex="1" parent="1">
+          <mxGeometry x="600" y="320" width="70" height="30" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>

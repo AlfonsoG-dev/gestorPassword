@@ -395,7 +395,7 @@ public class PanelPrincipal {
                             String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
                             if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation", 
                                         JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                                cuentaUtils.InsertOperation(c, condition, condition);
+                                cuentaUtils.InsertOperation(c, condition, "and");
                             }
                         }
                     } catch(Exception er) {
