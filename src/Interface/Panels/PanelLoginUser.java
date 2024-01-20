@@ -75,7 +75,7 @@ public class PanelLoginUser {
                         String condition = "nombre: " + nombre + ", email: " + email;
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                            userUtils.InsertOperation(newUser, condition, rol);
+                            userUtils.InsertOperation(newUser, condition, "and");
                             myFrame.dispose();
                             new PanelLogin(myConfig, cursor);
                         }
