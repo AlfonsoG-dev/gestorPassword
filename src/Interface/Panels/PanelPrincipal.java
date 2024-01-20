@@ -101,7 +101,6 @@ public class PanelPrincipal {
         // set the save point to rollback or commit changes
         try {
             cursor.setAutoCommit(false);
-            cursor.beginRequest();
         } catch(Exception e) {
             e.printStackTrace();
             cuentaUtils.ErrorMessage(null, "error while trying to create the connection to DB","Connection Error");
@@ -498,11 +497,9 @@ public class PanelPrincipal {
                     int option = JOptionPane.showConfirmDialog(myFrame, "save changes before exit?", "save changes", JOptionPane.YES_NO_CANCEL_OPTION);
                     if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
-                        cursor.endRequest();
                         System.exit(0);
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
-                        cursor.endRequest();
                         cuentaUtils.SetAutoImcrement(new CuentaBuilder());
                         System.exit(0);
                     } else if(option == JOptionPane.CANCEL_OPTION) {
