@@ -3,7 +3,6 @@ package Interface.Panels;
 import Interface.Utils.PanelUtils;
 
 import java.sql.Connection;
-import java.sql.Savepoint;
 
 import java.awt.GridLayout;
 import java.awt.datatransfer.DataFlavor;
@@ -89,10 +88,6 @@ public class PanelPrincipal {
      */
     private Connection cursor;
     /**
-     * point to rollback or commit changes
-     */
-    private Savepoint miSave;
-    /**
      * constructor
      */
     public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame,
@@ -106,7 +101,7 @@ public class PanelPrincipal {
         // set the save point to rollback or commit changes
         try {
             cursor.setAutoCommit(false);
-            miSave = cursor.setSavepoint();
+            cursor.beginRequest();
         } catch(Exception e) {
             e.printStackTrace();
             cuentaUtils.ErrorMessage(null, "error while trying to create the connection to DB","Connection Error");
@@ -448,7 +443,6 @@ public class PanelPrincipal {
                         mainFrame.setVisible(true);
                         cursor.rollback();
                         cuentaUtils.SetAutoImcrement(new CuentaBuilder());
-                        cursor.releaseSavepoint(miSave);
                         myFrame.dispose();
                     }
                 } catch(Exception er) {
@@ -504,12 +498,12 @@ public class PanelPrincipal {
                     int option = JOptionPane.showConfirmDialog(myFrame, "save changes before exit?", "save changes", JOptionPane.YES_NO_CANCEL_OPTION);
                     if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
-                        cursor.releaseSavepoint(miSave);
+                        cursor.endRequest();
                         System.exit(0);
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
+                        cursor.endRequest();
                         cuentaUtils.SetAutoImcrement(new CuentaBuilder());
-                        cursor.releaseSavepoint(miSave);
                         System.exit(0);
                     } else if(option == JOptionPane.CANCEL_OPTION) {
                         myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
