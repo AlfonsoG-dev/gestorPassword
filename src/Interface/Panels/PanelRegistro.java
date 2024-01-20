@@ -132,7 +132,7 @@ public class PanelRegistro {
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
                     } else {
-                        myFrame.dispose();
+                        System.exit(0);
                     }
                 }
             }
@@ -215,8 +215,12 @@ public class PanelRegistro {
         myFrame.addWindowListener(new WindowAdapter() {
             // changes the close operation
             public void windowClosing(WindowEvent we) {
-                myFrame.dispose();
-                mainFrame.setEnabled(true);
+                if(mainFrame != null) {
+                    mainFrame.setEnabled(true);
+                    myFrame.dispose();
+                } else {
+                    System.exit(0);
+                }
             }
         });
 
