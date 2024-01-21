@@ -77,8 +77,8 @@ public class PanelLogin {
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         db_config = myConfig;
-        userUtils = new PanelUtils<User>(new QueryDAO<User>("user", cursor, new UserBuilder()), cursor);
-        cuentaUtils = new PanelUtils<Cuenta>(new QueryDAO<Cuenta>("cuenta", cursor, new CuentaBuilder()), cursor);
+        userUtils = new PanelUtils<User>(new QueryDAO<User>("user", cursor, new UserBuilder()));
+        cuentaUtils = new PanelUtils<Cuenta>(new QueryDAO<Cuenta>("cuenta", cursor, new CuentaBuilder()));
         if(userUtils.DataList().size() > 0) {
             CreateUI("Loggin");
         } else {

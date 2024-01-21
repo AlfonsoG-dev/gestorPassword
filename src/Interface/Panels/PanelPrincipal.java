@@ -38,7 +38,6 @@ import javax.swing.table.DefaultTableModel;
 import Config.DbConfig;
 
 import Mundo.Cuentas.Cuenta;
-import Mundo.Cuentas.CuentaBuilder;
 
 import Utils.QueryUtils;
 
@@ -296,7 +295,7 @@ public class PanelPrincipal {
                         setNewDataTableModel();
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
-                        cuentaUtils.SetAutoImcrement(new CuentaBuilder());
+                        cuentaUtils.SetAutoImcrement();
                         setNewDataTableModel();
                     } else if(option == JOptionPane.CANCEL_OPTION) {
                         // do nothing
@@ -354,7 +353,7 @@ public class PanelPrincipal {
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
                         String valueOfColumn = mTable.getValueAt(row, column).toString();
                         String options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
-                        boolean eliminado = cuentaUtils.DeleteOperation(options, "and", new CuentaBuilder());
+                        boolean eliminado = cuentaUtils.DeleteOperation(options, "and");
                         if(eliminado == true) {
                             tableModel.removeRow(row);
                         } else {
@@ -441,7 +440,7 @@ public class PanelPrincipal {
                     if(JOptionPane.showConfirmDialog(myFrame, "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
                         mainFrame.setVisible(true);
                         cursor.rollback();
-                        cuentaUtils.SetAutoImcrement(new CuentaBuilder());
+                        cuentaUtils.SetAutoImcrement();
                         myFrame.dispose();
                     }
                 } catch(Exception er) {
@@ -500,7 +499,7 @@ public class PanelPrincipal {
                         System.exit(0);
                     } else if(option == JOptionPane.NO_OPTION) {
                         cursor.rollback();
-                        cuentaUtils.SetAutoImcrement(new CuentaBuilder());
+                        cuentaUtils.SetAutoImcrement();
                         System.exit(0);
                     } else if(option == JOptionPane.CANCEL_OPTION) {
                         myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);

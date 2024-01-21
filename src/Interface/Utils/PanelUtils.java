@@ -12,7 +12,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import Conexion.Query.QueryDAO;
-import Model.ModelBuilderMethods;
 import Model.ModelMethods;
 
 public final class PanelUtils<T> {
@@ -25,9 +24,9 @@ public final class PanelUtils<T> {
     private boolean number;
 
 
-    public PanelUtils(QueryDAO<T> nQueryDAO, Connection nCursor) {
+    public PanelUtils(QueryDAO<T> nQueryDAO) {
         myQueryDAO = nQueryDAO;
-        cursor = nCursor;
+        cursor = myQueryDAO.GetConnection();
     }
 
     /**
@@ -78,11 +77,11 @@ public final class PanelUtils<T> {
     public boolean UpdateOperation(ModelMethods model, String condition, String type) throws SQLException {
         return myQueryDAO.UpdateRegister(model, condition, type);
     }
-    public boolean DeleteOperation(String condition, String type, ModelBuilderMethods<T> builder) throws SQLException {
-        return myQueryDAO.EliminarRegistro(condition, type, builder);
+    public boolean DeleteOperation(String condition, String type) throws SQLException {
+        return myQueryDAO.EliminarRegistro(condition, type);
     }
 
-    public void SetAutoImcrement(ModelBuilderMethods<T> builder) throws SQLException {
+    public void SetAutoImcrement() throws SQLException {
         int tableSize = myQueryDAO.ReadAll().size()+1;
         String sql = "alter table cuenta AUTO_INCREMENT=" + tableSize;
         Statement stm = cursor.createStatement();
