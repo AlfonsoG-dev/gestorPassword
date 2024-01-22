@@ -19,11 +19,13 @@
 - [x] allow to commit changes o rollback if wanted.
 - [x] the password field is generated automatically.
 - [x] allow to import the accounts from a *.txt* file
+- [x] allow to export accounts to a *output.txt* file
 
 ## TODO'S
 
 - [ ] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
 -> [AES algorithm for java](https://www.baeldung.com/java-aes-encryption-decryption)
+- [ ] add UI panels for import and export methods.
 
 # Usage
 
