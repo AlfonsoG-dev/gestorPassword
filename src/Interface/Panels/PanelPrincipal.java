@@ -308,7 +308,7 @@ public class PanelPrincipal {
      */
     private JPanel TableOptionComponents() {
         JPanel tableOptions = new JPanel();
-        tableOptions.setLayout(new GridLayout(4, 1));
+        tableOptions.setLayout(new GridLayout(3, 1));
          
         JButton reloadButton = new JButton("R");
         tableOptions.add(reloadButton);
@@ -352,16 +352,24 @@ public class PanelPrincipal {
             public void actionPerformed(ActionEvent e) {
                 int tableSize = mTable.getRowCount()-1;
                 String cNombre = mTable.getValueAt(tableSize, 1).toString();
-                if(cNombre.isEmpty() || cNombre.isBlank()) {
+                int selectedRow = mTable.getSelectedRow();
+                if(cNombre.isEmpty()) {
                     tableModel.removeRow(tableSize);
+                } else if(selectedRow != -1 && mTable.getValueAt(selectedRow, 1).toString().isEmpty()) {
+                    tableModel.removeRow(selectedRow);
                 } else {
                     cuentaUtils.ErrorMessage(myFrame, "Cannot remove!", "Error");
                 }
             }
         });
+        return tableOptions;
+    }
+    public JPanel FilePanelOperation() {
+        JPanel filePanel = new JPanel();
+        filePanel.setLayout(new GridLayout(2, 1));
 
         JButton importButton = new JButton("I");
-        tableOptions.add(importButton);
+        filePanel.add(importButton);
         importButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // TODO: add GUI panel to import files
@@ -369,7 +377,17 @@ public class PanelPrincipal {
                 BuildTableDataFromImportFile(importData);
             }
         });
-        return tableOptions;
+
+        JButton exportButton = new JButton("E");
+        filePanel.add(exportButton);
+        exportButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: implement the export methods
+                cuentaUtils.InfoMessage(myFrame, "not implemented yet", "TODO'S");
+            }
+        });
+
+        return filePanel;
     }
     /**
      * implements the action handler for the delete button.
@@ -552,6 +570,7 @@ public class PanelPrincipal {
         controlPanel = new JPanel();
         controlPanel.setLayout(new BorderLayout());
         controlPanel.add(TableOptionComponents(), BorderLayout.EAST);
+        controlPanel.add(FilePanelOperation(), BorderLayout.WEST);
 
         myFrame.add(headerLabel);
         myFrame.add(TableComponent(tableTitle), BorderLayout.CENTER);

@@ -3,6 +3,10 @@ package Interface.Utils;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
+import java.util.ArrayList;
+
+import Mundo.Cuentas.Cuenta;
 
 public class FileUtils {
     public static String ReadFileLines(String filePath) {
@@ -50,5 +54,22 @@ public class FileUtils {
             }
         }
         return data;
+    }
+    public static void ExportSaveData(String fileName, String destination, ArrayList<Cuenta> misCuentas) {
+        FileWriter myWriter = null;
+        try {
+            // TODO: implement the export data method
+        } catch(Exception e) {
+            e.printStackTrace();
+        } finally {
+            if(myWriter != null) {
+                try {
+                    myWriter.close();
+                } catch(Exception e) {
+                    e.printStackTrace();
+                }
+                myWriter = null;
+            }
+        }
     }
 }
