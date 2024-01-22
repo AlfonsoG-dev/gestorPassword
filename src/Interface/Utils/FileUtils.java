@@ -55,10 +55,20 @@ public class FileUtils {
         }
         return data;
     }
-    public static void ExportSaveData(String fileName, String destination, ArrayList<Cuenta> misCuentas) {
+    public static void ExportSaveData(String destination, String fileName, ArrayList<Cuenta> misCuentas) {
         FileWriter myWriter = null;
         try {
-            // TODO: implement the export data method
+            File miFile = new File(destination + "\\" + fileName);
+            String build = "";
+            myWriter = new FileWriter(miFile, false);
+            for(int i=0; i<misCuentas.size(); ++i) {
+                Cuenta mia = misCuentas.get(i);
+                String nombre = "nombre: " + mia.getNombre();
+                String email = "email: " + mia.getEmail();
+                String password = "password: " + mia.getPassword();
+                build += nombre + ", " + email + ", " + password + "\n";
+            }
+            myWriter.write(build);
         } catch(Exception e) {
             e.printStackTrace();
         } finally {

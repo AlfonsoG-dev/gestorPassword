@@ -382,8 +382,8 @@ public class PanelPrincipal {
         filePanel.add(exportButton);
         exportButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: implement the export methods
-                cuentaUtils.InfoMessage(myFrame, "not implemented yet", "TODO'S");
+                // TODO: add GUI panel to export files
+                FileUtils.ExportSaveData(".\\docs", "output.txt", misCuentas());
             }
         });
 
