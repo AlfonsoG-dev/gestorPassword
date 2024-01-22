@@ -146,11 +146,7 @@ public class PanelRegistro {
                     new PanelPassword(myFrame, txtPassword, cuentaUtils);
                     myFrame.setEnabled(false);
                 } else {
-                    int size = cuentaUtils.getSize();
-                    boolean letter = cuentaUtils.isLetter();
-                    boolean simbol = cuentaUtils.isSimbol();
-                    boolean number = cuentaUtils.isNumber();
-                    txtPassword.setText(cuentaUtils.GeneratePassword(size, number, letter, simbol).toString());
+                    txtPassword.setText(cuentaUtils.GeneratePassword(cuentaUtils.getPasswrodOptions()).toString());
                 }
             }
         });

@@ -12,11 +12,12 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import Interface.Utils.PanelUtils;
-
+import Interface.Utils.PasswordOptions;
 import Mundo.Cuentas.Cuenta;
 
 public final class PanelPassword {
@@ -29,6 +30,7 @@ public final class PanelPassword {
     private JCheckBox cbxLetter;
     private JCheckBox cbxSimbol;
     private JCheckBox cbxNumber;
+    private PasswordOptions pOptions;
     private PanelUtils<Cuenta> cuentaUtils;
 
     public PanelPassword(JFrame nMainFrame, JTextField nPassword, PanelUtils<Cuenta> nCuentaUtils) {
@@ -45,13 +47,14 @@ public final class PanelPassword {
                 boolean letters = cbxLetter.isSelected();
                 boolean simbols = cbxSimbol.isSelected();
                 boolean numbers = cbxNumber.isSelected();
-                cuentaUtils.SetPasswordValues(size, letters, simbols, numbers);
+                pOptions = new PasswordOptions(size, letters, simbols, numbers);
                 if(size != -1 && size > 4 && (letters || simbols || numbers)) {
-                    txtPassword.setText(cuentaUtils.GeneratePassword(size, numbers, letters, simbols).toString());
+                    txtPassword.setText(cuentaUtils.GeneratePassword(pOptions).toString());
+                    cuentaUtils.SetPasswordValues(pOptions);
                     mainFrame.setEnabled(true);
                     myFrame.dispose();
                 } else {
-                    cuentaUtils.ErrorMessage(myFrame, "invalid password options", "Generator Error");
+                    JOptionPane.showMessageDialog(myFrame, "invalid password options", "Generator Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });

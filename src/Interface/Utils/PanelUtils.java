@@ -18,48 +18,16 @@ public final class PanelUtils<T> {
 
     private QueryDAO<T> myQueryDAO;
     private Connection cursor;
-    private int size;
-    private boolean letter;
-    private boolean simbol;
-    private boolean number;
-
-
+    private PasswordOptions setOptions;
     public PanelUtils(QueryDAO<T> nQueryDAO) {
         myQueryDAO = nQueryDAO;
         cursor = myQueryDAO.GetConnection();
     }
-
-    /**
-     * @return the size
-     */
-    public int getSize() {
-        return size;
+    public void SetPasswordValues(PasswordOptions pOptions) {
+        setOptions = pOptions;
     }
-
-    /**
-     * @return the number
-     */
-    public boolean isNumber() {
-        return number;
-    }
-    /**
-     * @return the simbol
-     */
-    public boolean isSimbol() {
-        return simbol;
-    }
-
-    /**
-     * @return the letter
-     */
-    public boolean isLetter() {
-        return letter;
-    }
-    public void SetPasswordValues(int nSize, boolean nLetter, boolean nSimbol, boolean nNumber) {
-        size = nSize;
-        letter = nLetter;
-        simbol = nSimbol;
-        number = nNumber;
+    public PasswordOptions getPasswrodOptions() {
+        return setOptions;
     }
 
     public ArrayList<T> DataList() {
@@ -88,15 +56,15 @@ public final class PanelUtils<T> {
         stm.executeUpdate(sql);
     }
     
-    public StringBuilder GeneratePassword(int size, boolean addNumber, boolean addLetters, boolean addSimbols) {
+    public StringBuilder GeneratePassword(PasswordOptions options) {
         StringBuilder pass = new StringBuilder();
         SecureRandom random = new SecureRandom();
-        String letters = addLetters ? "abcdefghijklmnñopqrstuvwxyz" : "";
-        String simbols = addSimbols ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "";
-        String numbers = addNumber ? "0123456789" : "";
+        String letters = options.addLetter() ? "abcdefghijklmnñopqrstuvwxyz" : "";
+        String simbols = options.addSimbol() ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "";
+        String numbers = options.addNumber() ? "0123456789" : "";
 
         String combination = letters + simbols + numbers;
-        for(int i=0; i<size; ++i) {
+        for(int i=0; i<options.size(); ++i) {
             int index = random.nextInt(combination.length());
             pass.append(combination.charAt(index));
         }
