@@ -427,14 +427,14 @@ public class PanelPrincipal {
      * implements the action handler for the insert button.
      * <br> post: </br> when the table have ListaFaltantes.size() > 0 insert the data, otherwise redirects to PanelRegistro
      * @param insertButton: panel insertButton to register a new cuenta for the database
-     * @param weight: weight of the PanelRegistro
+     * @param width: width of the PanelRegistro
      * @param height: height of the PanelRegistro
      */
-    private void InsertButtonHandler(JButton insertButton, int weight, int height) {
+    private void InsertButtonHandler(JButton insertButton, int width, int height) {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(ListaFaltantes().size() == 0) {
-                    new PanelRegistro("Register", weight, height, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+                    new PanelRegistro("Register", width/2, height-100, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
                     myFrame.setEnabled(false);
                 } else {
                     try {
@@ -459,10 +459,10 @@ public class PanelPrincipal {
      * implements the action handler for the updateButton.
      * <br> post: </br> redirects to PanelUpdate
      * @param updateButton: panel button to update the cuenta
-     * @param weight: weight of the PanelUpdate
+     * @param width: width of the PanelUpdate
      * @param height: height of the PanelUpdate
      */
-    private void UpdateButtonHandler(JButton updateButton, int weight, int height) {
+    private void UpdateButtonHandler(JButton updateButton, int width, int height) {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int row = mTable.getSelectedRow();
@@ -473,7 +473,7 @@ public class PanelPrincipal {
                 } else if(row != -1 || column != -1) {
                     Cuenta updateCuenta = BuildCuentaFromTable(row, column);
                     if(updateCuenta != null) {
-                        new PanelUpdate("Update", weight, height, updateCuenta, myConfig, myFrame, cuentaUtils);
+                        new PanelUpdate("Update", width/2, height-100, updateCuenta, myConfig, myFrame, cuentaUtils);
                         myFrame.setEnabled(false);
                     }
                 } else {

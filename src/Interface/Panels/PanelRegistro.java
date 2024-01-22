@@ -3,6 +3,7 @@ package Interface.Panels;
 import java.sql.Connection;
 
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -186,7 +187,7 @@ public class PanelRegistro {
     private JPanel OperationOptions() {
 
         JPanel options = new JPanel();
-        options.setLayout(new FlowLayout());
+        options.setLayout(new GridLayout(1, 2));
 
         JButton OKButton = new JButton("OK");
         options.add(OKButton);
@@ -223,11 +224,11 @@ public class PanelRegistro {
         headerLabel = new JLabel("Register", JLabel.CENTER);
 
         pPrincipal = new JPanel();
-        pPrincipal.setLayout(new GridLayout(2, 1));
+        pPrincipal.setLayout(new BorderLayout());
 
-        pPrincipal.add(OptionsComponent());
+        pPrincipal.add(OptionsComponent(), BorderLayout.NORTH);
 
-        pPrincipal.add(OperationOptions());
+        pPrincipal.add(OperationOptions(), BorderLayout.SOUTH);
 
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);

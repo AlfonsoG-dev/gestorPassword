@@ -1,6 +1,7 @@
 package Interface.Panels;
 
 import java.awt.GridLayout;
+import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -158,7 +159,7 @@ public class PanelUpdate {
      */
     private JPanel OperationsComponent(Cuenta toUpdate) {
         JPanel pOperations = new JPanel();
-        pOperations.setLayout(new FlowLayout());
+        pOperations.setLayout(new GridLayout(1, 2));
         JButton oKButton = new JButton("OK");
         pOperations.add(oKButton);
         OkButtonHandler(oKButton, toUpdate);
@@ -192,10 +193,10 @@ public class PanelUpdate {
         JLabel headerLabel = new JLabel("Update", JLabel.CENTER);
 
         pPrincipal = new JPanel();
-        pPrincipal.setLayout(new GridLayout(2, 1));
+        pPrincipal.setLayout(new BorderLayout());
 
-        pPrincipal.add(OptionsComponent(updateCuenta));
-        pPrincipal.add(OperationsComponent(updateCuenta));
+        pPrincipal.add(OptionsComponent(updateCuenta), BorderLayout.NORTH);
+        pPrincipal.add(OperationsComponent(updateCuenta), BorderLayout.SOUTH);
 
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);

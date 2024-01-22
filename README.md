@@ -9,6 +9,7 @@
 >- [mysql JDBC_8.3.0](https://dev.mysql.com/downloads/connector/j/5.1.html)
 >- [java-jdk-17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
 >- [java_swing](https://www.tutorialspoint.com/swingexamples/index.htm)
+>- [java_swing_components](https://web.mit.edu/6.005/www/sp14/psets/ps4/java-6-tutorial/components.html)
 
 # Features
 
@@ -23,7 +24,6 @@
 
 - [ ] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
 -> [AES algorithm for java](https://www.baeldung.com/java-aes-encryption-decryption)
-- [ ] allow to export all the save data to a file.
 
 # Usage
 

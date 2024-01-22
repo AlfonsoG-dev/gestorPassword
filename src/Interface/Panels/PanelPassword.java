@@ -10,6 +10,7 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -26,7 +27,7 @@ public final class PanelPassword {
     private JFrame mainFrame;
     private JPanel pPrincipal;
     private JTextField txtPassword;
-    private JTextField txtSize; 
+    private JComboBox<String> cbxSize; 
     private JCheckBox cbxLetter;
     private JCheckBox cbxSimbol;
     private JCheckBox cbxNumber;
@@ -43,7 +44,7 @@ public final class PanelPassword {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int size = !txtSize.getText().isEmpty() ? Integer.parseInt(txtSize.getText()) : -1; 
+                int size = Integer.parseInt(cbxSize.getSelectedItem().toString());
                 boolean letters = cbxLetter.isSelected();
                 boolean simbols = cbxSimbol.isSelected();
                 boolean numbers = cbxNumber.isSelected();
@@ -85,11 +86,25 @@ public final class PanelPassword {
     }
     private JPanel PanelContentComponent() {
         pPrincipal = new JPanel();
-        pPrincipal.setLayout(new GridLayout(2, 2));
+        pPrincipal.setLayout(new GridLayout(3, 2));
+        pPrincipal.add(new JLabel());
+        pPrincipal.add(new JLabel());
 
 
+        String numbers = "";
+        for(int i=5; i<=10; ++i) {
+            numbers += i + ",";
+        }
+        JPanel miPanel = new JPanel();
+        miPanel.setLayout(new GridLayout(1, 3));
+        cbxSize = new JComboBox<String>(numbers.split(","));
         pPrincipal.add(new JLabel("size: "));
-        pPrincipal.add( txtSize = new JTextField());
+        miPanel.add(cbxSize);
+        // add empty labels to make the combobox smaller  
+        miPanel.add(new JLabel());
+        miPanel.add(new JLabel());
+        // add panel of combobox
+        pPrincipal.add(miPanel);
 
         pPrincipal.add(new JLabel("Allow: "));
 
@@ -107,14 +122,14 @@ public final class PanelPassword {
 
     public void CreateUI() {
         myFrame = new JFrame("Password Generator");
-        myFrame.setSize(400, 300);
+        myFrame.setSize(500, 300);
         myFrame.setLayout(new GridLayout(2, 1));
         
         myFrame.addWindowListener(new WindowAdapter() {
             // changes the close operation
             public void windowClosing(WindowEvent we) {
-                myFrame.dispose();
                 mainFrame.setEnabled(true);
+                myFrame.dispose();
             }
         });
         
