@@ -1,6 +1,7 @@
 package Interface.Panels;
 
 import Interface.Utils.PanelUtils;
+import Interface.Utils.FileUtils;
 
 import java.sql.Connection;
 
@@ -276,12 +277,38 @@ public class PanelPrincipal {
         mTable.getColumnModel().getColumn(6).setCellEditor(new NonEditableCell());
     }
     /**
+     * build table data from a file that is import from the system
+     * @param imporData: data from file
+     * <br> post: </br> set the table content to add imported data
+     */
+    private void BuildTableDataFromImportFile(String[] imporData) {
+        String forTable = "";
+        if(imporData.length > 0) {
+            for(int i=0; i<imporData.length; ++i) {
+                String[] data = imporData[i].split(",");
+                int id = 0;
+                String nombre = data[0].trim();
+                String email = data[1].trim();
+                String password = data[2].trim();
+                String create_at = "";
+                String update_at = "";
+                forTable += id + "," + nombre + "," + email + "," +
+                    loggedUser + "," + password + "," + create_at +
+                    "," + update_at + "\n";
+            }
+        }
+        String[] data = forTable.split("\n");
+        for(String d: data) {
+            tableModel.addRow(d.split(","));
+        }
+    }
+    /**
      * set the panel with the options to manipulate the table like add rows, delete rows or reload
      * @return the panel with the table options
      */
     private JPanel TableOptionComponents() {
         JPanel tableOptions = new JPanel();
-        tableOptions.setLayout(new GridLayout(3, 1));
+        tableOptions.setLayout(new GridLayout(4, 1));
          
         JButton reloadButton = new JButton("R");
         tableOptions.add(reloadButton);
@@ -333,6 +360,15 @@ public class PanelPrincipal {
             }
         });
 
+        JButton importButton = new JButton("I");
+        tableOptions.add(importButton);
+        importButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                // TODO: add GUI panel to import files
+                String[] importData = FileUtils.GetData("./docs/ejemplo.txt").split("\n");
+                BuildTableDataFromImportFile(importData);
+            }
+        });
         return tableOptions;
     }
     /**

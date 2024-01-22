@@ -1,0 +1,2 @@
+nombre: debian, email: alfonso, password: 5x5W12
+nombre: frase de paso, email: opera, password: noPasar5x5W12

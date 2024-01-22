@@ -17,12 +17,12 @@
 - [x] allow insert cuenta directly from table.
 - [x] allow to commit changes o rollback if wanted.
 - [x] the password field is generated automatically.
+- [x] allow to import the accounts from a *.txt* file
 
 ## TODO'S
 
 - [ ] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
 -> [AES algorithm for java](https://www.baeldung.com/java-aes-encryption-decryption)
-- [ ] allow to create key files to store multiple passwords with share meta data.
 - [ ] allow to export all the save data to a file.
 
 # Usage
