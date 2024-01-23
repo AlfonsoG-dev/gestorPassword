@@ -357,7 +357,7 @@ public class PanelPrincipal {
             public void actionPerformed(ActionEvent e) {
                 String filePath = JOptionPane.showInputDialog(myFrame, null, "write the path where you want to save.", JOptionPane.INFORMATION_MESSAGE);
                 String fileName = JOptionPane.showInputDialog(myFrame, null, "write the name of the file.", JOptionPane.INFORMATION_MESSAGE);
-                if(!filePath.isEmpty() && !fileName.isEmpty() ) {
+                if(filePath != null && fileName != null) {
                     FileUtils.exportSaveData(filePath, fileName, misCuentas());
                 }
             }
