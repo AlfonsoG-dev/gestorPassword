@@ -277,32 +277,6 @@ public class PanelPrincipal {
         mTable.getColumnModel().getColumn(6).setCellEditor(new NonEditableCell());
     }
     /**
-     * build table data from a file that is import from the system
-     * @param imporData: data from file
-     * <br> post: </br> set the table content to add imported data
-     */
-    private void buildTableDataFromImportFile(String[] imporData) {
-        String forTable = "";
-        if(imporData.length > 0) {
-            for(int i=0; i<imporData.length; ++i) {
-                String[] data = imporData[i].split(",");
-                int id = 0;
-                String nombre = data[0].trim();
-                String email = data[1].trim();
-                String password = data[2].trim();
-                String create_at = "";
-                String update_at = "";
-                forTable += id + "," + nombre + "," + email + "," +
-                    loggedUser + "," + password + "," + create_at +
-                    "," + update_at + "\n";
-            }
-        }
-        String[] data = forTable.split("\n");
-        for(String d: data) {
-            tableModel.addRow(d.split(","));
-        }
-    }
-    /**
      * set the panel with the options to manipulate the table like add rows, delete rows or reload
      * @return the panel with the table options
      */
@@ -364,7 +338,7 @@ public class PanelPrincipal {
         });
         return tableOptions;
     }
-    public JPanel filePanelOperation() {
+    public JPanel filePanelOperation(int width, int height) {
         JPanel filePanel = new JPanel();
         filePanel.setLayout(new GridLayout(2, 1));
 
@@ -372,9 +346,8 @@ public class PanelPrincipal {
         filePanel.add(importButton);
         importButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: add GUI panel to import files
-                String[] importData = FileUtils.getData("./docs/ejemplo.txt").split("\n");
-                buildTableDataFromImportFile(importData);
+                myFrame.setEnabled(false);
+                new ImportPanel(myFrame, width, height, loggedUser, tableModel);
             }
         });
 
@@ -382,8 +355,11 @@ public class PanelPrincipal {
         filePanel.add(exportButton);
         exportButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // TODO: add GUI panel to export files
-                FileUtils.exportSaveData(".\\docs", "output.txt", misCuentas());
+                String filePath = JOptionPane.showInputDialog(myFrame, null, "write the path where you want to save.", JOptionPane.INFORMATION_MESSAGE);
+                String fileName = JOptionPane.showInputDialog(myFrame, null, "write the name of the file.", JOptionPane.INFORMATION_MESSAGE);
+                if(!filePath.isEmpty() && !fileName.isEmpty() ) {
+                    FileUtils.exportSaveData(filePath, fileName, misCuentas());
+                }
             }
         });
 
@@ -570,7 +546,7 @@ public class PanelPrincipal {
         controlPanel = new JPanel();
         controlPanel.setLayout(new BorderLayout());
         controlPanel.add(tableOptionComponents(), BorderLayout.EAST);
-        controlPanel.add(filePanelOperation(), BorderLayout.WEST);
+        controlPanel.add(filePanelOperation(width, height), BorderLayout.WEST);
 
         myFrame.add(headerLabel);
         myFrame.add(tableComponent(tableTitle), BorderLayout.CENTER);

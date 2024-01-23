@@ -58,7 +58,8 @@ public class FileUtils {
     public static void exportSaveData(String destination, String fileName, ArrayList<Cuenta> misCuentas) {
         FileWriter myWriter = null;
         try {
-            File miFile = new File(destination + "\\" + fileName);
+            String nFile = new File(fileName).isFile() && fileName.contains(".txt") ? fileName : fileName + ".txt";
+            File miFile = new File(destination + "\\" + nFile);
             String build = "";
             myWriter = new FileWriter(miFile, false);
             for(int i=0; i<misCuentas.size(); ++i) {
