@@ -38,9 +38,9 @@ public final class PanelPassword {
         mainFrame = nMainFrame;
         txtPassword = nPassword;
         cuentaUtils = nCuentaUtils;
-        CreateUI();
+        createUI();
     }
-    private void OkButtonHandler(JButton okButton) {
+    private void okButtonHandler(JButton okButton) {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -50,8 +50,8 @@ public final class PanelPassword {
                 boolean numbers = cbxNumber.isSelected();
                 pOptions = new PasswordOptions(size, letters, simbols, numbers);
                 if(size != -1 && size > 4 && (letters || simbols || numbers)) {
-                    txtPassword.setText(cuentaUtils.GeneratePassword(pOptions).toString());
-                    cuentaUtils.SetPasswordValues(pOptions);
+                    txtPassword.setText(cuentaUtils.generatePassword(pOptions).toString());
+                    cuentaUtils.setPasswordValues(pOptions);
                     mainFrame.setEnabled(true);
                     myFrame.dispose();
                 } else {
@@ -61,7 +61,7 @@ public final class PanelPassword {
         });
     }
 
-    private void CancelButtonHandler(JButton cancelButton) {
+    private void cancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 txtPassword.setText("");
@@ -70,21 +70,21 @@ public final class PanelPassword {
             }
         });
     }
-    private JPanel OptionComponent() {
+    private JPanel optionComponent() {
         JPanel options = new JPanel();
         options.setLayout(new FlowLayout());
 
         JButton okButton = new JButton("OK");
-        OkButtonHandler(okButton);
+        okButtonHandler(okButton);
         options.add(okButton);
 
         JButton cancelButton = new JButton("Cancel");
-        CancelButtonHandler(cancelButton);
+        cancelButtonHandler(cancelButton);
         options.add(cancelButton);
 
         return options;
     }
-    private JPanel PanelContentComponent() {
+    private JPanel panelContentComponent() {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(3, 2));
         pPrincipal.add(new JLabel());
@@ -120,7 +120,7 @@ public final class PanelPassword {
         return pPrincipal;
     }
 
-    public void CreateUI() {
+    public void createUI() {
         myFrame = new JFrame("Password Generator");
         myFrame.setSize(500, 300);
         myFrame.setLayout(new GridLayout(2, 1));
@@ -133,8 +133,8 @@ public final class PanelPassword {
             }
         });
         
-        myFrame.add(PanelContentComponent());
-        myFrame.add(OptionComponent());
+        myFrame.add(panelContentComponent());
+        myFrame.add(optionComponent());
 
         myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         myFrame.setVisible(true);

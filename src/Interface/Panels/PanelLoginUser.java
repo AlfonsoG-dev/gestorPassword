@@ -38,9 +38,9 @@ public class PanelLoginUser {
         cursor = nCursor;
         myConfig = nConfig;
         userUtils = nUserUtils;
-        CreateUI(500, 600);
+        createUI(500, 600);
     }
-    private JPanel OptionsComponent() {
+    private JPanel optionsComponent() {
         JPanel pOptions = new JPanel();
         pOptions.setLayout(new GridLayout(4, 2));
 
@@ -58,7 +58,7 @@ public class PanelLoginUser {
 
         return pOptions;
     }
-    private void OkButtonHandler(JButton okButton) {
+    private void okButtonHandler(JButton okButton) {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -75,7 +75,7 @@ public class PanelLoginUser {
                         String condition = "nombre: " + nombre + ", email: " + email;
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                            userUtils.InsertOperation(newUser, condition, "and");
+                            userUtils.insertOperation(newUser, condition, "and");
                             myFrame.dispose();
                             new PanelLogin(myConfig, cursor);
                         }
@@ -86,7 +86,7 @@ public class PanelLoginUser {
             }
         });
     }
-    private void CancelButtonHandler(JButton cancelButton) {
+    private void cancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
@@ -97,22 +97,22 @@ public class PanelLoginUser {
         });
     }
 
-    private JPanel OperationOptions() {
+    private JPanel operationOptions() {
 
         JPanel options = new JPanel();
         options.setLayout(new FlowLayout());
 
         JButton OKButton = new JButton("OK");
         options.add(OKButton);
-        OkButtonHandler(OKButton);
+        okButtonHandler(OKButton);
 
         JButton cancelButton = new JButton("cancel");
         options.add(cancelButton);
-        CancelButtonHandler(cancelButton);
+        cancelButtonHandler(cancelButton);
         return options;
     }
 
-    public void CreateUI(int width, int height) {
+    public void createUI(int width, int height) {
         myFrame = new JFrame("Register User");
         myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));
@@ -128,8 +128,8 @@ public class PanelLoginUser {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 1));
 
-        pPrincipal.add(OptionsComponent());
-        pPrincipal.add(OperationOptions());
+        pPrincipal.add(optionsComponent());
+        pPrincipal.add(operationOptions());
 
         myFrame.add(header);
         myFrame.add(pPrincipal);

@@ -62,7 +62,7 @@ public class PanelLogin {
     /**
      * database configuration
      */
-    private DbConfig db_config;
+    private DbConfig dbConfig;
     /**
      * utils for the user DAO
      */
@@ -76,22 +76,22 @@ public class PanelLogin {
      */
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
-        db_config = myConfig;
+        dbConfig = myConfig;
         userUtils = new PanelUtils<User>(new QueryDAO<User>("user", cursor, new UserBuilder()));
         cuentaUtils = new PanelUtils<Cuenta>(new QueryDAO<Cuenta>("cuenta", cursor, new CuentaBuilder()));
-        if(userUtils.DataList().size() > 0) {
-            CreateUI("Loggin");
+        if(userUtils.myDataList().size() > 0) {
+            createUI("Loggin");
         } else {
-            new PanelLoginUser(db_config, cursor, userUtils);
+            new PanelLoginUser(dbConfig, cursor, userUtils);
         }
     }
     /**
      * set the users to select in the comboBox
      * @return the comboBox with the users names
      */
-    private String[] ComboBoxUsers() {
+    private String[] comboBoxUsers() {
         String res = "Select user...,";
-        ArrayList<User> myUsers = userUtils.DataList();
+        ArrayList<User> myUsers = userUtils.myDataList();
         if(myUsers.size() > 0) {
             for(User u: myUsers) {
                 res += u.getNombre() + ",";
@@ -103,11 +103,11 @@ public class PanelLogin {
      * set the content of the principal panel 
      * @return the panel with its content
      */
-    private JPanel LoginContent() {
+    private JPanel loginContent() {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 2));
         
-        cbxUserName = new JComboBox<String>(ComboBoxUsers());
+        cbxUserName = new JComboBox<String>(comboBoxUsers());
         pPrincipal.add(new JLabel("name"));
         pPrincipal.add(cbxUserName);
 
@@ -121,7 +121,7 @@ public class PanelLogin {
      * the login options that correspond to ingreso and calcel
      * @return the options panel with ist logic
      */
-    private JPanel LoginOptions() {
+    private JPanel loginOptions() {
 
         JPanel option = new JPanel();
         option.setLayout(new FlowLayout());
@@ -139,9 +139,9 @@ public class PanelLogin {
                     userName = cbxUserName.getSelectedItem().toString();
                     userPassword = txtUserPassword.getText();
                     String condition = "nombre: " + userName + ", password: " + userPassword;
-                    User mio = userUtils.FindOperation(condition, "and");
+                    User mio = userUtils.findOperation(condition, "and");
                     if(mio != null) {
-                        new PanelPrincipal(db_config, mio.getId_pk(), myFrame, cursor, cuentaUtils);
+                        new PanelPrincipal(dbConfig, mio.getId_pk(), myFrame, cursor, cuentaUtils);
                         myFrame.dispose();
                     } else {
                         JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
@@ -166,13 +166,13 @@ public class PanelLogin {
      * initialize the panel frame with its content 
      * @param frameTitle: title of the frame
      */
-    public void CreateUI(String frameTitle) {
+    public void createUI(String frameTitle) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(400, 200);
         myFrame.setLayout(new BorderLayout());
 
-        myFrame.add(LoginContent(), BorderLayout.CENTER);
-        myFrame.add(LoginOptions(), BorderLayout.SOUTH);
+        myFrame.add(loginContent(), BorderLayout.CENTER);
+        myFrame.add(loginOptions(), BorderLayout.SOUTH);
 
 
         myFrame.setVisible(true);

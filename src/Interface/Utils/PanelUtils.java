@@ -21,42 +21,42 @@ public final class PanelUtils<T> {
     private PasswordOptions setOptions;
     public PanelUtils(QueryDAO<T> nQueryDAO) {
         myQueryDAO = nQueryDAO;
-        cursor = myQueryDAO.GetConnection();
+        cursor = myQueryDAO.getConnection();
     }
-    public void SetPasswordValues(PasswordOptions pOptions) {
+    public void setPasswordValues(PasswordOptions pOptions) {
         setOptions = pOptions;
     }
     public PasswordOptions getPasswrodOptions() {
         return setOptions;
     }
 
-    public ArrayList<T> DataList() {
-        return myQueryDAO.ReadAll();
+    public ArrayList<T> myDataList() {
+        return myQueryDAO.readAll();
     }
 
-    public T FindOperation(String condition, String type) {
-        return myQueryDAO.FindByColumnName(condition, type);
+    public T findOperation(String condition, String type) {
+        return myQueryDAO.findByColumnName(condition, type);
     }
 
-    public boolean InsertOperation(ModelMethods model, String condition, String type) throws SQLException {
-        return myQueryDAO.InsertNewRegister(model, condition, type);
+    public boolean insertOperation(ModelMethods model, String condition, String type) throws SQLException {
+        return myQueryDAO.insertNewRegister(model, condition, type);
     }
 
-    public boolean UpdateOperation(ModelMethods model, String condition, String type) throws SQLException {
-        return myQueryDAO.UpdateRegister(model, condition, type);
+    public boolean updateOperation(ModelMethods model, String condition, String type) throws SQLException {
+        return myQueryDAO.updateRegister(model, condition, type);
     }
-    public boolean DeleteOperation(String condition, String type) throws SQLException {
-        return myQueryDAO.EliminarRegistro(condition, type);
+    public boolean deleteOperation(String condition, String type) throws SQLException {
+        return myQueryDAO.eliminarRegistro(condition, type);
     }
 
-    public void SetAutoImcrement() throws SQLException {
-        int tableSize = myQueryDAO.ReadAll().size()+1;
+    public void setAutoImcrement() throws SQLException {
+        int tableSize = myQueryDAO.readAll().size()+1;
         String sql = "alter table cuenta AUTO_INCREMENT=" + tableSize;
         Statement stm = cursor.createStatement();
         stm.executeUpdate(sql);
     }
     
-    public StringBuilder GeneratePassword(PasswordOptions options) {
+    public StringBuilder generatePassword(PasswordOptions options) {
         StringBuilder pass = new StringBuilder();
         SecureRandom random = new SecureRandom();
         String letters = options.addLetter() ? "abcdefghijklmnñopqrstuvwxyz" : "";
@@ -75,10 +75,10 @@ public final class PanelUtils<T> {
         return myQueryDAO;
     }
 
-    public void InfoMessage(JFrame myFrame, String message, String title) {
+    public void infoMessage(JFrame myFrame, String message, String title) {
         JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.INFORMATION_MESSAGE);
     }
-    public void ErrorMessage(JFrame myFrame, String message, String title) {
+    public void errorMessage(JFrame myFrame, String message, String title) {
         JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.ERROR_MESSAGE);
     }
 }

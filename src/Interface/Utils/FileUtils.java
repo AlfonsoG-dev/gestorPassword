@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import Mundo.Cuentas.Cuenta;
 
 public class FileUtils {
-    public static String ReadFileLines(String filePath) {
+    public static String readFileLines(String filePath) {
         String fileLines = "";
         BufferedReader myReader = null;
         try {
@@ -32,8 +32,8 @@ public class FileUtils {
         }
         return fileLines;
     }
-    public static String GetData(String filePath) {
-        String fileLines = ReadFileLines(filePath);
+    public static String getData(String filePath) {
+        String fileLines = readFileLines(filePath);
         String data = "";
         String[] lines = fileLines.split("\n");
         for(int i=0; i<lines.length; ++i) {
@@ -55,7 +55,7 @@ public class FileUtils {
         }
         return data;
     }
-    public static void ExportSaveData(String destination, String fileName, ArrayList<Cuenta> misCuentas) {
+    public static void exportSaveData(String destination, String fileName, ArrayList<Cuenta> misCuentas) {
         FileWriter myWriter = null;
         try {
             File miFile = new File(destination + "\\" + fileName);

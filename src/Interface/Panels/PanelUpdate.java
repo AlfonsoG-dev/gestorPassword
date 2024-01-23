@@ -69,14 +69,14 @@ public class PanelUpdate {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cuentaUtils = nCuentaUtils;
-        CreateUI(frameTitle, width, height, updateCuenta);
+        createUI(frameTitle, width, height, updateCuenta);
     }
     /**
      * set the content for the principal panel of the current frame
      * @param updateCuenta: selected cuenta of the main frame table
      * @return the panel with its content setted
      */
-    private JPanel OptionsComponent(Cuenta updateCuenta) {
+    private JPanel optionsComponent(Cuenta updateCuenta) {
 
         txtUserId = new JTextField(String.valueOf(loggedUser));
         txtUserId.setEditable(false);
@@ -104,7 +104,7 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      * @param toUpdate: selected cuenta of the main frame table
      */
-    private void OkButtonHandler(JButton OKButton, Cuenta toUpdate) {
+    private void okButtonHandler(JButton OKButton, Cuenta toUpdate) {
         OKButton.setMnemonic(KeyEvent.VK_ENTER);
         OKButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
@@ -122,13 +122,13 @@ public class PanelUpdate {
                     String condition = "id_pk: " + toUpdate.getId_pk();
                     if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                        cuentaUtils.UpdateOperation(toUpdate, condition, "and");
+                        cuentaUtils.updateOperation(toUpdate, condition, "and");
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
                     }
                 } catch(Exception er) {
                     er.printStackTrace();
-                    cuentaUtils.ErrorMessage(myFrame, "Error while trying to update register", "UpdateError");
+                    cuentaUtils.errorMessage(myFrame, "Error while trying to update register", "UpdateError");
                 } finally {
                         JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
                 }
@@ -140,7 +140,7 @@ public class PanelUpdate {
      * @param cancelButton: panel cancelButton to go back to the mainFrame panel
      * @param myConfig: database configuration
      */
-    private void CancelButtonHandler(JButton cancelButton) {
+    private void cancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Update operation",
@@ -156,17 +156,17 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      * @param toUpdate: selected cuenta of the main frame table 
      */
-    private JPanel OperationsComponent(Cuenta toUpdate) {
+    private JPanel operationsComponent(Cuenta toUpdate) {
         JPanel pOperations = new JPanel();
         pOperations.setLayout(new GridLayout(1, 2));
         JButton oKButton = new JButton("OK");
         pOperations.add(oKButton);
-        OkButtonHandler(oKButton, toUpdate);
+        okButtonHandler(oKButton, toUpdate);
 
 
         JButton cancelButton = new JButton("Cancel");
         pOperations.add(cancelButton);
-        CancelButtonHandler(cancelButton);
+        cancelButtonHandler(cancelButton);
         return pOperations;
     }
     /**
@@ -177,7 +177,7 @@ public class PanelUpdate {
      * @param updateCuenta: selected cuenta from the main frame table
      * @param myConfig: database configuration
      */
-    public void CreateUI(String frameTitle, int width, int height, Cuenta updateCuenta) {
+    public void createUI(String frameTitle, int width, int height, Cuenta updateCuenta) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));
@@ -194,8 +194,8 @@ public class PanelUpdate {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new BorderLayout());
 
-        pPrincipal.add(OptionsComponent(updateCuenta), BorderLayout.NORTH);
-        pPrincipal.add(OperationsComponent(updateCuenta), BorderLayout.SOUTH);
+        pPrincipal.add(optionsComponent(updateCuenta), BorderLayout.NORTH);
+        pPrincipal.add(operationsComponent(updateCuenta), BorderLayout.SOUTH);
 
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
