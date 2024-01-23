@@ -25,7 +25,6 @@
 
 - [ ] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
 -> [AES algorithm for java](https://www.baeldung.com/java-aes-encryption-decryption)
-- [ ] add UI panels for import and export methods.
 
 # Usage
 
