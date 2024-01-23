@@ -70,7 +70,7 @@ public class ImportPanel {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(1, 1));
         pPrincipal.add(fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory()));
-         fileChooser.addActionListener(new ActionListener() {
+        fileChooser.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int r = fileChooser.showOpenDialog(myFrame);
                 if(r == JFileChooser.APPROVE_OPTION) {
@@ -93,6 +93,17 @@ public class ImportPanel {
     }
 
     private void cancelButtonHandler(JButton cancelButton) {
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int condition = JOptionPane.showConfirmDialog(mainFrame, "the frame will be closed!", "Close", JOptionPane.YES_NO_OPTION);
+                if(condition == JOptionPane.YES_OPTION) {
+                    mainFrame.setEnabled(true);
+                    myFrame.dispose();
+                } else {
+                    myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                }
+            }
+        });
     }
     private JPanel optionsPanel() {
         JPanel options = new JPanel();
