@@ -98,9 +98,9 @@ public class PanelRegistro {
                         String password = txtPassword.getText();
                         Cuenta nueva = new Cuenta(nombre, email, loggedUser, password);
                         nueva.setCreate_at();
-                        String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk" + nueva.getUser_id_fk();
                         if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                            String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk: " + loggedUser;
                             cuentaUtils.insertOperation(nueva, condition, "and");
                             if(mainFrame != null) {
                                 mainFrame.setEnabled(true);
