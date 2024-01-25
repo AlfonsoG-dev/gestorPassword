@@ -424,7 +424,7 @@ public class PanelPrincipal {
                 if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
                         cuentaUtils.errorMessage(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error");
                 } else if(row != -1 || column != -1) {
-                    Cuenta updateCuenta = cuentaUtils.buildCuentaFromTable(row, column, loggedUser, mTable);
+                    Cuenta updateCuenta = cuentaUtils.buildObjectFromTable(row, column, loggedUser, mTable);
                     if(updateCuenta != null) {
                         new PanelUpdate("Update", width/2, height-100, updateCuenta, myConfig, myFrame, cuentaUtils);
                         myFrame.setEnabled(false);

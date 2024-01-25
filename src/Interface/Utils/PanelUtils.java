@@ -80,20 +80,20 @@ public final class PanelUtils<T> {
         return pass;
     }
     /**
-     * build the cuenta using the table row and column
+     * build the object using the table row and column
      * @param row: table row
      * @param column: table column
-     * @return the cuenta fron the table using row and column
+     * @return the object fron the table using row and column
      */
-    public T buildCuentaFromTable(int row, int column, int loggedUser, JTable mTable) {
+    public T buildObjectFromTable(int row, int column, int loggedUser, JTable mTable) {
         String columName = mTable.getColumnName(column);
         String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        T myCuenta = findOperation(options, "and");
-        if(myCuenta == null) {
+        T myObject = findOperation(options, "and");
+        if(myObject == null) {
             errorMessage(null, "invalid value of field", "Error");
             return null;
         } else {
-            return myCuenta;
+            return myObject;
         }
     }
 
