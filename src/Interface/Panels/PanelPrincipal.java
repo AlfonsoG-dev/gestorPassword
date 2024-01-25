@@ -41,7 +41,6 @@ import Config.DbConfig;
 import Mundo.Cuentas.Cuenta;
 
 public class PanelPrincipal {
-
     /**
      * the data table for the panel
      */
