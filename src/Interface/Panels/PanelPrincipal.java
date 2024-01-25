@@ -288,7 +288,7 @@ public class PanelPrincipal {
         // add a new row for the table
         agregarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String[] columns = cuentaUtils.getModelColumn(new Cuenta());
+                String[] columns = {"","", "", String.valueOf(loggedUser), "", "", ""};
                 tableModel.addRow(columns);
             }
         });
