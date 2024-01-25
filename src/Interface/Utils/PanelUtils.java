@@ -26,7 +26,7 @@ public final class PanelUtils<T> {
     public void setPasswordValues(PasswordOptions pOptions) {
         setOptions = pOptions;
     }
-    public PasswordOptions getPasswrodOptions() {
+    public PasswordOptions getPasswordOptions() {
         return setOptions;
     }
 

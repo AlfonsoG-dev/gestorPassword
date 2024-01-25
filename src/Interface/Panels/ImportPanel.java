@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
+import java.util.ArrayList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -18,6 +19,8 @@ import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 
 import Interface.Utils.FileUtils;
+
+import Mundo.Cuentas.Cuenta;
 
 public class ImportPanel {
 
@@ -45,16 +48,16 @@ public class ImportPanel {
      * @param imporData: data from file
      * <br> post: </br> set the table content to add imported data
      */
-    private void buildTableDataFromImportFile(String[] imporData) {
+    private void buildTableDataFromImportFile(ArrayList<Cuenta> imporData) {
         String forTable = "";
-        if(imporData.length > 0) {
-            for(int i=0; i<imporData.length; ++i) {
-                String[] data = imporData[i].split(",");
+        if(imporData.size() > 0) {
+            for(int i=0; i<imporData.size(); ++i) {
+                Cuenta data = imporData.get(i);
                 int id = 0;
-                String nombre = data[0].trim();
-                String email = data[1].trim();
-                String password = data[2].trim();
-                String create_at = "";
+                String nombre = data.getNombre();
+                String email = data.getEmail();
+                String password = data.getPassword();
+                String create_at = data.getCreate_at();
                 String update_at = "";
                 forTable += id + "," + nombre + "," + email + "," +
                     loggedUser + "," + password + "," + create_at +
@@ -84,7 +87,7 @@ public class ImportPanel {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String[] importData = FileUtils.getData(filePaht).split("\n");
+                ArrayList<Cuenta> importData = FileUtils.getData(filePaht);
                 buildTableDataFromImportFile(importData);
                 mainFrame.setEnabled(true);
                 myFrame.dispose();

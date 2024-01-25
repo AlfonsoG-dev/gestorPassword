@@ -73,7 +73,8 @@ public class PanelRegistro {
     /**
      * constructor
      */
-    public PanelRegistro(String frameTitle, int width, int height, DbConfig nConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, PanelUtils<Cuenta> nCuentaUtils) {
+    public PanelRegistro(String frameTitle, int width, int height, DbConfig nConfig, int pLoggedUser,
+            Connection miCursor, JFrame nMainFrame, PanelUtils<Cuenta> nCuentaUtils) {
         loggedUser = pLoggedUser;
         myConfig = nConfig;
         cursor = miCursor;
@@ -146,7 +147,7 @@ public class PanelRegistro {
                     new PanelPassword(myFrame, txtPassword, cuentaUtils);
                     myFrame.setEnabled(false);
                 } else {
-                    txtPassword.setText(cuentaUtils.generatePassword(cuentaUtils.getPasswrodOptions()).toString());
+                    txtPassword.setText(cuentaUtils.generatePassword(cuentaUtils.getPasswordOptions()).toString());
                 }
             }
         });

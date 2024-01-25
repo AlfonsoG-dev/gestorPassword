@@ -32,25 +32,30 @@ public class FileUtils {
         }
         return fileLines;
     }
-    public static String getData(String filePath) {
+    public static ArrayList<Cuenta> getData(String filePath) {
         String fileLines = readFileLines(filePath);
-        String data = "";
+        ArrayList<Cuenta> data = new ArrayList<>();
         String[] lines = fileLines.split("\n");
         for(int i=0; i<lines.length; ++i) {
-            String[] accounts = lines[i].split(",");
-            for(String a: accounts) {
-                String[] accountData = a.split(":");
-                String name = accountData[0].trim();
-                String value = accountData[1].trim();
-                if(name.equals("nombre")) {
-                    data += value + ", ";
+            if(lines[i].contains(",")) {
+                Cuenta myImportCuenta = new Cuenta();
+                String[] accounts = lines[i].split(",");
+                for(String a: accounts) {
+                    String[] accountData = a.split(":");
+                    String name = accountData[0].trim();
+                    String value = accountData[1].trim();
+                    if(name.equals("nombre")) {
+                        myImportCuenta.setNombre(value);
+                    }
+                    if(name.equals("email")) {
+                        myImportCuenta.setEmail(value);
+                    }
+                    if(name.equals("password")) {
+                        myImportCuenta.setPassword(value);
+                    }
+                    myImportCuenta.setCreate_at();
                 }
-                if(name.equals("email")) {
-                    data += value + ", ";
-                }
-                if(name.equals("password")) {
-                    data += value + "\n";
-                }
+                data.add(myImportCuenta);
             }
         }
         return data;
