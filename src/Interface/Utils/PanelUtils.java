@@ -10,18 +10,22 @@ import java.util.ArrayList;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 
 import Conexion.Query.QueryDAO;
 import Model.ModelMethods;
+import Utils.QueryUtils;
 
 public final class PanelUtils<T> {
 
     private QueryDAO<T> myQueryDAO;
     private Connection cursor;
     private PasswordOptions setOptions;
+    private QueryUtils queryUtils; 
     public PanelUtils(QueryDAO<T> nQueryDAO) {
         myQueryDAO = nQueryDAO;
         cursor = myQueryDAO.getConnection();
+        queryUtils = new QueryUtils();
     }
     public void setPasswordValues(PasswordOptions pOptions) {
         setOptions = pOptions;
@@ -33,7 +37,12 @@ public final class PanelUtils<T> {
     public ArrayList<T> myDataList() {
         return myQueryDAO.readAll();
     }
-
+    public String[] getModelColumn(ModelMethods model) {
+        return queryUtils.getModelColumns(model.initModel(), true).split(",");
+    }
+    public String getModelType(ModelMethods model) {
+        return queryUtils.getModelType(model.getAllProperties(), true);
+    }
     public T findOperation(String condition, String type) {
         return myQueryDAO.findByColumnName(condition, type);
     }
@@ -50,7 +59,7 @@ public final class PanelUtils<T> {
     }
 
     public void setAutoImcrement() throws SQLException {
-        int tableSize = myQueryDAO.readAll().size()+1;
+        int tableSize = myDataList().size()+1;
         String sql = "alter table cuenta AUTO_INCREMENT=" + tableSize;
         Statement stm = cursor.createStatement();
         stm.executeUpdate(sql);
@@ -69,6 +78,23 @@ public final class PanelUtils<T> {
             pass.append(combination.charAt(index));
         }
         return pass;
+    }
+    /**
+     * build the cuenta using the table row and column
+     * @param row: table row
+     * @param column: table column
+     * @return the cuenta fron the table using row and column
+     */
+    public T buildCuentaFromTable(int row, int column, int loggedUser, JTable mTable) {
+        String columName = mTable.getColumnName(column);
+        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
+        T myCuenta = findOperation(options, "and");
+        if(myCuenta == null) {
+            errorMessage(null, "invalid value of field", "Error");
+            return null;
+        } else {
+            return myCuenta;
+        }
     }
 
     public QueryDAO<T> getMyQueryDAO() {

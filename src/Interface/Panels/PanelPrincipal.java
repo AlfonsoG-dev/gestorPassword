@@ -40,8 +40,6 @@ import Config.DbConfig;
 
 import Mundo.Cuentas.Cuenta;
 
-import Utils.QueryUtils;
-
 public class PanelPrincipal {
 
     /**
@@ -69,10 +67,7 @@ public class PanelPrincipal {
      */
     private JPanel controlPanel;
     /**
-     * utils that uses the queryUtils for build DAO operations
-     */
-    private QueryUtils queryUtils;
-    /**
+     * class for account management
      */
     private PanelUtils<Cuenta> cuentaUtils;
     /**
@@ -94,7 +89,6 @@ public class PanelPrincipal {
             Connection miConnection, PanelUtils<Cuenta> nCuentaUtils) {
         myConfig = mConfig;
         loggedUser = pLoggedUser;
-        queryUtils = new QueryUtils();
         cursor = miConnection;
         cuentaUtils = nCuentaUtils;
         mainFrame = nMainFrame;
@@ -136,9 +130,9 @@ public class PanelPrincipal {
         String results = "";
         for(Cuenta miCuenta: cuentaList) {
             if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
-                results += queryUtils.getModelType(miCuenta.getAllProperties(), true).replace("'", "") + "\n";
+                results += cuentaUtils.getModelType(miCuenta).replace("'", "") + "\n";
             } else if(miCuenta.getUpdate_at() == null) {
-                results += queryUtils.getModelType(miCuenta.getAllProperties(), true).replace("'", "") + ",null\n";
+                results += cuentaUtils.getModelType(miCuenta).replace("'", "") + ",null\n";
             }
         }
         String[] datos = results.split("\n");
@@ -148,23 +142,6 @@ public class PanelPrincipal {
             data[i] = mData;
         }
         return data;
-    }
-    /**
-     * build the cuenta using the table row and column
-     * @param row: table row
-     * @param column: table column
-     * @return the cuenta fron the table using row and column
-     */
-    private Cuenta buildCuentaFromTable(int row, int column) {
-        String columName = mTable.getColumnName(column);
-        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        Cuenta myCuenta = cuentaUtils.findOperation(options, "and");
-        if(myCuenta == null) {
-            cuentaUtils.errorMessage(myFrame, "invalid value of field", "Error");
-            return null;
-        } else {
-            return myCuenta;
-        }
     }
     /**
      * list the created cuentas from table that are not present in the database
@@ -216,9 +193,8 @@ public class PanelPrincipal {
     private JPanel tableComponent(String tableText) {
 
         headerLabel.setText(tableText);
-        String modelColumns = queryUtils.getModelColumns(new Cuenta().initModel(), true);
 
-        String[] columns = modelColumns.split(",");
+        String[] columns = cuentaUtils.getModelColumn(new Cuenta());
         
         tableModel = new DefaultTableModel(tableContent(columns), columns);
         mTable = new JTable(tableModel);
@@ -258,8 +234,7 @@ public class PanelPrincipal {
      * changes the data for the table model, making a request to the database
      */
     private void setNewDataTableModel() {
-        String modelColumns = queryUtils.getModelColumns(new Cuenta().initModel(), true);
-        String[] columns = modelColumns.split(",");
+        String[] columns = cuentaUtils.getModelColumn(new Cuenta());
         Object[][] contenido = tableContent(columns);
         tableModel = new DefaultTableModel(contenido, columns);
         mTable.setModel(tableModel);
@@ -313,8 +288,8 @@ public class PanelPrincipal {
         // add a new row for the table
         agregarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String[] data = {"", "", "", String.valueOf(loggedUser), "", "", ""};
-                tableModel.addRow(data);
+                String[] columns = cuentaUtils.getModelColumn(new Cuenta());
+                tableModel.addRow(columns);
             }
         });
 
@@ -356,9 +331,11 @@ public class PanelPrincipal {
         exportButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String filePath = JOptionPane.showInputDialog(myFrame, null, "write the path where you want to save.", JOptionPane.INFORMATION_MESSAGE);
-                String fileName = JOptionPane.showInputDialog(myFrame, null, "write the name of the file.", JOptionPane.INFORMATION_MESSAGE);
-                if(filePath != null && fileName != null) {
-                    FileUtils.exportSaveData(filePath, fileName, misCuentas());
+                if(filePath != null) {
+                    String fileName = JOptionPane.showInputDialog(myFrame, null, "write the name of the file.", JOptionPane.INFORMATION_MESSAGE);
+                    if(fileName != null) {
+                        FileUtils.exportSaveData(filePath, fileName, misCuentas());
+                    }
                 }
             }
         });
@@ -447,7 +424,7 @@ public class PanelPrincipal {
                 if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
                         cuentaUtils.errorMessage(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error");
                 } else if(row != -1 || column != -1) {
-                    Cuenta updateCuenta = buildCuentaFromTable(row, column);
+                    Cuenta updateCuenta = cuentaUtils.buildCuentaFromTable(row, column, loggedUser, mTable);
                     if(updateCuenta != null) {
                         new PanelUpdate("Update", width/2, height-100, updateCuenta, myConfig, myFrame, cuentaUtils);
                         myFrame.setEnabled(false);
