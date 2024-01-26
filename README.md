@@ -21,10 +21,11 @@
 - [x] allow to import the accounts from a *.txt* file
 - [x] allow to export accounts to a *output.txt* file
 
-## TODO'S
+## Not implemented
 
-- [ ] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
--> [AES algorithm for java](https://www.baeldung.com/java-aes-encryption-decryption)
+- [x] add the option to encrypt the password and other sensible data especially with  *AES 256-bit* or *PBKDF2* encryption.
+-> [AES algorithm for java](https://www.baeldung.com/java-aes-encryption-decryption), in java currently i cannot implement the encryption 
+and decryption correctly.
 
 # Usage
 
