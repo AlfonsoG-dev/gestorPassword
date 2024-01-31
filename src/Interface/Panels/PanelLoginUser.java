@@ -68,13 +68,24 @@ public class PanelLoginUser {
                     String password = txtPassword.getText().isEmpty() == false ? txtPassword.getText() : "";
                     String rol = txtRol.getText().isEmpty() == false ? txtRol.getText() : "";
                     if(nombre == "" || email == "" || password == "" || rol == "") {
-                        JOptionPane.showMessageDialog(myFrame, "Invalid data", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                myFrame,
+                                "Invalid data",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
                     } else {
                         User newUser = new User(nombre, email, password, rol);
                         newUser.setCreate_at();
                         String condition = "nombre: " + nombre + ", email: " + email;
-                        if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                        int options = JOptionPane.showConfirmDialog(
+                                myFrame,
+                                "Do you want to register?",
+                                "Register operation",
+                                JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                        );
+                        if(options == JOptionPane.OK_OPTION) {
                             userUtils.insertOperation(newUser, condition, "and");
                             myFrame.dispose();
                             new PanelLogin(myConfig, cursor);
@@ -89,9 +100,15 @@ public class PanelLoginUser {
     private void cancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
-                                System.exit(0);
+                int options = JOptionPane.showConfirmDialog(
+                        myFrame,
+                        "Do you want to cancel?",
+                        "Register operation",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if(options == JOptionPane.OK_OPTION) {
+                    System.exit(0);
                 }
             }
         });

@@ -69,7 +69,12 @@ public class PanelUpdate {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cuentaUtils = nCuentaUtils;
-        createUI(frameTitle, width, height, updateCuenta);
+        createUI(
+                frameTitle,
+                width,
+                height,
+                updateCuenta
+        );
     }
     /**
      * set the content for the principal panel of the current frame
@@ -120,17 +125,32 @@ public class PanelUpdate {
                 toUpdate.setUpdate_at();
                 try {
                     String condition = "id_pk: " + toUpdate.getId_pk();
-                    if(JOptionPane.showConfirmDialog(myFrame, "Do you want to update?", "Update operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                    int options = JOptionPane.showConfirmDialog(
+                            myFrame,
+                            "Do you want to update?",
+                            "Update operation",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
+                    if(options == JOptionPane.OK_OPTION) {
                         cuentaUtils.updateOperation(toUpdate, condition, "and");
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
                     }
                 } catch(Exception er) {
                     er.printStackTrace();
-                    cuentaUtils.errorMessage(myFrame, "Error while trying to update register", "UpdateError");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "Error while trying to update register",
+                            "UpdateError"
+                    );
                 } finally {
-                        JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO", JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                myFrame,
+                                "reload the window to see the changes",
+                                "INFO",
+                                JOptionPane.INFORMATION_MESSAGE
+                        );
                 }
             }
         });
@@ -143,8 +163,14 @@ public class PanelUpdate {
     private void cancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Update operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                int options = JOptionPane.showConfirmDialog(
+                        myFrame,
+                        "Do you want to cancel?",
+                        "Update operation",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if(options == JOptionPane.OK_OPTION) {
                     mainFrame.setEnabled(true);
                     myFrame.dispose();
                 }

@@ -386,14 +386,29 @@ public class PanelPrincipal {
         insertButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(listaFaltantes().size() == 0) {
-                    new PanelRegistro("Register", width/2, height-100, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+                    new PanelRegistro(
+                            "Register",
+                            width/2,
+                            height-100,
+                            myConfig,
+                            loggedUser,
+                            cursor,
+                            myFrame,
+                            cuentaUtils
+                    );
                     myFrame.setEnabled(false);
                 } else {
                     try {
                         for(Cuenta c: listaFaltantes()) {
                             String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
-                            if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation", 
-                                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                            int option = JOptionPane.showConfirmDialog(
+                                    myFrame,
+                                    "Do you want to register?",
+                                    "Register operation",
+                                    JOptionPane.OK_CANCEL_OPTION,
+                                    JOptionPane.QUESTION_MESSAGE
+                            );
+                            if(option == JOptionPane.OK_OPTION) {
                                 cuentaUtils.insertOperation(c, condition, "and");
                             }
                         }

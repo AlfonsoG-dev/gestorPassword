@@ -77,12 +77,28 @@ public class PanelLogin {
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         dbConfig = myConfig;
-        userUtils = new PanelUtils<User>(new QueryDAO<User>("user", cursor, new UserBuilder()));
-        cuentaUtils = new PanelUtils<Cuenta>(new QueryDAO<Cuenta>("cuenta", cursor, new CuentaBuilder()));
+        userUtils = new PanelUtils<User>(
+                new QueryDAO<User>(
+                    "user",
+                    cursor,
+                    new UserBuilder()
+                )
+        );
+        cuentaUtils = new PanelUtils<Cuenta>(
+                new QueryDAO<Cuenta>(
+                    "cuenta",
+                    cursor,
+                    new CuentaBuilder()
+                )
+        );
         if(userUtils.myDataList().size() > 0) {
             createUI("Loggin");
         } else {
-            new PanelLoginUser(dbConfig, cursor, userUtils);
+            new PanelLoginUser(
+                    dbConfig,
+                    cursor,
+                    userUtils
+            );
         }
     }
     /**
@@ -134,17 +150,33 @@ public class PanelLogin {
                 String userName = "";
                 String userPassword = "";
                 if(cbxUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(myFrame, "invalid user or password", "Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            myFrame,
+                            "invalid user or password",
+                            "Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 } else {
                     userName = cbxUserName.getSelectedItem().toString();
                     userPassword = txtUserPassword.getText();
                     String condition = "nombre: " + userName + ", password: " + userPassword;
                     User mio = userUtils.findOperation(condition, "and");
                     if(mio != null) {
-                        new PanelPrincipal(dbConfig, mio.getId_pk(), myFrame, cursor, cuentaUtils);
+                        new PanelPrincipal(
+                                dbConfig,
+                                mio.getId_pk(),
+                                myFrame,
+                                cursor,
+                                cuentaUtils
+                        );
                         myFrame.dispose();
                     } else {
-                        JOptionPane.showMessageDialog(myFrame, "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(
+                                myFrame,
+                                "invalid credentials",
+                                "Error",
+                                JOptionPane.ERROR_MESSAGE
+                        );
                     }
                 }
             }
@@ -155,7 +187,14 @@ public class PanelLogin {
 
         btnCancel.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(JOptionPane.showConfirmDialog(myFrame, "are you sure?", "Exit", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                int option = JOptionPane.showConfirmDialog(
+                        myFrame,
+                        "are you sure?",
+                        "Exit",
+                        JOptionPane.OK_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if(option == JOptionPane.OK_OPTION) {
                     System.exit(0);
                 }
             }

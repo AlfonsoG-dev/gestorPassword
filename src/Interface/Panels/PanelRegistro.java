@@ -96,25 +96,49 @@ public class PanelRegistro {
                         String nombre = txtNombre.getText();
                         String email = txtEmail.getText();
                         String password = txtPassword.getText();
-                        Cuenta nueva = new Cuenta(nombre, email, loggedUser, password);
+                        Cuenta nueva = new Cuenta(
+                                nombre,
+                                email,
+                                loggedUser,
+                                password
+                        );
                         nueva.setCreate_at();
-                        if(JOptionPane.showConfirmDialog(myFrame, "Do you want to register?", "Register operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                        int options = JOptionPane.showConfirmDialog(
+                                myFrame,
+                                "Do you want to register?",
+                                "Register operation",
+                                JOptionPane.OK_CANCEL_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                        );
+                        if(options == JOptionPane.OK_OPTION) {
                             String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk: " + loggedUser;
                             cuentaUtils.insertOperation(nueva, condition, "and");
                             if(mainFrame != null) {
                                 mainFrame.setEnabled(true);
                                 myFrame.dispose();
                             } else {
-                                new PanelPrincipal(myConfig, loggedUser, myFrame, cursor, cuentaUtils);
+                                new PanelPrincipal(
+                                        myConfig, loggedUser,
+                                        myFrame,
+                                        cursor,
+                                        cuentaUtils
+                                );
                                 myFrame.dispose();
                             }
                         }
                     } catch(Exception ex) {
                         ex.printStackTrace();
-                        cuentaUtils.errorMessage(myFrame, "error while trying to insert registers", "Insert Error");
+                        cuentaUtils.errorMessage(
+                                myFrame,
+                                "error while trying to insert registers",
+                                "Insert Error"
+                        );
                     } finally {
-                        cuentaUtils.infoMessage(myFrame, "reload the window to see the changes","Cuenta Error"); 
+                        cuentaUtils.infoMessage(
+                                myFrame,
+                                "reload the window to see the changes",
+                                "Cuenta Error"
+                        ); 
                     }
                 }
             });
@@ -127,8 +151,14 @@ public class PanelRegistro {
     private void cancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                if(JOptionPane.showConfirmDialog(myFrame, "Do you want to cancel?", "Register operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION) {
+                int options = JOptionPane.showConfirmDialog(
+                        myFrame,
+                        "Do you want to cancel?",
+                        "Register operation",
+                        JOptionPane.OK_CANCEL_OPTION,
+                        JOptionPane.QUESTION_MESSAGE
+                );
+                if(options == JOptionPane.OK_OPTION) {
                     if(mainFrame != null) {
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
@@ -144,10 +174,16 @@ public class PanelRegistro {
         generateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if(txtPassword.getText().isEmpty()) {
-                    new PanelPassword(myFrame, txtPassword, cuentaUtils);
+                    new PanelPassword(
+                            myFrame,
+                            txtPassword,
+                            cuentaUtils
+                    );
                     myFrame.setEnabled(false);
                 } else {
-                    txtPassword.setText(cuentaUtils.generatePassword(cuentaUtils.getPasswordOptions()).toString());
+                    txtPassword.setText(
+                            cuentaUtils.generatePassword( cuentaUtils.getPasswordOptions()).toString()
+                    );
                 }
             }
         });

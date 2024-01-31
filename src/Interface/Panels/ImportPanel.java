@@ -98,7 +98,12 @@ public class ImportPanel {
     private void cancelButtonHandler(JButton cancelButton) {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int condition = JOptionPane.showConfirmDialog(mainFrame, "the frame will be closed!", "Close", JOptionPane.YES_NO_OPTION);
+                int condition = JOptionPane.showConfirmDialog(
+                        mainFrame,
+                        "the frame will be closed!",
+                        "Close",
+                        JOptionPane.YES_NO_OPTION
+                );
                 if(condition == JOptionPane.YES_OPTION) {
                     mainFrame.setEnabled(true);
                     myFrame.dispose();
@@ -131,7 +136,12 @@ public class ImportPanel {
 
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent e) {
-                int condition = JOptionPane.showConfirmDialog(mainFrame, "the frame will be closed!", "Close", JOptionPane.YES_NO_OPTION);
+                int condition = JOptionPane.showConfirmDialog(
+                        mainFrame,
+                        "the frame will be closed!",
+                        "Close",
+                        JOptionPane.YES_NO_OPTION
+                );
                 if(condition == JOptionPane.YES_OPTION) {
                     mainFrame.setEnabled(true);
                     myFrame.dispose();

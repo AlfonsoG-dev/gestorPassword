@@ -87,8 +87,8 @@ public final class PanelUtils<T> {
      */
     public T buildObjectFromTable(int row, int column, int loggedUser, JTable mTable) {
         String columName = mTable.getColumnName(column);
-        String options = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        T myObject = findOperation(options, "and");
+        String condition = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
+        T myObject = findOperation(condition, "and");
         if(myObject == null) {
             errorMessage(null, "invalid value of field", "Error");
             return null;
@@ -102,10 +102,20 @@ public final class PanelUtils<T> {
     }
 
     public void infoMessage(JFrame myFrame, String message, String title) {
-        JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.INFORMATION_MESSAGE);
+        JOptionPane.showMessageDialog(
+                myFrame,
+                message,
+                title,
+                JOptionPane.INFORMATION_MESSAGE
+        );
     }
     public void errorMessage(JFrame myFrame, String message, String title) {
-        JOptionPane.showMessageDialog(myFrame, message, title, JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(
+                myFrame,
+                message,
+                title,
+                JOptionPane.ERROR_MESSAGE
+        );
     }
 }
 
