@@ -55,7 +55,7 @@ public final class PanelUtils<T> {
         return myQueryDAO.updateRegister(model, condition, type);
     }
     public boolean deleteOperation(String condition, String type) throws SQLException {
-        return myQueryDAO.eliminarRegistro(condition, type);
+        return myQueryDAO.deleteRegister(condition, type);
     }
 
     public void setAutoImcrement() throws SQLException {
