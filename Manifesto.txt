@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Created-By: Alfonso-Gomajoa
 Main-Class: gestorPassword
-Class-Path: .\lib\java-mysql-eje\java-mysql-eje.jar 
+Class-Path: .\lib\javaMysqlORM\javaMysqlORM.jar 
