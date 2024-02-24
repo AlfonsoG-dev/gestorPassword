@@ -44,10 +44,11 @@ public final class PanelPassword {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int size = Integer.parseInt(cbxSize.getSelectedItem().toString());
-                boolean letters = cbxLetter.isSelected();
-                boolean simbols = cbxSimbol.isSelected();
-                boolean numbers = cbxNumber.isSelected();
+                int size    = Integer.parseInt(cbxSize.getSelectedItem().toString());
+                boolean 
+                    letters = cbxLetter.isSelected(),
+                    simbols = cbxSimbol.isSelected(),
+                    numbers = cbxNumber.isSelected();
                 pOptions = new PasswordOptions(size, letters, simbols, numbers);
                 if(size != -1 && size > 4 && (letters || simbols || numbers)) {
                     txtPassword.setText(cuentaUtils.generatePassword(pOptions).toString());
@@ -55,7 +56,12 @@ public final class PanelPassword {
                     mainFrame.setEnabled(true);
                     myFrame.dispose();
                 } else {
-                    JOptionPane.showMessageDialog(myFrame, "invalid password options", "Generator Error", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(
+                            myFrame,
+                            "invalid password options",
+                            "Generator Error",
+                            JOptionPane.ERROR_MESSAGE
+                    );
                 }
             }
         });

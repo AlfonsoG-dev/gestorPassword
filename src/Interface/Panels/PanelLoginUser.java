@@ -63,10 +63,11 @@ public class PanelLoginUser {
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    String nombre = txtNombre.getText().isEmpty() == false ? txtNombre.getText() : "";
-                    String email = txtEmail.getText().isEmpty() == false ? txtEmail.getText() : "";
-                    String password = txtPassword.getText().isEmpty() == false ? txtPassword.getText() : "";
-                    String rol = txtRol.getText().isEmpty() == false ? txtRol.getText() : "";
+                    String 
+                        nombre   = txtNombre.getText().isEmpty() == false ? txtNombre.getText() : "",
+                        email    = txtEmail.getText().isEmpty() == false ? txtEmail.getText() : "",
+                        password = txtPassword.getText().isEmpty() == false ? txtPassword.getText() : "",
+                        rol      = txtRol.getText().isEmpty() == false ? txtRol.getText() : "";
                     if(nombre == "" || email == "" || password == "" || rol == "") {
                         JOptionPane.showMessageDialog(
                                 myFrame,

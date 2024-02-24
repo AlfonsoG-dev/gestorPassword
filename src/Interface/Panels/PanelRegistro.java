@@ -93,9 +93,10 @@ public class PanelRegistro {
             OKButton.addActionListener(new ActionListener() {
                 public void actionPerformed(ActionEvent e) {
                     try {
-                        String nombre = txtNombre.getText();
-                        String email = txtEmail.getText();
-                        String password = txtPassword.getText();
+                        String 
+                            nombre   = txtNombre.getText(),
+                            email    = txtEmail.getText(),
+                            password = txtPassword.getText();
                         Cuenta nueva = new Cuenta(
                                 nombre,
                                 email,
@@ -182,7 +183,9 @@ public class PanelRegistro {
                     myFrame.setEnabled(false);
                 } else {
                     txtPassword.setText(
-                            cuentaUtils.generatePassword( cuentaUtils.getPasswordOptions()).toString()
+                            cuentaUtils.generatePassword(
+                                cuentaUtils.getPasswordOptions()
+                            ).toString()
                     );
                 }
             }

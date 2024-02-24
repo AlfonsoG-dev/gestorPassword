@@ -9,14 +9,14 @@ import java.util.ArrayList;
 import Mundo.Cuentas.Cuenta;
 
 public class FileUtils {
-    public static String readFileLines(String filePath) {
-        String fileLines = "";
+    public static ArrayList<String> readFileLines(String filePath) {
+        ArrayList<String> lines = new ArrayList<>();
         BufferedReader myReader = null;
         try {
             File miFile = new File(filePath);
             myReader = new BufferedReader(new FileReader(miFile));
             while(myReader.ready()) {
-                fileLines += myReader.readLine() + "\n";
+                lines.add(myReader.readLine());
             }
         } catch(Exception e) {
             e.printStackTrace();
@@ -30,49 +30,53 @@ public class FileUtils {
                 myReader = null;
             }
         }
-        return fileLines;
+        return lines;
     }
     public static ArrayList<Cuenta> getData(String filePath) {
-        String fileLines = readFileLines(filePath);
+        ArrayList<String> fileLines = readFileLines(filePath);
         ArrayList<Cuenta> data = new ArrayList<>();
-        String[] lines = fileLines.split("\n");
-        for(int i=0; i<lines.length; ++i) {
-            if(lines[i].contains(",")) {
-                Cuenta myImportCuenta = new Cuenta();
-                String[] accounts = lines[i].split(",");
-                for(String a: accounts) {
-                    String[] accountData = a.split(":");
-                    String name = accountData[0].trim();
-                    String value = accountData[1].trim();
-                    if(name.equals("nombre")) {
-                        myImportCuenta.setNombre(value);
+        fileLines
+            .parallelStream()
+            .forEach(e -> {
+                if(e.contains(",")) {
+                    Cuenta myImportCuenta = new Cuenta();
+                    String[] accounts = e.split(",");
+                    for(String a: accounts) {
+                        String[] accountData = a.split(":");
+                        String 
+                            name  = accountData[0].trim(),
+                                  value = accountData[1].trim();
+                        if(name.equals("nombre")) {
+                            myImportCuenta.setNombre(value);
+                        }
+                        if(name.equals("email")) {
+                            myImportCuenta.setEmail(value);
+                        }
+                        if(name.equals("password")) {
+                            myImportCuenta.setPassword(value);
+                        }
+                        myImportCuenta.setCreate_at();
                     }
-                    if(name.equals("email")) {
-                        myImportCuenta.setEmail(value);
-                    }
-                    if(name.equals("password")) {
-                        myImportCuenta.setPassword(value);
-                    }
-                    myImportCuenta.setCreate_at();
+                    data.add(myImportCuenta);
                 }
-                data.add(myImportCuenta);
-            }
-        }
+            });
         return data;
     }
     public static void exportSaveData(String destination, String fileName, ArrayList<Cuenta> misCuentas) {
         FileWriter myWriter = null;
         try {
-            String nFile = new File(fileName).isFile() && fileName.contains(".txt") ? fileName : fileName + ".txt";
+            String 
+                nFile = new File(fileName).isFile() && fileName.contains(".txt") ? fileName : fileName + ".txt",
+                build = "";
             File miFile = new File(destination + "\\" + nFile);
-            String build = "";
             myWriter = new FileWriter(miFile, false);
             for(int i=0; i<misCuentas.size(); ++i) {
                 Cuenta mia = misCuentas.get(i);
-                String nombre = "nombre: " + mia.getNombre();
-                String email = "email: " + mia.getEmail();
-                String password = "password: " + mia.getPassword();
-                build += nombre + ", " + email + ", " + password + "\n";
+                String 
+                    nombre   = "nombre: " + mia.getNombre(),
+                    email    = "email: " + mia.getEmail(),
+                    password = "password: " + mia.getPassword();
+                build       += nombre + ", " + email + ", " + password + "\n";
             }
             myWriter.write(build);
         } catch(Exception e) {

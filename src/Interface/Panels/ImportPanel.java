@@ -49,23 +49,29 @@ public class ImportPanel {
      * <br> post: </br> set the table content to add imported data
      */
     private void buildTableDataFromImportFile(ArrayList<Cuenta> imporData) {
-        String forTable = "";
-        if(imporData.size() > 0) {
-            for(int i=0; i<imporData.size(); ++i) {
-                Cuenta data = imporData.get(i);
+        ArrayList<String> tableContent = new ArrayList<>();
+        imporData
+            .parallelStream()
+            .forEach(e -> {
+                Cuenta data = e;
                 int id = 0;
-                String nombre = data.getNombre();
-                String email = data.getEmail();
-                String password = data.getPassword();
-                String create_at = data.getCreate_at();
-                String update_at = "";
-                forTable += id + "," + nombre + "," + email + "," +
-                    loggedUser + "," + password + "," + create_at +
-                    "," + update_at + "\n";
-            }
-        }
-        String[] data = forTable.split("\n");
-        for(String d: data) {
+                String 
+                    nombre = data.getNombre(),
+                    email = data.getEmail(),
+                    password = data.getPassword(),
+                    create_at = data.getCreate_at(),
+                    update_at = "";
+                tableContent.add(
+                        id + "," +
+                        nombre + "," +
+                        email + "," +
+                        loggedUser + "," +
+                        password + "," +
+                        create_at + "," +
+                        update_at
+                );
+            });
+        for(String d: tableContent) {
             tableModel.addRow(d.split(","));
         }
     }

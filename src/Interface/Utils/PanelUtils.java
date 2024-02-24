@@ -68,11 +68,11 @@ public final class PanelUtils<T> {
     public StringBuilder generatePassword(PasswordOptions options) {
         StringBuilder pass = new StringBuilder();
         SecureRandom random = new SecureRandom();
-        String letters = options.addLetter() ? "abcdefghijklmnñopqrstuvwxyz" : "";
-        String simbols = options.addSimbol() ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "";
-        String numbers = options.addNumber() ? "0123456789" : "";
-
-        String combination = letters + simbols + numbers;
+        String 
+            letters = options.addLetter() ? "abcdefghijklmnñopqrstuvwxyz" : "",
+            simbols = options.addSimbol() ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "",
+            numbers = options.addNumber() ? "0123456789" : "",
+            combination = letters + simbols + numbers;
         for(int i=0; i<options.size(); ++i) {
             int index = random.nextInt(combination.length());
             pass.append(combination.charAt(index));
@@ -86,9 +86,10 @@ public final class PanelUtils<T> {
      * @return the object fron the table using row and column
      */
     public T buildObjectFromTable(int row, int column, int loggedUser, JTable mTable) {
-        String columName = mTable.getColumnName(column);
-        String condition = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        T myObject = findOperation(condition, "and");
+        String 
+            columName = mTable.getColumnName(column),
+            condition = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
+        T myObject    = findOperation(condition, "and");
         if(myObject == null) {
             errorMessage(null, "invalid value of field", "Error");
             return null;

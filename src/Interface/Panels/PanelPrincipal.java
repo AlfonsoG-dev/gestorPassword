@@ -84,25 +84,43 @@ public class PanelPrincipal {
     /**
      * constructor
      */
-    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame,
-            Connection miConnection, PanelUtils<Cuenta> nCuentaUtils) {
-        myConfig = mConfig;
-        loggedUser = pLoggedUser;
-        cursor = miConnection;
+    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame, Connection miConnection,
+            PanelUtils<Cuenta> nCuentaUtils) {
+        myConfig    = mConfig;
+        loggedUser  = pLoggedUser;
+        cursor      = miConnection;
         cuentaUtils = nCuentaUtils;
-        mainFrame = nMainFrame;
+        mainFrame   = nMainFrame;
         // set the save point to rollback or commit changes
         try {
             cursor.setAutoCommit(false);
         } catch(Exception e) {
             e.printStackTrace();
-            cuentaUtils.errorMessage(null, "error while trying to create the connection to DB","Connection Error");
+            cuentaUtils.errorMessage(
+                    null,
+                    "error while trying to create the connection to DB",
+                    "Connection Error"
+            );
         }
 
         if(misCuentas().size() > 0) {
-            createUI("table example", "Gestor Password", 1100, 540);
+            createUI(
+                    "table example",
+                    "Gestor Password",
+                    1100,
+                    540
+            );
         } else {
-            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+            new PanelRegistro(
+                    "Register",
+                    400,
+                    900,
+                    myConfig,
+                    loggedUser,
+                    cursor,
+                    myFrame,
+                    cuentaUtils
+            );
         }
     }
     /**
@@ -112,11 +130,13 @@ public class PanelPrincipal {
     private ArrayList<Cuenta> misCuentas() {
         ArrayList<Cuenta> nuevas = new ArrayList<>();
         ArrayList<Cuenta> nCuentas = cuentaUtils.myDataList();
-        for(Cuenta c: nCuentas) {
-            if(c.getUser_id_fk() == loggedUser) {
-                nuevas.add(c);
-            }
-        }
+        nCuentas
+            .parallelStream()
+            .forEach(e -> {
+                if(e.getUser_id_fk() == loggedUser) {
+                    nuevas.add(e);
+                }
+            });
         return nuevas;
     }
     /**
@@ -154,22 +174,36 @@ public class PanelPrincipal {
         Cuenta mia = null;
         if(nCuentas.size() < rows) {
         outter: for(int i=0; i<rows; ++i) {
-                String cNombre = mTable.getValueAt(i, 1).toString();
-                String cEmail = mTable.getValueAt(i, 2).toString();
-                String cUserFk = mTable.getValueAt(i, 3).toString();
-                String cPassword = mTable.getValueAt(i, 4).toString();
+                String 
+                    cNombre   = mTable.getValueAt(i, 1).toString(),
+                    cEmail    = mTable.getValueAt(i, 2).toString(),
+                    cUserFk   = mTable.getValueAt(i, 3).toString(),
+                    cPassword = mTable.getValueAt(i, 4).toString();
                 if(cNombre.isEmpty() || cEmail.isEmpty() || cPassword.isEmpty()) {
-                    cuentaUtils.errorMessage(myFrame, "invalid empty fields", "Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "invalid empty fields",
+                            "Error"
+                    );
                     break outter;
                 }
                 if(cNombre == null || cEmail == null || cPassword == null) {
-                    cuentaUtils.errorMessage(myFrame, "invalid empty fields", "Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "invalid empty fields",
+                            "Error"
+                    );
                     break outter;
                 }
                 String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
                 Cuenta buscada = cuentaUtils.findOperation(condition, "and");
                 if(buscada == null) {
-                    mia = new Cuenta(cNombre, cEmail, Integer.parseInt(cUserFk), cPassword);
+                    mia = new Cuenta(
+                            cNombre,
+                            cEmail,
+                            Integer.parseInt(cUserFk),
+                            cPassword
+                    );
                     mia.setCreate_at();
                     faltante.add(mia);
                 }
@@ -203,8 +237,9 @@ public class PanelPrincipal {
         mTable.addMouseListener(new MouseAdapter() {
             public void mouseClicked(MouseEvent e) {
                 if(e.getButton() == MouseEvent.BUTTON3) {
-                    int row = mTable.rowAtPoint(e.getPoint());
-                    int column = mTable.columnAtPoint(e.getPoint());
+                    int 
+                        row    = mTable.rowAtPoint(e.getPoint()),
+                        column = mTable.columnAtPoint(e.getPoint());
                     if(row != -1 && column != -1) {
                         allowCopyToClipBoard(row, column);
                     }
@@ -233,9 +268,9 @@ public class PanelPrincipal {
      * changes the data for the table model, making a request to the database
      */
     private void setNewDataTableModel() {
-        String[] columns = cuentaUtils.getModelColumn(new Cuenta());
+        String[] columns     = cuentaUtils.getModelColumn(new Cuenta());
         Object[][] contenido = tableContent(columns);
-        tableModel = new DefaultTableModel(contenido, columns);
+        tableModel           = new DefaultTableModel(contenido, columns);
         mTable.setModel(tableModel);
 
         /** 
@@ -264,7 +299,12 @@ public class PanelPrincipal {
         reloadButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    int option = JOptionPane.showConfirmDialog(myFrame, "apply changes before reload?", "REALOAD", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int option = JOptionPane.showConfirmDialog(
+                            myFrame,
+                            "apply changes before reload?",
+                            "REALOAD",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
                     if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
                         setNewDataTableModel();
@@ -277,7 +317,11 @@ public class PanelPrincipal {
                     }
                 } catch(Exception er) {
                     er.printStackTrace();
-                    cuentaUtils.errorMessage(myFrame, "Error while trying to reload the data", "Reload Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "Error while trying to reload the data",
+                            "Reload Error"
+                    );
                 }
             }
         });
@@ -287,7 +331,15 @@ public class PanelPrincipal {
         // add a new row for the table
         agregarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String[] columns = {"","", "", String.valueOf(loggedUser), "", "", ""};
+                String[] columns = {
+                    "",
+                    "",
+                    "",
+                    String.valueOf(loggedUser),
+                    "",
+                    "",
+                    ""
+                };
                 tableModel.addRow(columns);
             }
         });
@@ -298,15 +350,20 @@ public class PanelPrincipal {
         // delete the row from the table
         eliminarButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int tableSize = mTable.getRowCount()-1;
+                int 
+                    tableSize   = mTable.getRowCount()-1,
+                    selectedRow = mTable.getSelectedRow();
                 String cNombre = mTable.getValueAt(tableSize, 1).toString();
-                int selectedRow = mTable.getSelectedRow();
                 if(cNombre.isEmpty()) {
                     tableModel.removeRow(tableSize);
                 } else if(selectedRow != -1 && mTable.getValueAt(selectedRow, 1).toString().isEmpty()) {
                     tableModel.removeRow(selectedRow);
                 } else {
-                    cuentaUtils.errorMessage(myFrame, "Cannot remove!", "Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "Cannot remove!",
+                            "Error"
+                    );
                 }
             }
         });
@@ -329,11 +386,25 @@ public class PanelPrincipal {
         filePanel.add(exportButton);
         exportButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                String filePath = JOptionPane.showInputDialog(myFrame, null, "write the path where you want to save.", JOptionPane.INFORMATION_MESSAGE);
+                String filePath = JOptionPane.showInputDialog(
+                        myFrame,
+                        null,
+                        "write the path where you want to save.",
+                        JOptionPane.INFORMATION_MESSAGE
+                );
                 if(filePath != null) {
-                    String fileName = JOptionPane.showInputDialog(myFrame, null, "write the name of the file.", JOptionPane.INFORMATION_MESSAGE);
+                    String fileName = JOptionPane.showInputDialog(
+                            myFrame,
+                            null,
+                            "write the name of the file.",
+                            JOptionPane.INFORMATION_MESSAGE
+                    );
                     if(fileName != null) {
-                        FileUtils.exportSaveData(filePath, fileName, misCuentas());
+                        FileUtils.exportSaveData(
+                                filePath,
+                                fileName,
+                                misCuentas()
+                        );
                     }
                 }
             }
@@ -349,28 +420,52 @@ public class PanelPrincipal {
     private void deleteButtonHandler(JButton deleteButton) {
         deleteButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int row = mTable.getSelectedRow();
-                int column = mTable.getSelectedColumn();
+                int 
+                    row    = mTable.getSelectedRow(),
+                    column = mTable.getSelectedColumn(),
+                    option = JOptionPane.showConfirmDialog(
+                            myFrame,
+                            "Do you want to remove?",
+                            "Remove operation",
+                            JOptionPane.OK_CANCEL_OPTION,
+                            JOptionPane.QUESTION_MESSAGE
+                    );
                 String columName = mTable.getColumnName(column);
                 try {
                     if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
-                        cuentaUtils.errorMessage(myFrame, "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Error");
-                    } else if(mTable.getSelectedRow() != -1 && JOptionPane.showConfirmDialog(myFrame, "Do you want to remove?", "Remove operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE) == JOptionPane.OK_OPTION && row != -1 && column != -1) {
-                        String valueOfColumn = mTable.getValueAt(row, column).toString();
-                        String options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
+                        cuentaUtils.errorMessage(
+                                myFrame,
+                                "to delete use 'ID' or 'nombre' or 'email' or 'FK' ",
+                                "Error"
+                        );
+                    } else if(mTable.getSelectedRow() != -1 && option == JOptionPane.OK_OPTION && row != -1 && column != -1) {
+                        String 
+                            valueOfColumn = mTable.getValueAt(row, column).toString(),
+                            options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
                         boolean eliminado = cuentaUtils.deleteOperation(options, "and");
                         if(eliminado == true) {
                             tableModel.removeRow(row);
                         } else {
-                            cuentaUtils.errorMessage(myFrame, String.format("Column: %s with value of: %s not found"), "Error");
+                            cuentaUtils.errorMessage(
+                                    myFrame,
+                                    String.format("Column: %s with value of: %s not found"),
+                                    "Error"
+                            );
                         }
                     } else {
-                        cuentaUtils.errorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Error");
+                        cuentaUtils.errorMessage(
+                                myFrame,
+                                "NO TABLE ELEMENT SELECTED",
+                                "Error"
+                        );
                     }
                 } catch(Exception er) {
                     er.printStackTrace();
-                    cuentaUtils.errorMessage(myFrame, "Error while trying to delete a register", "Delete Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "Error while trying to delete a register",
+                            "Delete Error"
+                    );
                 }
             }
         });
@@ -414,9 +509,17 @@ public class PanelPrincipal {
                         }
                     } catch(Exception er) {
                         er.printStackTrace();
-                        cuentaUtils.errorMessage(myFrame, "Error while trying to inser a register", "Insert Error");
+                        cuentaUtils.errorMessage(
+                                myFrame,
+                                "Error while trying to inser a register",
+                                "Insert Error"
+                        );
                     } finally {
-                        cuentaUtils.infoMessage(myFrame, "reload the window to see the changes", "INFO");
+                        cuentaUtils.infoMessage(
+                                myFrame,
+                                "reload the window to see the changes",
+                                "INFO"
+                        );
                     }
                 }
             }
@@ -432,19 +535,41 @@ public class PanelPrincipal {
     private void updateButtonHandler(JButton updateButton, int width, int height) {
         updateButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                int row = mTable.getSelectedRow();
-                int column = mTable.getSelectedColumn();
+                int 
+                    row    = mTable.getSelectedRow(),
+                    column = mTable.getSelectedColumn();
                 String columName = mTable.getColumnName(column);
                 if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
-                        cuentaUtils.errorMessage(myFrame, "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error");
+                        cuentaUtils.errorMessage(
+                                myFrame,
+                                "to update use 'ID' or 'nombre' or 'email' or 'FK' ",
+                                "Error"
+                        );
                 } else if(row != -1 || column != -1) {
-                    Cuenta updateCuenta = cuentaUtils.buildObjectFromTable(row, column, loggedUser, mTable);
+                    Cuenta updateCuenta = cuentaUtils.buildObjectFromTable(
+                            row,
+                            column,
+                            loggedUser,
+                            mTable
+                    );
                     if(updateCuenta != null) {
-                        new PanelUpdate("Update", width/2, height-100, updateCuenta, myConfig, myFrame, cuentaUtils);
+                        new PanelUpdate(
+                                "Update",
+                                width/2,
+                                height-100,
+                                updateCuenta,
+                                myConfig,
+                                myFrame,
+                                cuentaUtils
+                        );
                         myFrame.setEnabled(false);
                     }
                 } else {
-                    cuentaUtils.errorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "NO TABLE ELEMENT SELECTED",
+                            "Error"
+                    );
                 }
             }
         });
@@ -458,7 +583,13 @@ public class PanelPrincipal {
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 try {
-                    if(JOptionPane.showConfirmDialog(myFrame, "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+                    int option = JOptionPane.showConfirmDialog(
+                            myFrame,
+                            "Go back to login",
+                            "Cancel op",
+                            JOptionPane.OK_CANCEL_OPTION
+                    );
+                    if(option == JOptionPane.OK_OPTION) {
                         mainFrame.setVisible(true);
                         cursor.rollback();
                         cuentaUtils.setAutoImcrement();
@@ -466,7 +597,11 @@ public class PanelPrincipal {
                     }
                 } catch(Exception er) {
                     er.printStackTrace();
-                    cuentaUtils.errorMessage(myFrame, "Error while trying to cancel the operation", "Cancel Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "Error while trying to cancel the operation",
+                            "Cancel Error"
+                    );
                 }
             }
         });
@@ -514,7 +649,12 @@ public class PanelPrincipal {
         myFrame.addWindowListener(new WindowAdapter() {
             public void windowClosing(WindowEvent we) {
                 try {
-                    int option = JOptionPane.showConfirmDialog(myFrame, "save changes before exit?", "save changes", JOptionPane.YES_NO_CANCEL_OPTION);
+                    int option = JOptionPane.showConfirmDialog(
+                            myFrame,
+                            "save changes before exit?",
+                            "save changes",
+                            JOptionPane.YES_NO_CANCEL_OPTION
+                    );
                     if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
                         System.exit(0);
@@ -527,7 +667,11 @@ public class PanelPrincipal {
                     }
                 } catch(Exception e) {
                     e.printStackTrace();
-                    cuentaUtils.errorMessage(myFrame, "Error while trying to close the window", "Close Error");
+                    cuentaUtils.errorMessage(
+                            myFrame,
+                            "Error while trying to close the window",
+                            "Close Error"
+                    );
                 }
             }
         });
