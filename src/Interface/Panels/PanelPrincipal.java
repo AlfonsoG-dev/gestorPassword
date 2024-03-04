@@ -132,10 +132,9 @@ public class PanelPrincipal {
         ArrayList<Cuenta> nCuentas = cuentaUtils.myDataList();
         nCuentas
             .parallelStream()
+            .filter(e -> e.getUser_id_fk() == loggedUser)
             .forEach(e -> {
-                if(e.getUser_id_fk() == loggedUser) {
-                    nuevas.add(e);
-                }
+                nuevas.add(e);
             });
         return nuevas;
     }
@@ -146,15 +145,15 @@ public class PanelPrincipal {
      */
     private Object[][] tableContent(String[] columns) {
         ArrayList<Cuenta> cuentaList = misCuentas();
-        String results = "";
+        StringBuffer results = new StringBuffer();
         for(Cuenta miCuenta: cuentaList) {
             if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
-                results += cuentaUtils.getModelType(miCuenta).replace("'", "") + "\n";
+                results.append(cuentaUtils.getModelType(miCuenta).replace("'", "") + "\n");
             } else if(miCuenta.getUpdate_at() == null) {
-                results += cuentaUtils.getModelType(miCuenta).replace("'", "") + ",null\n";
+                results.append(cuentaUtils.getModelType(miCuenta).replace("'", "") + ",null\n");
             }
         }
-        String[] datos = results.split("\n");
+        String[] datos = results.toString().split("\n");
         Object[][] data = new String[datos.length][columns.length];
         for(int i=0; i<datos.length; ++i) {
             String[] mData = datos[i].split(",");

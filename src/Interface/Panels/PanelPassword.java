@@ -97,13 +97,13 @@ public final class PanelPassword {
         pPrincipal.add(new JLabel());
 
 
-        String numbers = "";
+        StringBuffer numbers = new StringBuffer();
         for(int i=5; i<=10; ++i) {
-            numbers += i + ",";
+            numbers.append(i + ",");
         }
         JPanel miPanel = new JPanel();
         miPanel.setLayout(new GridLayout(1, 3));
-        cbxSize = new JComboBox<String>(numbers.split(","));
+        cbxSize = new JComboBox<String>(numbers.toString().split(","));
         pPrincipal.add(new JLabel("size: "));
         miPanel.add(cbxSize);
         // add empty labels to make the combobox smaller  

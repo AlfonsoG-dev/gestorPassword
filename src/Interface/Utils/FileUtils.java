@@ -37,37 +37,36 @@ public class FileUtils {
         ArrayList<Cuenta> data = new ArrayList<>();
         fileLines
             .parallelStream()
+            .filter(e -> e.contains(","))
             .forEach(e -> {
-                if(e.contains(",")) {
-                    Cuenta myImportCuenta = new Cuenta();
-                    String[] accounts = e.split(",");
-                    for(String a: accounts) {
-                        String[] accountData = a.split(":");
-                        String 
-                            name  = accountData[0].trim(),
-                                  value = accountData[1].trim();
-                        if(name.equals("nombre")) {
-                            myImportCuenta.setNombre(value);
-                        }
-                        if(name.equals("email")) {
-                            myImportCuenta.setEmail(value);
-                        }
-                        if(name.equals("password")) {
-                            myImportCuenta.setPassword(value);
-                        }
-                        myImportCuenta.setCreate_at();
+                Cuenta myImportCuenta = new Cuenta();
+                String[] accounts = e.split(",");
+                for(String a: accounts) {
+                    String[] accountData = a.split(":");
+                    String 
+                        name  = accountData[0].trim(),
+                        value = accountData[1].trim();
+                    if(name.equals("nombre")) {
+                        myImportCuenta.setNombre(value);
                     }
-                    data.add(myImportCuenta);
+                    if(name.equals("email")) {
+                        myImportCuenta.setEmail(value);
+                    }
+                    if(name.equals("password")) {
+                        myImportCuenta.setPassword(value);
+                    }
+                    myImportCuenta.setCreate_at();
                 }
+                data.add(myImportCuenta);
             });
         return data;
     }
     public static void exportSaveData(String destination, String fileName, ArrayList<Cuenta> misCuentas) {
         FileWriter myWriter = null;
         try {
-            String 
-                nFile = new File(fileName).isFile() && fileName.contains(".txt") ? fileName : fileName + ".txt",
-                build = "";
+            String nFile = new File(fileName).isFile() && fileName.contains(".txt") ?
+                fileName : fileName + ".txt";
+            StringBuffer build = new StringBuffer();
             File miFile = new File(destination + "\\" + nFile);
             myWriter = new FileWriter(miFile, false);
             for(int i=0; i<misCuentas.size(); ++i) {
@@ -76,9 +75,9 @@ public class FileUtils {
                     nombre   = "nombre: " + mia.getNombre(),
                     email    = "email: " + mia.getEmail(),
                     password = "password: " + mia.getPassword();
-                build       += nombre + ", " + email + ", " + password + "\n";
+                build.append(nombre + ", " + email + ", " + password + "\n");
             }
-            myWriter.write(build);
+            myWriter.write(build.toString());
         } catch(Exception e) {
             e.printStackTrace();
         } finally {

@@ -106,14 +106,15 @@ public class PanelLogin {
      * @return the comboBox with the users names
      */
     private String[] comboBoxUsers() {
-        String res = "Select user...,";
+        StringBuilder res = new StringBuilder();
+        res.append("Select user...,");
         ArrayList<User> myUsers = userUtils.myDataList();
         if(myUsers.size() > 0) {
             for(User u: myUsers) {
-                res += u.getNombre() + ",";
+                res.append(u.getNombre() + ",");
             }
         }
-        return res.split(",");
+        return res.toString().split(",");
     }
     /**
      * set the content of the principal panel 
