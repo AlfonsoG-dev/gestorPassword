@@ -3,8 +3,9 @@ package Interface.Utils;
 
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.security.SecureRandom;
 import java.sql.Connection;
+
+import java.security.SecureRandom;
 
 import java.util.ArrayList;
 
@@ -13,19 +14,22 @@ import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
 import Conexion.Query.QueryDAO;
+
 import Model.ModelMethods;
-import Utils.QueryUtils;
+
+import Utils.Formats.ParamValue;
+import Utils.Model.ModelUtils;
 
 public final class PanelUtils<T> {
 
     private QueryDAO<T> myQueryDAO;
     private Connection cursor;
     private PasswordOptions setOptions;
-    private QueryUtils queryUtils; 
+    private ModelUtils modelUtils;
     public PanelUtils(QueryDAO<T> nQueryDAO) {
         myQueryDAO = nQueryDAO;
         cursor = myQueryDAO.getConnection();
-        queryUtils = new QueryUtils();
+        modelUtils = new ModelUtils();
     }
     public void setPasswordValues(PasswordOptions pOptions) {
         setOptions = pOptions;
@@ -38,24 +42,24 @@ public final class PanelUtils<T> {
         return myQueryDAO.readAll();
     }
     public String[] getModelColumn(ModelMethods model) {
-        return queryUtils.getModelColumns(model.initModel(), true).split(",");
+        return modelUtils.getModelColumns(model.initModel(), true).split(",");
     }
     public String getModelType(ModelMethods model) {
-        return queryUtils.getModelType(model.getAllProperties(), true);
+        return modelUtils.getModelTypes(model.getAllProperties(), true);
     }
-    public T findOperation(String condition, String type) {
-        return myQueryDAO.findByColumnName(condition, type);
-    }
-
-    public boolean insertOperation(ModelMethods model, String condition, String type) throws SQLException {
-        return myQueryDAO.insertNewRegister(model, condition, type);
+    public T findOperation(ParamValue condition) {
+        return myQueryDAO.findByColumnName(condition);
     }
 
-    public boolean updateOperation(ModelMethods model, String condition, String type) throws SQLException {
-        return myQueryDAO.updateRegister(model, condition, type);
+    public boolean insertOperation(ModelMethods model, ParamValue condition) throws SQLException {
+        return myQueryDAO.insertNewRegister(model, condition);
     }
-    public boolean deleteOperation(String condition, String type) throws SQLException {
-        return myQueryDAO.deleteRegister(condition, type);
+
+    public boolean updateOperation(ModelMethods model, ParamValue condition) throws SQLException {
+        return myQueryDAO.updateRegister(model, condition);
+    }
+    public boolean deleteOperation(ParamValue condition) throws SQLException {
+        return myQueryDAO.deleteRegister(condition);
     }
 
     public void setAutoImcrement() throws SQLException {
@@ -86,10 +90,12 @@ public final class PanelUtils<T> {
      * @return the object fron the table using row and column
      */
     public T buildObjectFromTable(int row, int column, int loggedUser, JTable mTable) {
-        String 
-            columName = mTable.getColumnName(column),
-            condition = columName + ": " + mTable.getValueAt(row, column).toString() + ", user_id_fk: " + loggedUser;
-        T myObject    = findOperation(condition, "and");
+        String columName = mTable.getColumnName(column);
+        String[]
+            c = {columName, "user_id_fk"},
+            v = {mTable.getValueAt(row, column).toString(), String.valueOf(loggedUser)};
+        ParamValue condition = new ParamValue(c, v, "and");
+        T myObject    = findOperation(condition);
         if(myObject == null) {
             errorMessage(null, "invalid value of field", "Error");
             return null;

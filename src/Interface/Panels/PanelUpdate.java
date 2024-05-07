@@ -18,6 +18,7 @@ import javax.swing.JTextField;
 import Config.DbConfig;
 import Interface.Utils.PanelUtils;
 import Mundo.Cuentas.Cuenta;
+import Utils.Formats.ParamValue;
 
 public class PanelUpdate {
     /**
@@ -124,7 +125,6 @@ public class PanelUpdate {
                 }
                 toUpdate.setUpdate_at();
                 try {
-                    String condition = "id_pk: " + toUpdate.getId_pk();
                     int options = JOptionPane.showConfirmDialog(
                             myFrame,
                             "Do you want to update?",
@@ -132,8 +132,13 @@ public class PanelUpdate {
                             JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE
                     );
+                    ParamValue condition = new ParamValue(
+                            "id_pk",
+                            String.valueOf(toUpdate.getId_pk()),
+                            "and"
+                    );
                     if(options == JOptionPane.OK_OPTION) {
-                        cuentaUtils.updateOperation(toUpdate, condition, "and");
+                        cuentaUtils.updateOperation(toUpdate, condition);
                         mainFrame.setEnabled(true);
                         myFrame.dispose();
                     }

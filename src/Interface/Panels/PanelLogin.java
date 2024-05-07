@@ -28,6 +28,7 @@ import Mundo.Cuentas.Cuenta;
 import Mundo.Cuentas.CuentaBuilder;
 import Mundo.Users.User;
 import Mundo.Users.UserBuilder;
+import Utils.Formats.ParamValue;
 
 public class PanelLogin {
 
@@ -160,8 +161,11 @@ public class PanelLogin {
                 } else {
                     userName = cbxUserName.getSelectedItem().toString();
                     userPassword = txtUserPassword.getText();
-                    String condition = "nombre: " + userName + ", password: " + userPassword;
-                    User mio = userUtils.findOperation(condition, "and");
+                    String[] 
+                        c = {"nombre", "password"},
+                        v = {userName, userPassword};
+                    ParamValue condition = new ParamValue(c, v, "and");
+                    User mio = userUtils.findOperation(condition);
                     if(mio != null) {
                         new PanelPrincipal(
                                 dbConfig,

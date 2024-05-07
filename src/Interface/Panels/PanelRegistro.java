@@ -20,6 +20,7 @@ import javax.swing.JTextField;
 import Config.DbConfig;
 import Interface.Utils.PanelUtils;
 import Mundo.Cuentas.Cuenta;
+import Utils.Formats.ParamValue;
 
 public class PanelRegistro {
     /**
@@ -112,8 +113,11 @@ public class PanelRegistro {
                                 JOptionPane.QUESTION_MESSAGE
                         );
                         if(options == JOptionPane.OK_OPTION) {
-                            String condition = "nombre: "  + nueva.getNombre() + ", user_id_fk: " + loggedUser;
-                            cuentaUtils.insertOperation(nueva, condition, "and");
+                            String[]
+                                c = {"nombre", "user_id_fk"},
+                                v = {nueva.getNombre(), String.valueOf(loggedUser)};
+                            ParamValue condition = new ParamValue(c, v, "and");
+                            cuentaUtils.insertOperation(nueva, condition);
                             if(mainFrame != null) {
                                 mainFrame.setEnabled(true);
                                 myFrame.dispose();

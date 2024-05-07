@@ -21,6 +21,7 @@ import javax.swing.JPanel;
 import Config.DbConfig;
 
 import Mundo.Users.User;
+import Utils.Formats.ParamValue;
 
 public class PanelLoginUser {
 
@@ -78,7 +79,9 @@ public class PanelLoginUser {
                     } else {
                         User newUser = new User(nombre, email, password, rol);
                         newUser.setCreate_at();
-                        String condition = "nombre: " + nombre + ", email: " + email;
+                        String[]
+                            c = {"nombre", "email"},
+                            v = {nombre, email};
                         int options = JOptionPane.showConfirmDialog(
                                 myFrame,
                                 "Do you want to register?",
@@ -87,7 +90,8 @@ public class PanelLoginUser {
                                 JOptionPane.QUESTION_MESSAGE
                         );
                         if(options == JOptionPane.OK_OPTION) {
-                            userUtils.insertOperation(newUser, condition, "and");
+                            ParamValue condition = new ParamValue(c, v, "and");
+                            userUtils.insertOperation(newUser, condition);
                             myFrame.dispose();
                             new PanelLogin(myConfig, cursor);
                         }

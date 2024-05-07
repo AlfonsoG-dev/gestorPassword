@@ -39,6 +39,7 @@ import javax.swing.table.DefaultTableModel;
 import Config.DbConfig;
 
 import Mundo.Cuentas.Cuenta;
+import Utils.Formats.ParamValue;
 
 public class PanelPrincipal {
     /**
@@ -194,8 +195,11 @@ public class PanelPrincipal {
                     );
                     break outter;
                 }
-                String condition = "nombre: " + cNombre + ", user_id_fk: " + cUserFk;
-                Cuenta buscada = cuentaUtils.findOperation(condition, "and");
+                String[] 
+                    c = {"nombre", "user_id_fk"},
+                    v = {cNombre, cUserFk};
+                ParamValue condition = new ParamValue(c, v, "and");
+                Cuenta buscada = cuentaUtils.findOperation(condition);
                 if(buscada == null) {
                     mia = new Cuenta(
                             cNombre,
@@ -438,10 +442,12 @@ public class PanelPrincipal {
                                 "Error"
                         );
                     } else if(mTable.getSelectedRow() != -1 && option == JOptionPane.OK_OPTION && row != -1 && column != -1) {
-                        String 
-                            valueOfColumn = mTable.getValueAt(row, column).toString(),
-                            options = columName + ": " + valueOfColumn + ", user_id_fk: " + mTable.getValueAt(row, 3);
-                        boolean eliminado = cuentaUtils.deleteOperation(options, "and");
+                        String valueOfColumn = mTable.getValueAt(row, column).toString();
+                        String[]
+                            c = {columName, "user_id_fk"},
+                            v = {valueOfColumn, mTable.getValueAt(row, 3).toString()};
+                        ParamValue condition = new ParamValue(c, v, "and");
+                        boolean eliminado = cuentaUtils.deleteOperation(condition);
                         if(eliminado == true) {
                             tableModel.removeRow(row);
                         } else {
@@ -494,7 +500,9 @@ public class PanelPrincipal {
                 } else {
                     try {
                         for(Cuenta c: listaFaltantes()) {
-                            String condition = "nombre: " + c.getNombre() + ", user_id_fk: " + c.getUser_id_fk();
+                            String[]
+                                co = {"nombre", "user_id_fk"},
+                                va = {c.getNombre(), String.valueOf(c.getUser_id_fk())};
                             int option = JOptionPane.showConfirmDialog(
                                     myFrame,
                                     "Do you want to register?",
@@ -503,7 +511,8 @@ public class PanelPrincipal {
                                     JOptionPane.QUESTION_MESSAGE
                             );
                             if(option == JOptionPane.OK_OPTION) {
-                                cuentaUtils.insertOperation(c, condition, "and");
+                                ParamValue condition = new ParamValue(co, va, "and");
+                                cuentaUtils.insertOperation(c, condition);
                             }
                         }
                     } catch(Exception er) {
