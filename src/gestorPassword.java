@@ -10,7 +10,7 @@ import Model.ModelMethods;
 import Mundo.Cuentas.Cuenta;
 import Mundo.Users.User;
 
-class gestorPassword {
+public class gestorPassword {
     public static void main(String[] args) {
         LogginUser();
     }

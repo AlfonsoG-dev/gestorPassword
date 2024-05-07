@@ -704,6 +704,7 @@ public class PanelPrincipal {
 /**
  * helper class to disable cell edition
  */
+@SuppressWarnings({"serial"})
 class NonEditableCell extends DefaultCellEditor {
 
     public NonEditableCell() {
@@ -718,6 +719,7 @@ class NonEditableCell extends DefaultCellEditor {
 /**
  * helper class to enable drag and drop for the table
  */
+@SuppressWarnings({"serial"})
 class TableTransferable extends TransferHandler {
     @Override
     public boolean canImport(TransferSupport support) {
