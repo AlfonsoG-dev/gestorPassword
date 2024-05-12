@@ -1,6 +1,6 @@
 import java.sql.Connection;
 
-import Conexion.Conector;
+import Conexion.Connector;
 import Conexion.Migration.MigrationDAO;
 import Config.DbConfig;
 
@@ -23,7 +23,7 @@ public class gestorPassword {
                 "5x5W12"
         );
         try {
-            Connection con = new Conector(mConfig).conectarMySQL();
+            Connection con = new Connector(mConfig).mysqlConnection();
             MigrationDAO miDAO = new MigrationDAO("", con);
             miDAO.createDataBase(db_name);
             con.close();
@@ -46,7 +46,7 @@ public class gestorPassword {
     private final static void LogginUser() {
         try {
             DbConfig miConfig = InitDB("contrasenias");
-            Connection cursor = new Conector(miConfig).conectarMySQL();
+            Connection cursor = new Connector(miConfig).mysqlConnection();
             InitTable("user", new User(), cursor);
             InitTable("cuenta", new Cuenta(), cursor);
             new PanelLogin(miConfig, cursor);

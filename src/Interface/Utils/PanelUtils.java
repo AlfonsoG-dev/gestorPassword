@@ -39,7 +39,7 @@ public final class PanelUtils<T> {
     }
 
     public ArrayList<T> myDataList() {
-        return myQueryDAO.readAll();
+        return myQueryDAO.readAll(new ParamValue("order", "nombre"));
     }
     public String[] getModelColumn(ModelMethods model) {
         return modelUtils.getModelColumns(model.initModel(), true).split(",");
