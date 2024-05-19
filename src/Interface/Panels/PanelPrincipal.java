@@ -18,6 +18,7 @@ import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.Toolkit;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
@@ -246,6 +247,19 @@ public class PanelPrincipal {
                     if(row != -1 && column != -1) {
                         allowCopyToClipBoard(row, column);
                     }
+                }
+            }
+        });
+        mTable.addMouseMotionListener(new MouseMotionAdapter() {
+            @Override 
+            public void mouseMoved(MouseEvent e) {
+                int
+                    column = mTable.columnAtPoint(e.getPoint()),
+                    row = mTable.rowAtPoint(e.getPoint());
+                if(row != -1 && column != -1) {
+                    mTable.setToolTipText("Hover over cell: (" + row + ", " + column + ")");
+                } else{
+                    mTable.setToolTipText(null);
                 }
             }
         });
