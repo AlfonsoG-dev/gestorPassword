@@ -66,7 +66,7 @@ id,nombre,email,user_id_fk,password,null,null
 # Aditional options to use
 
 >- Create the database and tables.
->>- using the [java-mysql-orm](https://github.com/AlfonsoG-dev/java-mysql-eje)
+>>- using the [java-mysql-orm](https://github.com/AlfonsoG-dev/javaORM_2.0)
 >>- first you need to digit the DbConfig parameters
 ```java
 private final static DbConfig InitDB(String db_name) {
