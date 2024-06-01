@@ -5,7 +5,7 @@
 
 # Dependencies
 
->- [java_mysql_orm](https://github.com/AlfonsoG-dev/javaMysqlORM)
+>- [java_mysql_orm](https://github.com/AlfonsoG-dev/javaORM_2.0)
 >- [java_build_tool](https://github.com/AlfonsoG-dev/javaBuild)
 >- [mysql JDBC_8.3.0](https://dev.mysql.com/downloads/connector/j/5.1.html)
 >- [java_jdk_17](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html)
