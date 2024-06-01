@@ -4,7 +4,7 @@ import Interface.Utils.PanelUtils;
 
 import java.sql.Connection;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -21,14 +21,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Conexion.Query.QueryDAO;
+import ORM.DbConnection.DAO.QueryDAO;
 
-import Config.DbConfig;
-import Mundo.Cuentas.Cuenta;
-import Mundo.Cuentas.CuentaBuilder;
-import Mundo.Users.User;
-import Mundo.Users.UserBuilder;
-import Utils.Formats.ParamValue;
+import ORM.Utils.Formats.DbConfig;
+import Models.Cuenta.CuentaModel;
+import Models.User.UserModel;
+import ORM.Utils.Formats.ParamValue;
 
 public class PanelLogin {
 
@@ -67,29 +65,29 @@ public class PanelLogin {
     /**
      * utils for the user DAO
      */
-    private PanelUtils<User> userUtils;
+    private PanelUtils<UserModel> userUtils;
     /**
      * utils for the account DAO
      */
-    private PanelUtils<Cuenta> cuentaUtils;
+    private PanelUtils<CuentaModel> cuentaUtils;
     /**
      * Constructor
      */
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         dbConfig = myConfig;
-        userUtils = new PanelUtils<User>(
-                new QueryDAO<User>(
-                    "user",
+        userUtils = new PanelUtils<UserModel>(
+                new QueryDAO<UserModel>(
                     cursor,
-                    new UserBuilder()
+                    "user",
+                    new UserModel()
                 )
         );
-        cuentaUtils = new PanelUtils<Cuenta>(
-                new QueryDAO<Cuenta>(
-                    "cuenta",
+        cuentaUtils = new PanelUtils<CuentaModel>(
+                new QueryDAO<CuentaModel>(
                     cursor,
-                    new CuentaBuilder()
+                    "cuenta",
+                    new CuentaModel()
                 )
         );
         if(userUtils.myDataList().size() > 0) {
@@ -109,9 +107,10 @@ public class PanelLogin {
     private String[] comboBoxUsers() {
         StringBuilder res = new StringBuilder();
         res.append("Select user...,");
-        ArrayList<User> myUsers = userUtils.myDataList();
+        List<UserModel> myUsers = userUtils.myDataList();
+        System.out.println(myUsers.size());
         if(myUsers.size() > 0) {
-            for(User u: myUsers) {
+            for(UserModel u: myUsers) {
                 res.append(u.getNombre() + ",");
             }
         }
@@ -165,7 +164,7 @@ public class PanelLogin {
                         c = {"nombre", "password"},
                         v = {userName, userPassword};
                     ParamValue condition = new ParamValue(c, v, "and");
-                    User mio = userUtils.findOperation(condition);
+                    UserModel mio = userUtils.findOperation(condition).get(0);
                     if(mio != null) {
                         new PanelPrincipal(
                                 dbConfig,

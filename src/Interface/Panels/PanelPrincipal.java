@@ -22,6 +22,7 @@ import java.awt.event.MouseMotionAdapter;
 import java.awt.event.MouseEvent;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.EventObject;
 
 import javax.swing.DefaultCellEditor;
@@ -37,10 +38,11 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
-import Config.DbConfig;
+import ORM.Utils.Formats.DbConfig;
 
-import Mundo.Cuentas.Cuenta;
-import Utils.Formats.ParamValue;
+import Models.Cuenta.CuentaModel;
+import Models.Cuenta.CuentaODM;
+import ORM.Utils.Formats.ParamValue;
 
 public class PanelPrincipal {
     /**
@@ -70,7 +72,7 @@ public class PanelPrincipal {
     /**
      * class for account management
      */
-    private PanelUtils<Cuenta> cuentaUtils;
+    private PanelUtils<CuentaModel> cuentaUtils;
     /**
      * database configuration
      */
@@ -87,7 +89,7 @@ public class PanelPrincipal {
      * constructor
      */
     public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame, Connection miConnection,
-            PanelUtils<Cuenta> nCuentaUtils) {
+            PanelUtils<CuentaModel> nCuentaUtils) {
         myConfig    = mConfig;
         loggedUser  = pLoggedUser;
         cursor      = miConnection;
@@ -129,15 +131,16 @@ public class PanelPrincipal {
      * list of cuentas that verify the user_id_fk with the loggedUser
      * @return the cuentas with the same user_id_fk
      */
-    private ArrayList<Cuenta> misCuentas() {
-        ArrayList<Cuenta> nuevas = new ArrayList<>();
-        ArrayList<Cuenta> nCuentas = cuentaUtils.myDataList();
-        nCuentas
-            .parallelStream()
-            .filter(e -> e.getUser_id_fk() == loggedUser)
-            .forEach(e -> {
-                nuevas.add(e);
-            });
+    private List<CuentaModel> misCuentas() {
+        List<CuentaModel> nuevas = new ArrayList<>();
+        List<CuentaModel> nCuentas = cuentaUtils.myDataList();
+        if(nCuentas.size() > 0) {
+            for(CuentaModel model: nCuentas) {
+                if(model.getUser_id_fk() == loggedUser) {
+                    nuevas.add(model);
+                }
+            }
+        }
         return nuevas;
     }
     /**
@@ -146,9 +149,9 @@ public class PanelPrincipal {
      * @return the table content like Object[][]
      */
     private Object[][] tableContent(String[] columns) {
-        ArrayList<Cuenta> cuentaList = misCuentas();
+        List<CuentaModel> cuentaList = misCuentas();
         StringBuffer results = new StringBuffer();
-        for(Cuenta miCuenta: cuentaList) {
+        for(CuentaModel miCuenta: cuentaList) {
             if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
                 results.append(cuentaUtils.getModelType(miCuenta).replace("'", "") + "\n");
             } else if(miCuenta.getUpdate_at() == null) {
@@ -168,12 +171,12 @@ public class PanelPrincipal {
      * the list of cuentas only works when you insert a new row with its content directly in the table
      * @return the list of cuentas that are not present in the database
      */
-    private ArrayList<Cuenta> listaFaltantes() {
-        ArrayList<Cuenta> faltante = new ArrayList<>();
+    private List<CuentaODM> listaFaltantes() {
+        List<CuentaODM> faltante = new ArrayList<>();
         int rows = mTable.getRowCount();
-        ArrayList<Cuenta> nCuentas = misCuentas();
-        Cuenta mia = null;
-        if(nCuentas.size() < rows) {
+        List<CuentaModel> nCuentas = misCuentas();
+        CuentaODM mia = null;
+        if(rows > nCuentas.size()) {
         outter: for(int i=0; i<rows; ++i) {
                 String 
                     cNombre   = mTable.getValueAt(i, 1).toString(),
@@ -200,15 +203,15 @@ public class PanelPrincipal {
                     c = {"nombre", "user_id_fk"},
                     v = {cNombre, cUserFk};
                 ParamValue condition = new ParamValue(c, v, "and");
-                Cuenta buscada = cuentaUtils.findOperation(condition);
-                if(buscada == null) {
-                    mia = new Cuenta(
+                List<CuentaModel> buscada = cuentaUtils.findOperation(condition);
+                if(buscada.size() == 0) {
+                    mia = new CuentaODM(
                             cNombre,
                             cEmail,
                             Integer.parseInt(cUserFk),
                             cPassword
                     );
-                    mia.setCreate_at();
+                    mia.makeCreate_at();
                     faltante.add(mia);
                 }
             }
@@ -231,7 +234,7 @@ public class PanelPrincipal {
 
         headerLabel.setText(tableText);
 
-        String[] columns = cuentaUtils.getModelColumn(new Cuenta());
+        String[] columns = cuentaUtils.getModelColumn(new CuentaModel());
         
         tableModel = new DefaultTableModel(tableContent(columns), columns);
         mTable = new JTable(tableModel);
@@ -285,7 +288,7 @@ public class PanelPrincipal {
      * changes the data for the table model, making a request to the database
      */
     private void setNewDataTableModel() {
-        String[] columns     = cuentaUtils.getModelColumn(new Cuenta());
+        String[] columns     = cuentaUtils.getModelColumn(new CuentaModel());
         Object[][] contenido = tableContent(columns);
         tableModel           = new DefaultTableModel(contenido, columns);
         mTable.setModel(tableModel);
@@ -513,7 +516,7 @@ public class PanelPrincipal {
                     myFrame.setEnabled(false);
                 } else {
                     try {
-                        for(Cuenta c: listaFaltantes()) {
+                        for(CuentaODM c: listaFaltantes()) {
                             String[]
                                 co = {"nombre", "user_id_fk"},
                                 va = {c.getNombre(), String.valueOf(c.getUser_id_fk())};
@@ -568,7 +571,7 @@ public class PanelPrincipal {
                                 "Error"
                         );
                 } else if(row != -1 || column != -1) {
-                    Cuenta updateCuenta = cuentaUtils.buildObjectFromTable(
+                    CuentaModel updateCuenta = cuentaUtils.buildObjectFromTable(
                             row,
                             column,
                             loggedUser,

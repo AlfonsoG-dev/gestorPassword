@@ -4,11 +4,13 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
-import java.util.ArrayList;
 import java.awt.event.WindowAdapter;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.ActionEvent;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -20,7 +22,7 @@ import javax.swing.table.DefaultTableModel;
 
 import Interface.Utils.FileUtils;
 
-import Mundo.Cuentas.Cuenta;
+import Models.Cuenta.CuentaModel;
 
 public class ImportPanel {
 
@@ -48,12 +50,12 @@ public class ImportPanel {
      * @param imporData: data from file
      * <br> post: </br> set the table content to add imported data
      */
-    private void buildTableDataFromImportFile(ArrayList<Cuenta> imporData) {
+    private void buildTableDataFromImportFile(List<CuentaModel> imporData) {
         ArrayList<String> tableContent = new ArrayList<>();
         imporData
             .parallelStream()
             .forEach(e -> {
-                Cuenta data = e;
+                CuentaModel data = e;
                 int id = 0;
                 String 
                     nombre = data.getNombre(),
@@ -93,7 +95,7 @@ public class ImportPanel {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
         okButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                ArrayList<Cuenta> importData = FileUtils.getData(filePaht);
+                List<CuentaModel> importData = FileUtils.getData(filePaht);
                 buildTableDataFromImportFile(importData);
                 mainFrame.setEnabled(true);
                 myFrame.dispose();

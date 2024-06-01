@@ -18,10 +18,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.JPanel;
 
-import Config.DbConfig;
+import ORM.Utils.Formats.DbConfig;
 
-import Mundo.Users.User;
-import Utils.Formats.ParamValue;
+import Models.User.UserModel;
+import Models.User.UserODM;
+import ORM.Utils.Formats.ParamValue;
 
 public class PanelLoginUser {
 
@@ -33,9 +34,9 @@ public class PanelLoginUser {
     private JTextField txtRol;
     private DbConfig myConfig;
     private Connection cursor;
-    private PanelUtils<User> userUtils;
+    private PanelUtils<UserModel> userUtils;
 
-    public PanelLoginUser(DbConfig nConfig, Connection nCursor, PanelUtils<User> nUserUtils) {
+    public PanelLoginUser(DbConfig nConfig, Connection nCursor, PanelUtils<UserModel> nUserUtils) {
         cursor = nCursor;
         myConfig = nConfig;
         userUtils = nUserUtils;
@@ -77,8 +78,8 @@ public class PanelLoginUser {
                                 JOptionPane.ERROR_MESSAGE
                         );
                     } else {
-                        User newUser = new User(nombre, email, password, rol);
-                        newUser.setCreate_at();
+                        UserODM newUser = new UserODM(nombre, email, password, rol);
+                        newUser.makeCreate_at();
                         String[]
                             c = {"nombre", "email"},
                             v = {nombre, email};

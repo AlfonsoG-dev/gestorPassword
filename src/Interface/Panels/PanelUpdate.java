@@ -15,10 +15,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Config.DbConfig;
 import Interface.Utils.PanelUtils;
-import Mundo.Cuentas.Cuenta;
-import Utils.Formats.ParamValue;
+import ORM.Utils.Formats.DbConfig;
+import ORM.Utils.Formats.ParamValue;
+
+import Models.Cuenta.CuentaModel;
+import Models.Cuenta.CuentaODM;
 
 public class PanelUpdate {
     /**
@@ -61,12 +63,12 @@ public class PanelUpdate {
     /**
      * DAO class for account
      */
-    private PanelUtils<Cuenta> cuentaUtils;
+    private PanelUtils<CuentaModel> cuentaUtils;
     /**
      * constructor
      */
-    public PanelUpdate(String frameTitle, int width, int height, Cuenta updateCuenta, DbConfig nConfig,
-            JFrame nMainFrame, PanelUtils<Cuenta> nCuentaUtils) {
+    public PanelUpdate(String frameTitle, int width, int height, CuentaModel updateCuenta, DbConfig nConfig,
+            JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cuentaUtils = nCuentaUtils;
@@ -82,7 +84,7 @@ public class PanelUpdate {
      * @param updateCuenta: selected cuenta of the main frame table
      * @return the panel with its content setted
      */
-    private JPanel optionsComponent(Cuenta updateCuenta) {
+    private JPanel optionsComponent(CuentaModel updateCuenta) {
 
         txtUserId = new JTextField(String.valueOf(loggedUser));
         txtUserId.setEditable(false);
@@ -110,10 +112,11 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      * @param toUpdate: selected cuenta of the main frame table
      */
-    private void okButtonHandler(JButton OKButton, Cuenta toUpdate) {
+    private void okButtonHandler(JButton OKButton, CuentaModel model) {
         OKButton.setMnemonic(KeyEvent.VK_ENTER);
         OKButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                CuentaODM toUpdate = new CuentaODM(model);
                 if(txtNombre.getText() != null && txtNombre.getText() != toUpdate.getNombre()) {
                     toUpdate.setNombre(txtNombre.getText());
                 }
@@ -123,7 +126,7 @@ public class PanelUpdate {
                 if(txtPassword.getText() != null && txtPassword.getText() != toUpdate.getPassword()) {
                     toUpdate.setPassword(txtPassword.getText());
                 }
-                toUpdate.setUpdate_at();
+                toUpdate.makeUpdate_at();
                 try {
                     int options = JOptionPane.showConfirmDialog(
                             myFrame,
@@ -132,9 +135,13 @@ public class PanelUpdate {
                             JOptionPane.OK_CANCEL_OPTION,
                             JOptionPane.QUESTION_MESSAGE
                     );
+                    String[]
+                        c = {"id_pk"},
+                        v = {txtIdPk.getText()};
+
                     ParamValue condition = new ParamValue(
-                            "id_pk",
-                            String.valueOf(toUpdate.getId_pk()),
+                            c, 
+                            v,
                             "and"
                     );
                     if(options == JOptionPane.OK_OPTION) {
@@ -187,7 +194,7 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      * @param toUpdate: selected cuenta of the main frame table 
      */
-    private JPanel operationsComponent(Cuenta toUpdate) {
+    private JPanel operationsComponent(CuentaModel toUpdate) {
         JPanel pOperations = new JPanel();
         pOperations.setLayout(new GridLayout(1, 2));
         JButton oKButton = new JButton("OK");
@@ -208,7 +215,7 @@ public class PanelUpdate {
      * @param updateCuenta: selected cuenta from the main frame table
      * @param myConfig: database configuration
      */
-    public void createUI(String frameTitle, int width, int height, Cuenta updateCuenta) {
+    public void createUI(String frameTitle, int width, int height, CuentaModel updateCuenta) {
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));

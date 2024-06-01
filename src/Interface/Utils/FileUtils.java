@@ -4,13 +4,16 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
+
+import java.util.List;
 import java.util.ArrayList;
 
-import Mundo.Cuentas.Cuenta;
+import Models.Cuenta.CuentaModel;
+import Models.Cuenta.CuentaODM;
 
 public class FileUtils {
-    public static ArrayList<String> readFileLines(String filePath) {
-        ArrayList<String> lines = new ArrayList<>();
+    public static List<String> readFileLines(String filePath) {
+        List<String> lines = new ArrayList<>();
         BufferedReader myReader = null;
         try {
             File miFile = new File(filePath);
@@ -32,14 +35,14 @@ public class FileUtils {
         }
         return lines;
     }
-    public static ArrayList<Cuenta> getData(String filePath) {
-        ArrayList<String> fileLines = readFileLines(filePath);
-        ArrayList<Cuenta> data = new ArrayList<>();
+    public static List<CuentaModel> getData(String filePath) {
+        List<String> fileLines = readFileLines(filePath);
+        List<CuentaModel> data = new ArrayList<>();
         fileLines
             .parallelStream()
             .filter(e -> e.contains(","))
             .forEach(e -> {
-                Cuenta myImportCuenta = new Cuenta();
+                CuentaODM myImportCuenta = new CuentaODM();
                 String[] accounts = e.split(",");
                 for(String a: accounts) {
                     String[] accountData = a.split(":");
@@ -55,13 +58,13 @@ public class FileUtils {
                     if(name.equals("password")) {
                         myImportCuenta.setPassword(value);
                     }
-                    myImportCuenta.setCreate_at();
+                    myImportCuenta.makeCreate_at();
                 }
                 data.add(myImportCuenta);
             });
         return data;
     }
-    public static void exportSaveData(String destination, String fileName, ArrayList<Cuenta> misCuentas) {
+    public static void exportSaveData(String destination, String fileName, List<CuentaModel> misCuentas) {
         FileWriter myWriter = null;
         try {
             String nFile = new File(fileName).isFile() && fileName.contains(".txt") ?
@@ -70,7 +73,7 @@ public class FileUtils {
             File miFile = new File(destination + "\\" + nFile);
             myWriter = new FileWriter(miFile, false);
             for(int i=0; i<misCuentas.size(); ++i) {
-                Cuenta mia = misCuentas.get(i);
+                CuentaModel mia = misCuentas.get(i);
                 String 
                     nombre   = "nombre: " + mia.getNombre(),
                     email    = "email: " + mia.getEmail(),

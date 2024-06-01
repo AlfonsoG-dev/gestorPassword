@@ -17,10 +17,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Config.DbConfig;
 import Interface.Utils.PanelUtils;
-import Mundo.Cuentas.Cuenta;
-import Utils.Formats.ParamValue;
+
+import ORM.Utils.Formats.DbConfig;
+import ORM.Utils.Formats.ParamValue;
+
+import Models.Cuenta.CuentaModel;
+import Models.Cuenta.CuentaODM;
 
 public class PanelRegistro {
     /**
@@ -66,7 +69,7 @@ public class PanelRegistro {
     /**
      * DAO class for account
      */
-    private PanelUtils<Cuenta> cuentaUtils;
+    private PanelUtils<CuentaModel> cuentaUtils;
     /**
      * database configuration
      */
@@ -75,7 +78,7 @@ public class PanelRegistro {
      * constructor
      */
     public PanelRegistro(String frameTitle, int width, int height, DbConfig nConfig, int pLoggedUser,
-            Connection miCursor, JFrame nMainFrame, PanelUtils<Cuenta> nCuentaUtils) {
+            Connection miCursor, JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
         loggedUser = pLoggedUser;
         myConfig = nConfig;
         cursor = miCursor;
@@ -98,13 +101,13 @@ public class PanelRegistro {
                             nombre   = txtNombre.getText(),
                             email    = txtEmail.getText(),
                             password = txtPassword.getText();
-                        Cuenta nueva = new Cuenta(
+                        CuentaODM nueva = new CuentaODM(
                                 nombre,
                                 email,
                                 loggedUser,
                                 password
                         );
-                        nueva.setCreate_at();
+                        nueva.makeCreate_at();
                         int options = JOptionPane.showConfirmDialog(
                                 myFrame,
                                 "Do you want to register?",

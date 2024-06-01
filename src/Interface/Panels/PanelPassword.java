@@ -19,7 +19,8 @@ import javax.swing.JTextField;
 
 import Interface.Utils.PanelUtils;
 import Interface.Utils.PasswordOptions;
-import Mundo.Cuentas.Cuenta;
+
+import Models.Cuenta.CuentaModel;
 
 public final class PanelPassword {
 
@@ -32,9 +33,9 @@ public final class PanelPassword {
     private JCheckBox cbxSimbol;
     private JCheckBox cbxNumber;
     private PasswordOptions pOptions;
-    private PanelUtils<Cuenta> cuentaUtils;
+    private PanelUtils<CuentaModel> cuentaUtils;
 
-    public PanelPassword(JFrame nMainFrame, JTextField nPassword, PanelUtils<Cuenta> nCuentaUtils) {
+    public PanelPassword(JFrame nMainFrame, JTextField nPassword, PanelUtils<CuentaModel> nCuentaUtils) {
         mainFrame = nMainFrame;
         txtPassword = nPassword;
         cuentaUtils = nCuentaUtils;

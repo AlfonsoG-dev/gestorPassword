@@ -7,18 +7,18 @@ import java.sql.Connection;
 
 import java.security.SecureRandom;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import Conexion.Query.QueryDAO;
+import ORM.DbConnection.DAO.QueryDAO;
 
-import Model.ModelMethods;
+import ORM.Utils.Formats.UsableMethods;
+import ORM.Utils.Formats.ParamValue;
+import ORM.Utils.Model.ModelUtils;
 
-import Utils.Formats.ParamValue;
-import Utils.Model.ModelUtils;
 
 public final class PanelUtils<T> {
 
@@ -38,28 +38,28 @@ public final class PanelUtils<T> {
         return setOptions;
     }
 
-    public ArrayList<T> myDataList() {
-        return myQueryDAO.readAll(new ParamValue("order", "nombre"));
+    public List<T> myDataList() {
+        return myQueryDAO.readAll();
     }
-    public String[] getModelColumn(ModelMethods model) {
-        return modelUtils.getModelColumns(model.initModel(), true).split(",");
+    public String[] getModelColumn(UsableMethods model) {
+        return modelUtils.getColumns(model.initModel(), true).split(",");
     }
-    public String getModelType(ModelMethods model) {
-        return modelUtils.getModelTypes(model.getAllProperties(), true);
+    public String getModelType(UsableMethods model) {
+        return modelUtils.getTypes(model.getInstanceData(), true);
     }
-    public T findOperation(ParamValue condition) {
-        return myQueryDAO.findByColumnName(condition);
-    }
-
-    public boolean insertOperation(ModelMethods model, ParamValue condition) throws SQLException {
-        return myQueryDAO.insertNewRegister(model, condition);
+    public List<T> findOperation(ParamValue condition) {
+        return myQueryDAO.preparedSelect(condition);
     }
 
-    public boolean updateOperation(ModelMethods model, ParamValue condition) throws SQLException {
-        return myQueryDAO.updateRegister(model, condition);
+    public boolean insertOperation(UsableMethods model, ParamValue condition) throws SQLException {
+        return myQueryDAO.preparedInsert(model);
+    }
+
+    public boolean updateOperation(UsableMethods model, ParamValue condition) throws SQLException {
+        return myQueryDAO.preparedUpdate(model, condition);
     }
     public boolean deleteOperation(ParamValue condition) throws SQLException {
-        return myQueryDAO.deleteRegister(condition);
+        return myQueryDAO.preparedDelete(condition);
     }
 
     public void setAutoImcrement() throws SQLException {
@@ -95,7 +95,7 @@ public final class PanelUtils<T> {
             c = {columName, "user_id_fk"},
             v = {mTable.getValueAt(row, column).toString(), String.valueOf(loggedUser)};
         ParamValue condition = new ParamValue(c, v, "and");
-        T myObject    = findOperation(condition);
+        T myObject    = findOperation(condition).get(0);
         if(myObject == null) {
             errorMessage(null, "invalid value of field", "Error");
             return null;
