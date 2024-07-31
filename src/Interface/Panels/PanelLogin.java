@@ -108,7 +108,6 @@ public class PanelLogin {
         StringBuilder res = new StringBuilder();
         res.append("Select user...,");
         List<UserModel> myUsers = userUtils.myDataList();
-        System.out.println(myUsers.size());
         if(myUsers.size() > 0) {
             for(UserModel u: myUsers) {
                 res.append(u.getNombre() + ",");
