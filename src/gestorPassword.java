@@ -21,8 +21,8 @@ public class gestorPassword {
                 "",
                 "localhost",
                 3306,
-                "test_user",
-                "5x5W12"
+                "root",
+                "5x5W12%$asd"
         );
         try {
             Connection con = new Connector(mConfig).mysqlConnection();

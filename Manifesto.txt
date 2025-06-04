@@ -1,4 +1,4 @@
 Manifest-Version: 1.0
 Created-By: Alfonso-Gomajoa
 Main-Class: gestorPassword
-Class-Path: .\lib\javaORM\javaORM.jar 
+Class-Path: .\lib\javaORM_2.0\javaORM_2.0.jar 
