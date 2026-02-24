@@ -1,4 +1,4 @@
-package Interface.Utils;
+package application.interfaces.utils;
 
 
 import java.sql.SQLException;
@@ -13,11 +13,11 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 
-import ORM.DbConnection.DAO.QueryDAO;
+import orm.connection.dao.QueryDAO;
 
-import ORM.Utils.Formats.UsableMethods;
-import ORM.Utils.Formats.ParamValue;
-import ORM.Utils.Model.ModelUtils;
+import orm.utils.formats.UsableMethods;
+import orm.utils.formats.ParamValue;
+import orm.utils.model.ModelUtils;
 
 
 public final class PanelUtils<T> {

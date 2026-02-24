@@ -1,22 +1,20 @@
+package application;
 import java.sql.Connection;
 
-import Interface.Panels.PanelLogin;
+import application.interfaces.panels.PanelLogin;
+import application.models.cuenta.CuentaModel;
+import application.models.user.UserModel;
+import orm.connection.Connector;
+import orm.connection.dao.MigrationDAO;
 
+import orm.utils.formats.DbConfig;
+import orm.utils.formats.UsableMethods;
 
-import ORM.DbConnection.Connector;
-import ORM.DbConnection.DAO.MigrationDAO;
-
-import ORM.Utils.Formats.DbConfig;
-import ORM.Utils.Formats.UsableMethods;
-
-import Models.Cuenta.CuentaModel;
-import Models.User.UserModel;
-
-public class gestorPassword {
+public class GestorPassword {
     public static void main(String[] args) {
-        LogginUser();
+        logginUser();
     }
-    private final static DbConfig InitDB(String db_name) {
+    private static final DbConfig initDataBase(String dbName) {
         DbConfig mConfig = new DbConfig(
                 "",
                 "localhost",
@@ -27,10 +25,10 @@ public class gestorPassword {
         try {
             Connection con = new Connector(mConfig).mysqlConnection();
             MigrationDAO miDAO = new MigrationDAO(con, "");
-            miDAO.createDatabase(db_name);
+            miDAO.createDatabase(dbName);
             con.close();
             return new DbConfig(
-                    db_name,
+                    dbName,
                     mConfig.getHost(),
                     mConfig.getPort(),
                     mConfig.getUser(),
@@ -41,19 +39,19 @@ public class gestorPassword {
             return null;
         }
     }
-    private final static void InitTable(String tbName, UsableMethods model, Connection cursor) {
+    private static final void initTable(String tbName, UsableMethods model, Connection cursor) {
         MigrationDAO miDAO = new MigrationDAO(cursor, tbName);
         miDAO.createTable(model, "n");
     }
-    private final static void LogginUser() {
+    private static final void logginUser() {
         try {
-            DbConfig miConfig = InitDB("contrasenias");
+            DbConfig miConfig = initDataBase("contrasenias");
             Connection cursor = new Connector(miConfig).mysqlConnection();
-            InitTable("user", new UserModel(), cursor);
-            InitTable("cuenta", new CuentaModel(), cursor);
+            initTable("user", new UserModel(), cursor);
+            initTable("cuenta", new CuentaModel(), cursor);
             new PanelLogin(miConfig, cursor);
         } catch(Exception e) {
-            System.err.println(e);
+            e.printStackTrace();
         }
     }
 }

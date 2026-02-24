@@ -1,4 +1,4 @@
-package Interface.Panels;
+package application.interfaces.panels;
 
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
@@ -15,12 +15,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Interface.Utils.PanelUtils;
-import ORM.Utils.Formats.DbConfig;
-import ORM.Utils.Formats.ParamValue;
-
-import Models.Cuenta.CuentaModel;
-import Models.Cuenta.CuentaODM;
+import application.interfaces.utils.PanelUtils;
+import application.models.cuenta.CuentaModel;
+import application.models.cuenta.CuentaODM;
+import orm.utils.formats.ParamValue;
 
 public class PanelUpdate {
     /**
@@ -67,7 +65,7 @@ public class PanelUpdate {
     /**
      * constructor
      */
-    public PanelUpdate(String frameTitle, int width, int height, CuentaModel updateCuenta, DbConfig nConfig,
+    public PanelUpdate(String frameTitle, int width, int height, CuentaModel updateCuenta,
             JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;

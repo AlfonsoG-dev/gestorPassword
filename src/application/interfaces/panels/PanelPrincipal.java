@@ -1,7 +1,4 @@
-package Interface.Panels;
-
-import Interface.Utils.PanelUtils;
-import Interface.Utils.FileUtils;
+package application.interfaces.panels;
 
 import java.sql.Connection;
 
@@ -38,11 +35,12 @@ import javax.swing.JTextField;
 import javax.swing.TransferHandler;
 import javax.swing.table.DefaultTableModel;
 
-import ORM.Utils.Formats.DbConfig;
-
-import Models.Cuenta.CuentaModel;
-import Models.Cuenta.CuentaODM;
-import ORM.Utils.Formats.ParamValue;
+import application.interfaces.utils.FileUtils;
+import application.interfaces.utils.PanelUtils;
+import application.models.cuenta.CuentaModel;
+import application.models.cuenta.CuentaODM;
+import orm.utils.formats.DbConfig;
+import orm.utils.formats.ParamValue;
 
 public class PanelPrincipal {
     /**
@@ -583,7 +581,6 @@ public class PanelPrincipal {
                                 width/2,
                                 height-100,
                                 updateCuenta,
-                                myConfig,
                                 myFrame,
                                 cuentaUtils
                         );

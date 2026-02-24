@@ -1,4 +1,4 @@
-package Interface.Panels;
+package application.interfaces.panels;
 
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
@@ -17,10 +17,9 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Interface.Utils.PanelUtils;
-import Interface.Utils.PasswordOptions;
-
-import Models.Cuenta.CuentaModel;
+import application.interfaces.utils.PanelUtils;
+import application.interfaces.utils.PasswordOptions;
+import application.models.cuenta.CuentaModel;
 
 public final class PanelPassword {
 

@@ -1,7 +1,7 @@
-package Models.Cuenta;
+package application.models.cuenta;
 
-import ORM.Utils.Formats.UsableMethods;
-import ORM.Utils.Model.TableData;
+import orm.utils.formats.UsableMethods;
+import orm.utils.model.TableData;
 
 public class CuentaModel implements UsableMethods {
     @TableData(constraint = "not null unique primary key auto_increment", type = "int")

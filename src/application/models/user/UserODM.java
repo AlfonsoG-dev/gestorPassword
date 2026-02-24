@@ -1,31 +1,23 @@
-package Models.Cuenta;
+package application.models.user;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class CuentaODM extends CuentaModel {
+public class UserODM extends UserModel {
     public String nombre;
     public String email;
-    public int user_id_fk;
     public String password;
+    public String rol;
     public String create_at;
     public String update_at;
-    
-    public CuentaODM(String nombre, String email, int loggeduser, String password) {
+
+    public UserODM(String nombre, String email, String password, String rol) {
+        super();
         this.nombre = nombre;
         this.email = email;
-        this.user_id_fk = loggeduser;
         this.password = password;
+        this.rol = rol;
     }
-    public CuentaODM(CuentaModel m) {
-        nombre = m.getNombre();
-        email = m.getEmail();
-        user_id_fk = m.getUser_id_fk();
-        password = m.getPassword();
-        create_at = m.getCreate_at();
-        update_at = m.getUpdate_at();
-    }
-    public CuentaODM() { }
 
     /**
      * @return the nombre
@@ -56,20 +48,6 @@ public class CuentaODM extends CuentaModel {
     }
 
     /**
-     * @return the user_id_fk
-     */
-    public int getUser_id_fk() {
-        return user_id_fk;
-    }
-
-    /**
-     * @param user_id_fk the user_id_fk to set
-     */
-    public void setUser_id_fk(int user_id_fk) {
-        this.user_id_fk = user_id_fk;
-    }
-
-    /**
      * @return the password
      */
     public String getPassword() {
@@ -84,32 +62,31 @@ public class CuentaODM extends CuentaModel {
     }
 
     /**
-     * @return the create_at
+     * @return the rol
      */
+    public String getRol() {
+        return rol;
+    }
+
+    /**
+     * @param rol the rol to set
+     */
+    public void setRol(String rol) {
+        this.rol = rol;
+    }
     public String getCreate_at() {
         return create_at;
     }
-
-    /**
-     * @param create_at the create_at to set
-     */
     public void setCreate_at(String create_at) {
         this.create_at = create_at;
     }
-
-    /**
-     * @return the update_at
-     */
     public String getUpdate_at() {
         return update_at;
     }
-
-    /**
-     * @param update_at the update_at to set
-     */
     public void setUpdate_at(String update_at) {
         this.update_at = update_at;
     }
+
     public void makeCreate_at() {
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");  
         LocalDateTime miDate = LocalDateTime.now();  

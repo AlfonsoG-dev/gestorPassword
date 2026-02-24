@@ -1,4 +1,4 @@
-package Interface.Panels;
+package application.interfaces.panels;
 
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
@@ -20,9 +20,8 @@ import javax.swing.JPanel;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 
-import Interface.Utils.FileUtils;
-
-import Models.Cuenta.CuentaModel;
+import application.interfaces.utils.FileUtils;
+import application.models.cuenta.CuentaModel;
 
 public class ImportPanel {
 

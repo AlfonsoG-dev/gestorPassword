@@ -1,4 +1,4 @@
-package Interface.Panels;
+package application.interfaces.panels;
 
 import java.sql.Connection;
 
@@ -17,13 +17,11 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import Interface.Utils.PanelUtils;
-
-import ORM.Utils.Formats.DbConfig;
-import ORM.Utils.Formats.ParamValue;
-
-import Models.Cuenta.CuentaModel;
-import Models.Cuenta.CuentaODM;
+import application.interfaces.utils.PanelUtils;
+import application.models.cuenta.CuentaModel;
+import application.models.cuenta.CuentaODM;
+import orm.utils.formats.DbConfig;
+import orm.utils.formats.ParamValue;
 
 public class PanelRegistro {
     /**

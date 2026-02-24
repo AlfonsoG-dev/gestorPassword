@@ -1,4 +1,4 @@
-package Interface.Utils;
+package application.interfaces.utils;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,10 +6,11 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 import java.util.List;
-import java.util.ArrayList;
 
-import Models.Cuenta.CuentaModel;
-import Models.Cuenta.CuentaODM;
+import application.models.cuenta.CuentaModel;
+import application.models.cuenta.CuentaODM;
+
+import java.util.ArrayList;
 
 public class FileUtils {
     public static List<String> readFileLines(String filePath) {

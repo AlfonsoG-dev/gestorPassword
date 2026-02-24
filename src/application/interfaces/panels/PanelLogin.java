@@ -1,6 +1,4 @@
-package Interface.Panels;
-
-import Interface.Utils.PanelUtils;
+package application.interfaces.panels;
 
 import java.sql.Connection;
 
@@ -21,12 +19,12 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import ORM.DbConnection.DAO.QueryDAO;
-
-import ORM.Utils.Formats.DbConfig;
-import Models.Cuenta.CuentaModel;
-import Models.User.UserModel;
-import ORM.Utils.Formats.ParamValue;
+import application.interfaces.utils.PanelUtils;
+import application.models.cuenta.CuentaModel;
+import application.models.user.UserModel;
+import orm.connection.dao.QueryDAO;
+import orm.utils.formats.DbConfig;
+import orm.utils.formats.ParamValue;
 
 public class PanelLogin {
 
@@ -76,21 +74,21 @@ public class PanelLogin {
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         dbConfig = myConfig;
-        userUtils = new PanelUtils<UserModel>(
-                new QueryDAO<UserModel>(
+        userUtils = new PanelUtils<>(
+                new QueryDAO<>(
                     cursor,
                     "user",
                     new UserModel()
                 )
         );
-        cuentaUtils = new PanelUtils<CuentaModel>(
-                new QueryDAO<CuentaModel>(
+        cuentaUtils = new PanelUtils<>(
+                new QueryDAO<>(
                     cursor,
                     "cuenta",
                     new CuentaModel()
                 )
         );
-        if(userUtils.myDataList().size() > 0) {
+        if(!userUtils.myDataList().isEmpty()) {
             createUI("Loggin");
         } else {
             new PanelLoginUser(
@@ -108,9 +106,10 @@ public class PanelLogin {
         StringBuilder res = new StringBuilder();
         res.append("Select user...,");
         List<UserModel> myUsers = userUtils.myDataList();
-        if(myUsers.size() > 0) {
+        if(!myUsers.isEmpty()) {
             for(UserModel u: myUsers) {
-                res.append(u.getNombre() + ",");
+                res.append(u.getNombre());
+                res.append(",");
             }
         }
         return res.toString().split(",");
@@ -122,7 +121,6 @@ public class PanelLogin {
     private JPanel loginContent() {
         pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 2));
-        
         cbxUserName = new JComboBox<String>(comboBoxUsers());
         pPrincipal.add(new JLabel("name"));
         pPrincipal.add(cbxUserName);

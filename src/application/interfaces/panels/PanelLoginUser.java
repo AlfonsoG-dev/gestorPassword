@@ -1,6 +1,4 @@
-package Interface.Panels;
-
-import Interface.Utils.PanelUtils;
+package application.interfaces.panels;
 
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -16,13 +14,15 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JTextField;
+
+import application.interfaces.utils.PanelUtils;
+import application.models.user.UserModel;
+import application.models.user.UserODM;
+
 import javax.swing.JPanel;
 
-import ORM.Utils.Formats.DbConfig;
-
-import Models.User.UserModel;
-import Models.User.UserODM;
-import ORM.Utils.Formats.ParamValue;
+import orm.utils.formats.DbConfig;
+import orm.utils.formats.ParamValue;
 
 public class PanelLoginUser {
 
