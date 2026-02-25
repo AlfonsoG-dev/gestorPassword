@@ -5,9 +5,7 @@ import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowAdapter;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.ActionEvent;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +15,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.WindowConstants;
 import javax.swing.filechooser.FileSystemView;
 import javax.swing.table.DefaultTableModel;
 
@@ -28,7 +27,6 @@ public class ImportPanel {
     private JFrame myFrame;
     private JFrame mainFrame;
 
-    private JPanel pPrincipal;
     private JFileChooser fileChooser;
     
     private DefaultTableModel tableModel;
@@ -38,10 +36,10 @@ public class ImportPanel {
 
 
     public ImportPanel(JFrame nMainFrame, int width, int height, int nLoggedUser, DefaultTableModel nModel) {
+        createUI(width, height);
         mainFrame = nMainFrame;
         loggedUser = nLoggedUser;
         tableModel = nModel;
-        createUI(width, height);
     }
 
     /**
@@ -56,20 +54,19 @@ public class ImportPanel {
             .forEach(e -> {
                 CuentaModel data = e;
                 int id = 0;
-                String 
-                    nombre = data.getNombre(),
-                    email = data.getEmail(),
-                    password = data.getPassword(),
-                    create_at = data.getCreate_at(),
-                    update_at = "";
+                String nombre = data.getNombre();
+                String email = data.getEmail();
+                String password = data.getPassword();
+                String createAt = data.getCreate_at();
+                String updateAt = "";
                 tableContent.add(
                         id + "," +
                         nombre + "," +
                         email + "," +
                         loggedUser + "," +
                         password + "," +
-                        create_at + "," +
-                        update_at
+                        createAt + "," +
+                        updateAt
                 );
             });
         for(String d: tableContent) {
@@ -77,46 +74,41 @@ public class ImportPanel {
         }
     }
     private JPanel contentPanel() {
-        pPrincipal = new JPanel();
+        JPanel pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(1, 1));
-        pPrincipal.add(fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory()));
-        fileChooser.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int r = fileChooser.showOpenDialog(myFrame);
-                if(r == JFileChooser.APPROVE_OPTION) {
-                    filePaht = fileChooser.getSelectedFile().getPath();
-                }
+        fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        pPrincipal.add(fileChooser);
+        fileChooser.addActionListener(e -> {
+            int r = fileChooser.showOpenDialog(myFrame);
+            if(r == JFileChooser.APPROVE_OPTION) {
+                filePaht = fileChooser.getSelectedFile().getPath();
             }
         });
         return pPrincipal;
     }
     private void okButtonHandler(JButton okButton) {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                List<CuentaModel> importData = FileUtils.getData(filePaht);
-                buildTableDataFromImportFile(importData);
-                mainFrame.setEnabled(true);
-                myFrame.dispose();
-            }
+        okButton.addActionListener(e -> {
+            List<CuentaModel> importData = FileUtils.getData(filePaht);
+            buildTableDataFromImportFile(importData);
+            mainFrame.setEnabled(true);
+            myFrame.dispose();
         });
     }
 
     private void cancelButtonHandler(JButton cancelButton) {
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int condition = JOptionPane.showConfirmDialog(
-                        mainFrame,
-                        "the frame will be closed!",
-                        "Close",
-                        JOptionPane.YES_NO_OPTION
-                );
-                if(condition == JOptionPane.YES_OPTION) {
-                    mainFrame.setEnabled(true);
-                    myFrame.dispose();
-                } else {
-                    myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-                }
+        cancelButton.addActionListener(e -> {
+            int condition = JOptionPane.showConfirmDialog(
+                    mainFrame,
+                    "the frame will be closed!",
+                    "Close",
+                    JOptionPane.YES_NO_OPTION
+            );
+            if(condition == JOptionPane.YES_OPTION) {
+                mainFrame.setEnabled(true);
+                myFrame.dispose();
+            } else {
+                myFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
             }
         });
     }
@@ -142,6 +134,7 @@ public class ImportPanel {
         myFrame.setSize(width, height);
 
         myFrame.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent e) {
                 int condition = JOptionPane.showConfirmDialog(
                         mainFrame,
@@ -153,12 +146,12 @@ public class ImportPanel {
                     mainFrame.setEnabled(true);
                     myFrame.dispose();
                 } else {
-                    myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                    myFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                 }
             }
         });
 
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         myFrame.add(contentPanel(), BorderLayout.CENTER);
         myFrame.add(optionsPanel(), BorderLayout.SOUTH);
         myFrame.setVisible(true);
