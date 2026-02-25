@@ -7,8 +7,6 @@ import java.util.List;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.JButton;
@@ -18,6 +16,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import application.interfaces.utils.PanelUtils;
 import application.models.cuenta.CuentaModel;
@@ -33,10 +32,6 @@ public class PanelLogin {
      */
     private JFrame myFrame;
     /**
-     * principal panel of the frame
-     */
-    private JPanel pPrincipal;
-    /**
      * user name options to log in
      */
     private JComboBox<String> cbxUserName;
@@ -44,14 +39,6 @@ public class PanelLogin {
      * field to digit user password
      */
     private JTextField txtUserPassword;
-    /**
-     * button to log in
-     */
-    private JButton btnIngreso;
-    /**
-     * button to cancel log in
-     */
-    private JButton btnCancel;
     /** 
      * database connection
     */
@@ -74,28 +61,12 @@ public class PanelLogin {
     public PanelLogin(DbConfig myConfig, Connection miConector) {
         cursor = miConector;
         dbConfig = myConfig;
-        userUtils = new PanelUtils<>(
-                new QueryDAO<>(
-                    cursor,
-                    "user",
-                    new UserModel()
-                )
-        );
-        cuentaUtils = new PanelUtils<>(
-                new QueryDAO<>(
-                    cursor,
-                    "cuenta",
-                    new CuentaModel()
-                )
-        );
+        userUtils = new PanelUtils<>(new QueryDAO<>(cursor, "user", new UserModel()));
+        cuentaUtils = new PanelUtils<>(new QueryDAO<>(cursor, "cuenta", new CuentaModel()));
         if(!userUtils.myDataList().isEmpty()) {
             createUI("Loggin");
         } else {
-            new PanelLoginUser(
-                    dbConfig,
-                    cursor,
-                    userUtils
-            );
+            new PanelLoginUser(dbConfig, cursor, userUtils);
         }
     }
     /**
@@ -119,9 +90,9 @@ public class PanelLogin {
      * @return the panel with its content
      */
     private JPanel loginContent() {
-        pPrincipal = new JPanel();
+        JPanel pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(2, 2));
-        cbxUserName = new JComboBox<String>(comboBoxUsers());
+        cbxUserName = new JComboBox<>(comboBoxUsers());
         pPrincipal.add(new JLabel("name"));
         pPrincipal.add(cbxUserName);
 
@@ -139,65 +110,41 @@ public class PanelLogin {
 
         JPanel option = new JPanel();
         option.setLayout(new FlowLayout());
-        btnIngreso = new JButton("OK");
+        JButton btnIngreso = new JButton("OK");
         option.add(btnIngreso);
         btnIngreso.setMnemonic(KeyEvent.VK_ENTER);
 
-        btnIngreso.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String userName = "";
-                String userPassword = "";
-                if(cbxUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
-                    JOptionPane.showMessageDialog(
-                            myFrame,
-                            "invalid user or password",
-                            "Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
+        btnIngreso.addActionListener(e -> {
+            String userName = "";
+            String userPassword = "";
+            if(cbxUserName.getSelectedIndex() == 0 || txtUserPassword.getText().isEmpty()) {
+                JOptionPane.showMessageDialog(myFrame,
+                        "invalid user or password", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                userName = cbxUserName.getSelectedItem().toString();
+                userPassword = txtUserPassword.getText();
+                String[] c = {"nombre", "password"};
+                String[] v = {userName, userPassword};
+                ParamValue condition = new ParamValue(c, v, "and");
+                UserModel mio = userUtils.findOperation(condition).get(0);
+                if(mio != null) {
+                    new PanelPrincipal(dbConfig, mio.getId_pk(), myFrame, cursor, cuentaUtils);
+                    myFrame.dispose();
                 } else {
-                    userName = cbxUserName.getSelectedItem().toString();
-                    userPassword = txtUserPassword.getText();
-                    String[] 
-                        c = {"nombre", "password"},
-                        v = {userName, userPassword};
-                    ParamValue condition = new ParamValue(c, v, "and");
-                    UserModel mio = userUtils.findOperation(condition).get(0);
-                    if(mio != null) {
-                        new PanelPrincipal(
-                                dbConfig,
-                                mio.getId_pk(),
-                                myFrame,
-                                cursor,
-                                cuentaUtils
-                        );
-                        myFrame.dispose();
-                    } else {
-                        JOptionPane.showMessageDialog(
-                                myFrame,
-                                "invalid credentials",
-                                "Error",
-                                JOptionPane.ERROR_MESSAGE
-                        );
-                    }
+                    JOptionPane.showMessageDialog(myFrame,
+                            "invalid credentials", "Error", JOptionPane.ERROR_MESSAGE);
                 }
             }
         });
 
-        btnCancel = new JButton("Cancel");
+        JButton btnCancel = new JButton("Cancel");
         option.add(btnCancel);
 
-        btnCancel.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int option = JOptionPane.showConfirmDialog(
-                        myFrame,
-                        "are you sure?",
-                        "Exit",
-                        JOptionPane.OK_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                );
-                if(option == JOptionPane.OK_OPTION) {
-                    System.exit(0);
-                }
+        btnCancel.addActionListener(e -> {
+            int option1 = JOptionPane.showConfirmDialog(myFrame,
+                    "are you sure?", "Exit", JOptionPane.OK_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if(option1 == JOptionPane.OK_OPTION) {
+                System.exit(0);
             }
         });
         return option;
@@ -216,7 +163,7 @@ public class PanelLogin {
 
 
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         myFrame.setResizable(false);
     }
 }
