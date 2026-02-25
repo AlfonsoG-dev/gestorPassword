@@ -3,8 +3,6 @@ package application.interfaces.panels;
 import java.awt.GridLayout;
 import java.awt.FlowLayout;
 import java.awt.event.KeyEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -16,6 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.WindowConstants;
 
 import application.interfaces.utils.PanelUtils;
 import application.interfaces.utils.PasswordOptions;
@@ -25,7 +24,6 @@ public final class PanelPassword {
 
     private JFrame myFrame;
     private JFrame mainFrame;
-    private JPanel pPrincipal;
     private JTextField txtPassword;
     private JComboBox<String> cbxSize; 
     private JCheckBox cbxLetter;
@@ -42,38 +40,29 @@ public final class PanelPassword {
     }
     private void okButtonHandler(JButton okButton) {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
-        okButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int size    = Integer.parseInt(cbxSize.getSelectedItem().toString());
-                boolean 
-                    letters = cbxLetter.isSelected(),
-                    simbols = cbxSimbol.isSelected(),
-                    numbers = cbxNumber.isSelected();
-                pOptions = new PasswordOptions(size, letters, simbols, numbers);
-                if(size != -1 && size > 4 && (letters || simbols || numbers)) {
-                    txtPassword.setText(cuentaUtils.generatePassword(pOptions).toString());
-                    cuentaUtils.setPasswordValues(pOptions);
-                    mainFrame.setEnabled(true);
-                    myFrame.dispose();
-                } else {
-                    JOptionPane.showMessageDialog(
-                            myFrame,
-                            "invalid password options",
-                            "Generator Error",
-                            JOptionPane.ERROR_MESSAGE
-                    );
-                }
+        okButton.addActionListener(e -> {
+            int size    = Integer.parseInt(cbxSize.getSelectedItem().toString());
+            boolean letters = cbxLetter.isSelected();
+            boolean simbols = cbxSimbol.isSelected();
+            boolean numbers = cbxNumber.isSelected();
+            pOptions = new PasswordOptions(size, letters, simbols, numbers);
+            if(size != -1 && size > 4 && (letters || simbols || numbers)) {
+                txtPassword.setText(cuentaUtils.generatePassword(pOptions).toString());
+                cuentaUtils.setPasswordValues(pOptions);
+                mainFrame.setEnabled(true);
+                myFrame.dispose();
+            } else {
+                JOptionPane.showMessageDialog(myFrame,
+                        "invalid password options", "Generator Error", JOptionPane.ERROR_MESSAGE);
             }
         });
     }
 
     private void cancelButtonHandler(JButton cancelButton) {
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                txtPassword.setText("");
-                mainFrame.setEnabled(true);
-                myFrame.dispose();
-            }
+        cancelButton.addActionListener(e -> {
+            txtPassword.setText("");
+            mainFrame.setEnabled(true);
+            myFrame.dispose();
         });
     }
     private JPanel optionComponent() {
@@ -91,19 +80,20 @@ public final class PanelPassword {
         return options;
     }
     private JPanel panelContentComponent() {
-        pPrincipal = new JPanel();
+        JPanel pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(3, 2));
         pPrincipal.add(new JLabel());
         pPrincipal.add(new JLabel());
 
 
-        StringBuffer numbers = new StringBuffer();
+        StringBuilder numbers = new StringBuilder();
         for(int i=5; i<=10; ++i) {
-            numbers.append(i + ",");
+            numbers.append(i);
+            numbers.append(",");
         }
         JPanel miPanel = new JPanel();
         miPanel.setLayout(new GridLayout(1, 3));
-        cbxSize = new JComboBox<String>(numbers.toString().split(","));
+        cbxSize = new JComboBox<>(numbers.toString().split(","));
         pPrincipal.add(new JLabel("size: "));
         miPanel.add(cbxSize);
         // add empty labels to make the combobox smaller  
@@ -117,9 +107,12 @@ public final class PanelPassword {
         JPanel checks = new JPanel();
         checks.setLayout(new FlowLayout());
 
-        checks.add(cbxLetter = new JCheckBox("letters"));
-        checks.add(cbxSimbol = new JCheckBox("simbols"));
-        checks.add(cbxNumber = new JCheckBox("numbers"));
+        cbxLetter = new JCheckBox("letters");
+        checks.add(cbxLetter);
+        cbxSimbol = new JCheckBox("simbols");
+        checks.add(cbxSimbol);
+        cbxNumber = new JCheckBox("numbers");
+        checks.add(cbxNumber);
 
         pPrincipal.add(checks);
 
@@ -130,19 +123,18 @@ public final class PanelPassword {
         myFrame = new JFrame("Password Generator");
         myFrame.setSize(500, 300);
         myFrame.setLayout(new GridLayout(2, 1));
-        
         myFrame.addWindowListener(new WindowAdapter() {
             // changes the close operation
+            @Override
             public void windowClosing(WindowEvent we) {
                 mainFrame.setEnabled(true);
                 myFrame.dispose();
             }
         });
-        
         myFrame.add(panelContentComponent());
         myFrame.add(optionComponent());
 
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         myFrame.setVisible(true);
     }
 
