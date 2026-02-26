@@ -5,8 +5,6 @@ import java.sql.Connection;
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
 import java.awt.event.KeyEvent;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -16,6 +14,8 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import application.interfaces.utils.PanelUtils;
 import application.models.cuenta.CuentaModel;
@@ -33,10 +33,6 @@ public class PanelRegistro {
      */
     private int loggedUser;
     /**
-     * the label for the panel name
-     */
-    private JLabel headerLabel;
-    /**
      * the nombre text field
      */
     private JTextField txtNombre;
@@ -45,17 +41,9 @@ public class PanelRegistro {
      */
     private JTextField txtEmail;
     /**
-     * logged user text field 
-     */
-    private JTextField txtLoggedUser;
-    /**
      * the password text field
      */
     private JTextField txtPassword;
-    /**
-     * the current principal panel
-     */
-    private JPanel pPrincipal;
     /**
      * the cursor to allow transaction for commit or rollback
      */
@@ -75,14 +63,14 @@ public class PanelRegistro {
     /**
      * constructor
      */
-    public PanelRegistro(String frameTitle, int width, int height, DbConfig nConfig, int pLoggedUser,
+    public PanelRegistro(String frameTitle, int[] dimensions, DbConfig nConfig, int pLoggedUser,
             Connection miCursor, JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
         loggedUser = pLoggedUser;
         myConfig = nConfig;
         cursor = miCursor;
         mainFrame = nMainFrame;
         cuentaUtils = nCuentaUtils;
-        createUI(frameTitle, width, height);
+        createUI(frameTitle, dimensions[0], dimensions[1]);
     }
     /**
      * implements the OKButton handler
@@ -90,62 +78,36 @@ public class PanelRegistro {
      * <br> post: </br> enables the main frame and close the current frame
      * @param OKButton: panel OKButton to insert a new register to the database
      */
-    private void okButtonHandler(JButton OKButton) {
-        OKButton.setMnemonic(KeyEvent.VK_ENTER);
-            OKButton.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-                    try {
-                        String 
-                            nombre   = txtNombre.getText(),
-                            email    = txtEmail.getText(),
-                            password = txtPassword.getText();
-                        CuentaODM nueva = new CuentaODM(
-                                nombre,
-                                email,
-                                loggedUser,
-                                password
-                        );
-                        nueva.makeCreate_at();
-                        int options = JOptionPane.showConfirmDialog(
-                                myFrame,
-                                "Do you want to register?",
-                                "Register operation",
-                                JOptionPane.OK_CANCEL_OPTION,
-                                JOptionPane.QUESTION_MESSAGE
-                        );
-                        if(options == JOptionPane.OK_OPTION) {
-                            String[]
-                                c = {"nombre", "user_id_fk"},
-                                v = {nueva.getNombre(), String.valueOf(loggedUser)};
-                            ParamValue condition = new ParamValue(c, v, "and");
-                            cuentaUtils.insertOperation(nueva, condition);
-                            if(mainFrame != null) {
-                                mainFrame.setEnabled(true);
-                                myFrame.dispose();
-                            } else {
-                                new PanelPrincipal(
-                                        myConfig, loggedUser,
-                                        myFrame,
-                                        cursor,
-                                        cuentaUtils
-                                );
-                                myFrame.dispose();
-                            }
+    private void okButtonHandler(JButton btnOK) {
+        btnOK.setMnemonic(KeyEvent.VK_ENTER);
+            btnOK.addActionListener(e -> {
+                try {
+                    String nombre = txtNombre.getText();
+                    String email = txtEmail.getText();
+                    String password = txtPassword.getText();
+                    CuentaODM nueva = new CuentaODM(nombre, email, loggedUser, password);
+                    nueva.makeCreate_at();
+                    int options = JOptionPane.showConfirmDialog(myFrame,
+                            "Do you want to register?", "Register operation",
+                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                    if(options == JOptionPane.OK_OPTION) {
+                        String[] c = {"nombre", "user_id_fk"};
+                        String[] v = {nueva.getNombre(), String.valueOf(loggedUser)};
+                        ParamValue condition = new ParamValue(c, v, "and");
+                        cuentaUtils.insertOperation(nueva, condition);
+                        if(mainFrame != null) {
+                            mainFrame.setEnabled(true);
+                            myFrame.dispose();
+                        } else {
+                            new PanelPrincipal(myConfig, loggedUser, myFrame, cursor, cuentaUtils);
+                            myFrame.dispose();
                         }
-                    } catch(Exception ex) {
-                        ex.printStackTrace();
-                        cuentaUtils.errorMessage(
-                                myFrame,
-                                "error while trying to insert registers",
-                                "Insert Error"
-                        );
-                    } finally {
-                        cuentaUtils.infoMessage(
-                                myFrame,
-                                "reload the window to see the changes",
-                                "Cuenta Error"
-                        ); 
                     }
+                } catch(Exception ex) {
+                    ex.printStackTrace();
+                    cuentaUtils.errorMessage(myFrame, "error while trying to insert registers", "Insert Error");
+                } finally {
+                    cuentaUtils.infoMessage(myFrame, "reload the window to see the changes", "Cuenta Error"); 
                 }
             });
     }
@@ -155,44 +117,28 @@ public class PanelRegistro {
      * @param cancelButton: panel cancelButton to go back to the mainFrame
      */
     private void cancelButtonHandler(JButton cancelButton) {
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int options = JOptionPane.showConfirmDialog(
-                        myFrame,
-                        "Do you want to cancel?",
-                        "Register operation",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                );
-                if(options == JOptionPane.OK_OPTION) {
-                    if(mainFrame != null) {
-                        mainFrame.setEnabled(true);
-                        myFrame.dispose();
-                    } else {
-                        System.exit(0);
-                    }
+        cancelButton.addActionListener(e -> {
+            int options = JOptionPane.showConfirmDialog(myFrame,
+                    "Do you want to cancel?", "Register operation",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if(options == JOptionPane.OK_OPTION) {
+                if(mainFrame != null) {
+                    mainFrame.setEnabled(true);
+                    myFrame.dispose();
+                } else {
+                    System.exit(0);
                 }
             }
         });
     }
     private void generateButtonHandler(JButton generateButton) {
         generateButton.setMnemonic(KeyEvent.VK_G);
-        generateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(txtPassword.getText().isEmpty()) {
-                    new PanelPassword(
-                            myFrame,
-                            txtPassword,
-                            cuentaUtils
-                    );
-                    myFrame.setEnabled(false);
-                } else {
-                    txtPassword.setText(
-                            cuentaUtils.generatePassword(
-                                cuentaUtils.getPasswordOptions()
-                            ).toString()
-                    );
-                }
+        generateButton.addActionListener(e -> {
+            if(txtPassword.getText().isEmpty()) {
+                new PanelPassword(myFrame, txtPassword, cuentaUtils);
+                myFrame.setEnabled(false);
+            } else {
+                txtPassword.setText(cuentaUtils.generatePassword(cuentaUtils.getPasswordOptions()).toString());
             }
         });
     }
@@ -205,18 +151,22 @@ public class PanelRegistro {
         pOptions.setLayout(new GridLayout(4, 2));
 
         pOptions.add(new JLabel(" Nombre"));
-        pOptions.add(txtNombre = new JTextField());
+        txtNombre = new JTextField();
+        pOptions.add(txtNombre);
         pOptions.add(new JLabel(" Email"));
-        pOptions.add(txtEmail = new JTextField());
+        txtEmail = new JTextField();
+        pOptions.add(txtEmail);
         pOptions.add(new JLabel(" User_id"));
 
-        pOptions.add(txtLoggedUser = new JTextField(String.valueOf(loggedUser)));
+        JTextField txtLoggedUser = new JTextField(String.valueOf(loggedUser));
+        pOptions.add(txtLoggedUser);
         txtLoggedUser.setEnabled(false);
 
         pOptions.add(new JLabel(" Password"));
         JPanel mip = new JPanel();
         mip.setLayout(new GridLayout(1, 2));
-        mip.add(txtPassword = new JTextField());
+        txtPassword = new JTextField();
+        mip.add(txtPassword);
         JButton btnGenerate = new JButton("generate");
         mip.add(btnGenerate);
         generateButtonHandler(btnGenerate);
@@ -233,9 +183,9 @@ public class PanelRegistro {
         JPanel options = new JPanel();
         options.setLayout(new GridLayout(1, 2));
 
-        JButton OKButton = new JButton("OK");
-        options.add(OKButton);
-        okButtonHandler(OKButton);
+        JButton btnOK = new JButton("OK");
+        options.add(btnOK);
+        okButtonHandler(btnOK);
 
         JButton cancelButton = new JButton("cancel");
         options.add(cancelButton);
@@ -255,6 +205,7 @@ public class PanelRegistro {
 
         myFrame.addWindowListener(new WindowAdapter() {
             // changes the close operation
+            @Override
             public void windowClosing(WindowEvent we) {
                 if(mainFrame != null) {
                     mainFrame.setEnabled(true);
@@ -265,9 +216,9 @@ public class PanelRegistro {
             }
         });
 
-        headerLabel = new JLabel("Register", JLabel.CENTER);
+        JLabel headerLabel = new JLabel("Register", SwingConstants.CENTER);
 
-        pPrincipal = new JPanel();
+        JPanel pPrincipal = new JPanel();
         pPrincipal.setLayout(new BorderLayout());
 
         pPrincipal.add(optionsComponent(), BorderLayout.NORTH);
@@ -277,6 +228,6 @@ public class PanelRegistro {
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 }
