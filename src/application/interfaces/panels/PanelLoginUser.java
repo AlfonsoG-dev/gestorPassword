@@ -6,7 +6,6 @@ import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.sql.Connection;
-import java.sql.SQLException;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -23,7 +22,6 @@ import application.models.user.UserODM;
 import javax.swing.JPanel;
 
 import orm.utils.formats.DbConfig;
-import orm.utils.formats.ParamValue;
 
 public class PanelLoginUser {
 
@@ -64,9 +62,8 @@ public class PanelLoginUser {
 
         return pOptions;
     }
-    private void appendOKOptionAction(String[] column, String[] value, UserODM user) throws SQLException {
-        ParamValue condition = new ParamValue(column, value, "and");
-        userUtils.insertOperation(user, condition);
+    private void appendOKOptionAction(UserODM user) {
+        userUtils.insertOperation(user);
         myFrame.dispose();
         new PanelLogin(myConfig, cursor);
     }
@@ -80,29 +77,23 @@ public class PanelLoginUser {
     private void okButtonHandler(JButton okButton) {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
         okButton.addActionListener(e -> {
-            try {
-                String nombre = getTextFieldValues()[0];
-                String email = getTextFieldValues()[1];
-                String password = getTextFieldValues()[2];
-                String rol = getTextFieldValues()[3];
+            String nombre = getTextFieldValues()[0];
+            String email = getTextFieldValues()[1];
+            String password = getTextFieldValues()[2];
+            String rol = getTextFieldValues()[3];
 
-                if(nombre == null || email == null || password == null || rol == null) {
-                    JOptionPane.showMessageDialog(myFrame,
-                            "Invalid data", "Error", JOptionPane.ERROR_MESSAGE);
-                } else {
-                    UserODM newUser = new UserODM(nombre, email, password, rol);
-                    newUser.makeCreate_at();
-                    String[] c = {"nombre", "email"};
-                    String[] v = {nombre, email};
-                    int options = JOptionPane.showConfirmDialog(myFrame,
-                            "Do you want to register?", "Register operation",
-                            JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-                    if(options == JOptionPane.OK_OPTION) {
-                        appendOKOptionAction(c, v, newUser);
-                    }
+            if(nombre == null || email == null || password == null || rol == null) {
+                JOptionPane.showMessageDialog(myFrame,
+                        "Invalid data", "Error", JOptionPane.ERROR_MESSAGE);
+            } else {
+                UserODM newUser = new UserODM(nombre, email, password, rol);
+                newUser.makeCreate_at();
+                int options = JOptionPane.showConfirmDialog(myFrame,
+                        "Do you want to register?", "Register operation",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                if(options == JOptionPane.OK_OPTION) {
+                    appendOKOptionAction(newUser);
                 }
-            } catch(Exception er) {
-                er.printStackTrace();
             }
         });
     }

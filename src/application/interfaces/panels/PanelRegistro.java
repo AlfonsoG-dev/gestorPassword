@@ -21,7 +21,6 @@ import application.interfaces.utils.PanelUtils;
 import application.models.cuenta.CuentaModel;
 import application.models.cuenta.CuentaODM;
 import orm.utils.formats.DbConfig;
-import orm.utils.formats.ParamValue;
 
 public class PanelRegistro {
     /**
@@ -91,10 +90,7 @@ public class PanelRegistro {
                             "Do you want to register?", "Register operation",
                             JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
                     if(options == JOptionPane.OK_OPTION) {
-                        String[] c = {"nombre", "user_id_fk"};
-                        String[] v = {nueva.getNombre(), String.valueOf(loggedUser)};
-                        ParamValue condition = new ParamValue(c, v, "and");
-                        cuentaUtils.insertOperation(nueva, condition);
+                        cuentaUtils.insertOperation(nueva);
                         if(mainFrame != null) {
                             mainFrame.setEnabled(true);
                             myFrame.dispose();

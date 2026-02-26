@@ -367,29 +367,24 @@ public class PanelPrincipal {
                     "Do you want to remove?", "Remove operation",
                     JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
             String columName = mTable.getColumnName(column);
-            try {
-                if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
-                    cuentaUtils.errorMessage(myFrame,
-                            "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Option Error");
-                } else if(mTable.getSelectedRow() != -1 && option == JOptionPane.OK_OPTION && row != -1 && column != -1) {
-                    String valueOfColumn = mTable.getValueAt(row, column).toString();
-                    String[] c = {columName, USER_FK_STRING};
-                    String[] v = {valueOfColumn, mTable.getValueAt(row, 3).toString()};
-                    ParamValue condition = new ParamValue(c, v, "and");
-                    boolean eliminado = cuentaUtils.deleteOperation(condition);
-                    if(eliminado) {
-                        tableModel.removeRow(row);
-                    } else {
-                        cuentaUtils.errorMessage(myFrame,
-                                String.format("Column: %s with value of: %s not found", columName, valueOfColumn),
-                                "Not fount Error");
-                    }
+            if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
+                cuentaUtils.errorMessage(myFrame,
+                        "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Option Error");
+            } else if(mTable.getSelectedRow() != -1 && option == JOptionPane.OK_OPTION && row != -1 && column != -1) {
+                String valueOfColumn = mTable.getValueAt(row, column).toString();
+                String[] c = {columName, USER_FK_STRING};
+                String[] v = {valueOfColumn, mTable.getValueAt(row, 3).toString()};
+                ParamValue condition = new ParamValue(c, v, "and");
+                boolean eliminado = cuentaUtils.deleteOperation(condition);
+                if(eliminado) {
+                    tableModel.removeRow(row);
                 } else {
-                    cuentaUtils.errorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Select Error");
+                    cuentaUtils.errorMessage(myFrame,
+                            String.format("Column: %s with value of: %s not found", columName, valueOfColumn),
+                            "Not fount Error");
                 }
-            } catch(Exception er) {
-                er.printStackTrace();
-                cuentaUtils.errorMessage(myFrame, "Error while trying to delete a register", "Delete Error");
+            } else {
+                cuentaUtils.errorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Select Error");
             }
         });
     }
@@ -408,14 +403,11 @@ public class PanelPrincipal {
             } else {
                 try {
                     for(CuentaODM c: listaFaltantes()) {
-                        String[] co = {"nombre", USER_FK_STRING};
-                        String[]va = {c.getNombre(), String.valueOf(c.getUser_id_fk())};
                         int option = JOptionPane.showConfirmDialog(myFrame,
                                 "Do you want to register?", "Register operation",
                                 JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
                         if(option == JOptionPane.OK_OPTION) {
-                            ParamValue condition = new ParamValue(co, va, "and");
-                            cuentaUtils.insertOperation(c, condition);
+                            cuentaUtils.insertOperation(c);
                         }
                     }
                 } catch(Exception er) {

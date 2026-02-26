@@ -51,14 +51,14 @@ public final class PanelUtils<T> {
         return myQueryDAO.preparedSelect(condition);
     }
 
-    public boolean insertOperation(UsableMethods model, ParamValue condition) throws SQLException {
+    public boolean insertOperation(UsableMethods model) {
         return myQueryDAO.preparedInsert(model);
     }
 
-    public boolean updateOperation(UsableMethods model, ParamValue condition) throws SQLException {
+    public boolean updateOperation(UsableMethods model, ParamValue condition) {
         return myQueryDAO.preparedUpdate(model, condition);
     }
-    public boolean deleteOperation(ParamValue condition) throws SQLException {
+    public boolean deleteOperation(ParamValue condition) {
         return myQueryDAO.preparedDelete(condition);
     }
 
@@ -68,15 +68,13 @@ public final class PanelUtils<T> {
         Statement stm = cursor.createStatement();
         stm.executeUpdate(sql);
     }
-    
     public StringBuilder generatePassword(PasswordOptions options) {
         StringBuilder pass = new StringBuilder();
         SecureRandom random = new SecureRandom();
-        String 
-            letters = options.addLetter() ? "abcdefghijklmnñopqrstuvwxyz" : "",
-            simbols = options.addSimbol() ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "",
-            numbers = options.addNumber() ? "0123456789" : "",
-            combination = letters + simbols + numbers;
+        String letters = options.addLetter() ? "abcdefghijklmnñopqrstuvwxyz" : "";
+        String simbols = options.addSimbol() ? "!#$%&/()=?¡¿'°|¨+{}[];:_-<>^`~\\¬": "";
+        String numbers = options.addNumber() ? "0123456789" : "";
+        String combination = letters + simbols + numbers;
         for(int i=0; i<options.size(); ++i) {
             int index = random.nextInt(combination.length());
             pass.append(combination.charAt(index));
@@ -91,9 +89,8 @@ public final class PanelUtils<T> {
      */
     public T buildObjectFromTable(int row, int column, int loggedUser, JTable mTable) {
         String columName = mTable.getColumnName(column);
-        String[]
-            c = {columName, "user_id_fk"},
-            v = {mTable.getValueAt(row, column).toString(), String.valueOf(loggedUser)};
+        String[] c = {columName, "user_id_fk"};
+        String[] v = {mTable.getValueAt(row, column).toString(), String.valueOf(loggedUser)};
         ParamValue condition = new ParamValue(c, v, "and");
         T myObject    = findOperation(condition).get(0);
         if(myObject == null) {

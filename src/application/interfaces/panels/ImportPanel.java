@@ -27,8 +27,6 @@ public class ImportPanel {
     private JFrame myFrame;
     private JFrame mainFrame;
 
-    private JFileChooser fileChooser;
-    
     private DefaultTableModel tableModel;
 
     private String filePaht;
@@ -76,7 +74,7 @@ public class ImportPanel {
     private JPanel contentPanel() {
         JPanel pPrincipal = new JPanel();
         pPrincipal.setLayout(new GridLayout(1, 1));
-        fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
+        JFileChooser fileChooser = new JFileChooser(FileSystemView.getFileSystemView().getHomeDirectory());
         pPrincipal.add(fileChooser);
         fileChooser.addActionListener(e -> {
             int r = fileChooser.showOpenDialog(myFrame);

@@ -112,26 +112,20 @@ public class PanelUpdate {
                 toUpdate.setPassword(txtPassword.getText());
             }
             toUpdate.makeUpdate_at();
-            try {
-                int options = JOptionPane.showConfirmDialog(myFrame,
-                        "Do you want to update?", "Update operation",
-                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
-                String[] c = {"id_pk"};
-                String[] v = {txtIdPk.getText()};
+            int options = JOptionPane.showConfirmDialog(myFrame,
+                    "Do you want to update?", "Update operation",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            String[] c = {"id_pk"};
+            String[] v = {txtIdPk.getText()};
 
-                ParamValue condition = new ParamValue(c, v, "and");
-                if(options == JOptionPane.OK_OPTION) {
-                    cuentaUtils.updateOperation(toUpdate, condition);
-                    mainFrame.setEnabled(true);
-                    myFrame.dispose();
-                }
-            } catch(Exception er) {
-                er.printStackTrace();
-                cuentaUtils.errorMessage(myFrame, "Error while trying to update register", "Update Error");
-            } finally {
-                    JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO",
-                            JOptionPane.INFORMATION_MESSAGE);
+            ParamValue condition = new ParamValue(c, v, "and");
+            if(options == JOptionPane.OK_OPTION) {
+                cuentaUtils.updateOperation(toUpdate, condition);
+                mainFrame.setEnabled(true);
+                myFrame.dispose();
             }
+            JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO",
+                    JOptionPane.INFORMATION_MESSAGE);
         });
     }
     /**
