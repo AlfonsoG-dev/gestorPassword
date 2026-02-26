@@ -15,25 +15,13 @@ public class GestorPassword {
         logginUser();
     }
     private static final DbConfig initDataBase(String dbName) {
-        DbConfig mConfig = new DbConfig(
-                "",
-                "localhost",
-                3306,
-                "root",
-                "5x5W12%$asd"
-        );
+        DbConfig mConfig = new DbConfig("", "localhost", 3306, "root", "5x5W12%$asd");
         try {
             Connection con = new Connector(mConfig).mysqlConnection();
             MigrationDAO miDAO = new MigrationDAO(con, "");
             miDAO.createDatabase(dbName);
             con.close();
-            return new DbConfig(
-                    dbName,
-                    mConfig.getHost(),
-                    mConfig.getPort(),
-                    mConfig.getUser(),
-                    mConfig.getPassword()
-            );
+            return new DbConfig(dbName, mConfig.getHost(), mConfig.getPort(), mConfig.getUser(), mConfig.getPassword());
         } catch(Exception e) {
             e.printStackTrace();
             return null;
