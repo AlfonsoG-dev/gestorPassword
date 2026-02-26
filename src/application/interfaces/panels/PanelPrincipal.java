@@ -438,7 +438,8 @@ public class PanelPrincipal {
                 CuentaModel updateCuenta = cuentaUtils.buildObjectFromTable(
                         row, column, loggedUser, mTable);
                 if(updateCuenta != null) {
-                    new PanelUpdate("Update", width/2, height-100, updateCuenta, myFrame, cuentaUtils);
+                    PanelUpdate pUpdate = new PanelUpdate(updateCuenta, myFrame, cuentaUtils);
+                    pUpdate.createUI("Update", width/2, height-100, updateCuenta);
                     myFrame.setEnabled(false);
                 }
             } else {

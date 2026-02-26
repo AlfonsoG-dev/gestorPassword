@@ -55,12 +55,10 @@ public class PanelUpdate {
     /**
      * constructor
      */
-    public PanelUpdate(String frameTitle, int width, int height, CuentaModel updateCuenta,
-            JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
+    public PanelUpdate(CuentaModel updateCuenta, JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cuentaUtils = nCuentaUtils;
-        createUI(frameTitle, width, height, updateCuenta);
     }
     /**
      * set the content for the principal panel of the current frame
