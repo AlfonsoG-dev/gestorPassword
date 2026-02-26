@@ -104,7 +104,7 @@ public class PanelPrincipal {
         if(!misCuentas().isEmpty()) {
             createUI("table example", "Gestor Password", 1100, 540);
         } else {
-            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+            new PanelRegistro("Register", new int[] {400, 900}, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
         }
     }
     /**
@@ -403,7 +403,7 @@ public class PanelPrincipal {
     private void insertButtonHandler(JButton insertButton, int width, int height) {
         insertButton.addActionListener(e -> {
             if(!listaFaltantes().isEmpty()) {
-                new PanelRegistro("Register", width/2, height-100, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+                new PanelRegistro("Register", new int[]{width/2, height-100}, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
                 myFrame.setEnabled(false);
             } else {
                 try {

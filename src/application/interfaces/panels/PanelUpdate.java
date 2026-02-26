@@ -2,18 +2,17 @@ package application.interfaces.panels;
 
 import java.awt.GridLayout;
 import java.awt.BorderLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.ActionEvent;
-
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.WindowConstants;
 
 import application.interfaces.utils.PanelUtils;
 import application.models.cuenta.CuentaModel;
@@ -30,10 +29,6 @@ public class PanelUpdate {
      */
     private int loggedUser;
     /**
-     * principal panel of the current Class
-     */
-    private JPanel pPrincipal;
-    /**
      * id of the selected cuenta
      */
     private JTextField txtIdPk;
@@ -45,11 +40,6 @@ public class PanelUpdate {
      * email of the selected cuenta
      */
     private JTextField txtEmail;
-    /**
-     * user_id_fk of the selected cuenta
-     * it must be equals to the loggedUser
-     */
-    private JTextField txtUserId;
     /**
      * password of the selected cuenta
      */
@@ -70,12 +60,7 @@ public class PanelUpdate {
         loggedUser = updateCuenta.getUser_id_fk();
         mainFrame = nMainFrame;
         cuentaUtils = nCuentaUtils;
-        createUI(
-                frameTitle,
-                width,
-                height,
-                updateCuenta
-        );
+        createUI(frameTitle, width, height, updateCuenta);
     }
     /**
      * set the content for the principal panel of the current frame
@@ -84,7 +69,7 @@ public class PanelUpdate {
      */
     private JPanel optionsComponent(CuentaModel updateCuenta) {
 
-        txtUserId = new JTextField(String.valueOf(loggedUser));
+        JTextField txtUserId = new JTextField(String.valueOf(loggedUser));
         txtUserId.setEditable(false);
 
         txtIdPk = new JTextField(String.valueOf(updateCuenta.getId_pk()));
@@ -95,13 +80,16 @@ public class PanelUpdate {
         pOptions.add(new JLabel("ID_pk"));
         pOptions.add(txtIdPk);
         pOptions.add(new JLabel("Nombre"));
-        pOptions.add(txtNombre = new JTextField(updateCuenta.getNombre()));
+        txtNombre = new JTextField(updateCuenta.getNombre());
+        pOptions.add(txtNombre);
         pOptions.add(new JLabel("Email"));
-        pOptions.add(txtEmail = new JTextField(updateCuenta.getEmail()));
+        txtEmail = new JTextField(updateCuenta.getEmail());
+        pOptions.add(txtEmail);
         pOptions.add(new JLabel("User_Id_fk"));
         pOptions.add(txtUserId);
         pOptions.add(new JLabel("Password"));
-        pOptions.add(txtPassword = new JTextField(updateCuenta.getPassword()));
+        txtPassword = new JTextField(updateCuenta.getPassword());
+        pOptions.add(txtPassword);
         return pOptions;
     }
     /**
@@ -110,58 +98,39 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      * @param toUpdate: selected cuenta of the main frame table
      */
-    private void okButtonHandler(JButton OKButton, CuentaModel model) {
-        OKButton.setMnemonic(KeyEvent.VK_ENTER);
-        OKButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                CuentaODM toUpdate = new CuentaODM(model);
-                if(txtNombre.getText() != null && txtNombre.getText() != toUpdate.getNombre()) {
-                    toUpdate.setNombre(txtNombre.getText());
-                }
-                if(txtEmail.getText() != null && txtEmail.getText() != toUpdate.getEmail()) {
-                    toUpdate.setEmail(txtEmail.getText());
-                }
-                if(txtPassword.getText() != null && txtPassword.getText() != toUpdate.getPassword()) {
-                    toUpdate.setPassword(txtPassword.getText());
-                }
-                toUpdate.makeUpdate_at();
-                try {
-                    int options = JOptionPane.showConfirmDialog(
-                            myFrame,
-                            "Do you want to update?",
-                            "Update operation",
-                            JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE
-                    );
-                    String[]
-                        c = {"id_pk"},
-                        v = {txtIdPk.getText()};
+    private void okButtonHandler(JButton btnOK, CuentaModel model) {
+        btnOK.setMnemonic(KeyEvent.VK_ENTER);
+        btnOK.addActionListener(e -> {
+            CuentaODM toUpdate = new CuentaODM(model);
+            if(txtNombre.getText() != null && !txtNombre.getText().equals(toUpdate.getNombre())) {
+                toUpdate.setNombre(txtNombre.getText());
+            }
+            if(txtEmail.getText() != null && !txtEmail.getText().equals(toUpdate.getEmail())) {
+                toUpdate.setEmail(txtEmail.getText());
+            }
+            if(txtPassword.getText() != null && !txtPassword.getText().equals(toUpdate.getPassword())) {
+                toUpdate.setPassword(txtPassword.getText());
+            }
+            toUpdate.makeUpdate_at();
+            try {
+                int options = JOptionPane.showConfirmDialog(myFrame,
+                        "Do you want to update?", "Update operation",
+                        JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                String[] c = {"id_pk"};
+                String[] v = {txtIdPk.getText()};
 
-                    ParamValue condition = new ParamValue(
-                            c, 
-                            v,
-                            "and"
-                    );
-                    if(options == JOptionPane.OK_OPTION) {
-                        cuentaUtils.updateOperation(toUpdate, condition);
-                        mainFrame.setEnabled(true);
-                        myFrame.dispose();
-                    }
-                } catch(Exception er) {
-                    er.printStackTrace();
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "Error while trying to update register",
-                            "UpdateError"
-                    );
-                } finally {
-                        JOptionPane.showMessageDialog(
-                                myFrame,
-                                "reload the window to see the changes",
-                                "INFO",
-                                JOptionPane.INFORMATION_MESSAGE
-                        );
+                ParamValue condition = new ParamValue(c, v, "and");
+                if(options == JOptionPane.OK_OPTION) {
+                    cuentaUtils.updateOperation(toUpdate, condition);
+                    mainFrame.setEnabled(true);
+                    myFrame.dispose();
                 }
+            } catch(Exception er) {
+                er.printStackTrace();
+                cuentaUtils.errorMessage(myFrame, "Error while trying to update register", "Update Error");
+            } finally {
+                    JOptionPane.showMessageDialog(myFrame, "reload the window to see the changes", "INFO",
+                            JOptionPane.INFORMATION_MESSAGE);
             }
         });
     }
@@ -171,19 +140,13 @@ public class PanelUpdate {
      * @param myConfig: database configuration
      */
     private void cancelButtonHandler(JButton cancelButton) {
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int options = JOptionPane.showConfirmDialog(
-                        myFrame,
-                        "Do you want to cancel?",
-                        "Update operation",
-                        JOptionPane.OK_CANCEL_OPTION,
-                        JOptionPane.QUESTION_MESSAGE
-                );
-                if(options == JOptionPane.OK_OPTION) {
-                    mainFrame.setEnabled(true);
-                    myFrame.dispose();
-                }
+        cancelButton.addActionListener(e -> {
+            int options = JOptionPane.showConfirmDialog(myFrame,
+                    "Do you want to cancel?", "Update operation",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            if(options == JOptionPane.OK_OPTION) {
+                mainFrame.setEnabled(true);
+                myFrame.dispose();
             }
         });
     }
@@ -219,15 +182,16 @@ public class PanelUpdate {
         myFrame.setLayout(new GridLayout(3, 1));
 
         myFrame.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent we) {
                 mainFrame.setEnabled(true);
                 myFrame.dispose();
             }
         });
 
-        JLabel headerLabel = new JLabel("Update", JLabel.CENTER);
+        JLabel headerLabel = new JLabel("Update", SwingConstants.CENTER);
 
-        pPrincipal = new JPanel();
+        JPanel pPrincipal = new JPanel();
         pPrincipal.setLayout(new BorderLayout());
 
         pPrincipal.add(optionsComponent(updateCuenta), BorderLayout.NORTH);
@@ -236,6 +200,6 @@ public class PanelUpdate {
         myFrame.add(headerLabel);
         myFrame.add(pPrincipal);
         myFrame.setVisible(true);
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
     }
 }
