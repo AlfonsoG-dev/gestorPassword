@@ -15,24 +15,13 @@ import java.util.ArrayList;
 public class FileUtils {
     public static List<String> readFileLines(String filePath) {
         List<String> lines = new ArrayList<>();
-        BufferedReader myReader = null;
-        try {
-            File miFile = new File(filePath);
-            myReader = new BufferedReader(new FileReader(miFile));
+        File miFile = new File(filePath);
+        try(BufferedReader myReader = new BufferedReader(new FileReader(miFile))) {
             while(myReader.ready()) {
                 lines.add(myReader.readLine());
             }
         } catch(Exception e) {
             e.printStackTrace();
-        } finally {
-            if(myReader != null) {
-                try {
-                    myReader.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-                myReader = null;
-            }
         }
         return lines;
     }
@@ -47,9 +36,8 @@ public class FileUtils {
                 String[] accounts = e.split(",");
                 for(String a: accounts) {
                     String[] accountData = a.split(":");
-                    String 
-                        name  = accountData[0].trim(),
-                        value = accountData[1].trim();
+                    String name  = accountData[0].trim();
+                    String value = accountData[1].trim();
                     if(name.equals("nombre")) {
                         myImportCuenta.setNombre(value);
                     }
@@ -66,33 +54,31 @@ public class FileUtils {
         return data;
     }
     public static void exportSaveData(String destination, String fileName, List<CuentaModel> misCuentas) {
-        FileWriter myWriter = null;
-        try {
-            String nFile = new File(fileName).isFile() && fileName.contains(".txt") ?
-                fileName : fileName + ".txt";
-            StringBuffer build = new StringBuffer();
-            File miFile = new File(destination + "\\" + nFile);
-            myWriter = new FileWriter(miFile, false);
+        String nFile ="";
+        if(fileName.contains(".txt")) {
+            nFile = fileName;
+        } else {
+            nFile = fileName.concat(".txt");
+        }
+        StringBuilder build = new StringBuilder();
+        File miFile = new File(destination + File.separator + nFile);
+        try(FileWriter myWriter = new FileWriter(miFile, false)) {
             for(int i=0; i<misCuentas.size(); ++i) {
                 CuentaModel mia = misCuentas.get(i);
-                String 
-                    nombre   = "nombre: " + mia.getNombre(),
-                    email    = "email: " + mia.getEmail(),
-                    password = "password: " + mia.getPassword();
-                build.append(nombre + ", " + email + ", " + password + "\n");
+                String nombre = "nombre: " + mia.getNombre();
+                String email = "email: " + mia.getEmail();
+                String password = "password: " + mia.getPassword();
+                build.append(nombre);
+                build.append(", ");
+                build.append(email);
+                build.append(", ");
+                build.append(password);
+                build.append("\n");
             }
             myWriter.write(build.toString());
         } catch(Exception e) {
             e.printStackTrace();
-        } finally {
-            if(myWriter != null) {
-                try {
-                    myWriter.close();
-                } catch(Exception e) {
-                    e.printStackTrace();
-                }
-                myWriter = null;
-            }
         }
     }
+    private FileUtils() {}
 }
