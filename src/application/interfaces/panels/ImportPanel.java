@@ -33,8 +33,7 @@ public class ImportPanel {
     private int loggedUser;
 
 
-    public ImportPanel(JFrame nMainFrame, int width, int height, int nLoggedUser, DefaultTableModel nModel) {
-        createUI(width, height);
+    public ImportPanel(JFrame nMainFrame, int nLoggedUser, DefaultTableModel nModel) {
         mainFrame = nMainFrame;
         loggedUser = nLoggedUser;
         tableModel = nModel;

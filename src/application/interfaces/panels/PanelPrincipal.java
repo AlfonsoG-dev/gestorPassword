@@ -100,12 +100,6 @@ public class PanelPrincipal {
             e.printStackTrace();
             cuentaUtils.errorMessage(null, "error while trying to create the connection to DB", "Connection Error");
         }
-
-        if(!misCuentas().isEmpty()) {
-            createUI("table example", "Gestor Password", 1100, 540);
-        } else {
-            new PanelRegistro("Register", new int[] {400, 900}, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
-        }
     }
     /**
      * list of cuentas that verify the user_id_fk with the loggedUser
@@ -335,7 +329,8 @@ public class PanelPrincipal {
         filePanel.add(importButton);
         importButton.addActionListener(e -> {
             myFrame.setEnabled(false);
-            new ImportPanel(myFrame, width, height, loggedUser, tableModel);
+            ImportPanel iPanel = new ImportPanel(myFrame, loggedUser, tableModel);
+            iPanel.createUI(width, height);
         });
 
         JButton exportButton = new JButton("E");
@@ -398,7 +393,8 @@ public class PanelPrincipal {
     private void insertButtonHandler(JButton insertButton, int width, int height) {
         insertButton.addActionListener(e -> {
             if(!listaFaltantes().isEmpty()) {
-                new PanelRegistro("Register", new int[]{width/2, height-100}, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+                PanelRegistro rPanel = new PanelRegistro(myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+                rPanel.createUI("Register", width/2, height-100);
                 myFrame.setEnabled(false);
             } else {
                 try {
@@ -505,6 +501,11 @@ public class PanelPrincipal {
      * @param height: the frame height
      */
     public void createUI(String frameTitle, String tableTitle, int width, int height) {
+
+        if(misCuentas().isEmpty()) {
+            PanelRegistro rPanel = new PanelRegistro(myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+            rPanel.createUI("Register", 400, 900);
+        }
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(width, height);
         myFrame.setLayout(new GridLayout(3, 1));

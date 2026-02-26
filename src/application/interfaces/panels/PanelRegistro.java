@@ -62,14 +62,12 @@ public class PanelRegistro {
     /**
      * constructor
      */
-    public PanelRegistro(String frameTitle, int[] dimensions, DbConfig nConfig, int pLoggedUser,
-            Connection miCursor, JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
+    public PanelRegistro(DbConfig nConfig, int pLoggedUser, Connection miCursor, JFrame nMainFrame, PanelUtils<CuentaModel> nCuentaUtils) {
         loggedUser = pLoggedUser;
         myConfig = nConfig;
         cursor = miCursor;
         mainFrame = nMainFrame;
         cuentaUtils = nCuentaUtils;
-        createUI(frameTitle, dimensions[0], dimensions[1]);
     }
     /**
      * implements the OKButton handler
@@ -95,7 +93,8 @@ public class PanelRegistro {
                             mainFrame.setEnabled(true);
                             myFrame.dispose();
                         } else {
-                            new PanelPrincipal(myConfig, loggedUser, myFrame, cursor, cuentaUtils);
+                            PanelPrincipal pPrincipal = new PanelPrincipal(myConfig, loggedUser, myFrame, cursor, cuentaUtils);
+                            pPrincipal.createUI("table example", "Gestor Password", 1100, 540);
                             myFrame.dispose();
                         }
                     }
@@ -131,7 +130,7 @@ public class PanelRegistro {
         generateButton.setMnemonic(KeyEvent.VK_G);
         generateButton.addActionListener(e -> {
             if(txtPassword.getText().isEmpty()) {
-                new PanelPassword(myFrame, txtPassword, cuentaUtils);
+                new PanelPassword(myFrame, txtPassword, cuentaUtils).createUI();
                 myFrame.setEnabled(false);
             } else {
                 txtPassword.setText(cuentaUtils.generatePassword(cuentaUtils.getPasswordOptions()).toString());

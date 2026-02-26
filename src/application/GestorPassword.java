@@ -37,7 +37,7 @@ public class GestorPassword {
             Connection cursor = new Connector(miConfig).mysqlConnection();
             initTable("user", new UserModel(), cursor);
             initTable("cuenta", new CuentaModel(), cursor);
-            new PanelLogin(miConfig, cursor);
+            new PanelLogin(miConfig, cursor).createUI("Login");
         } catch(Exception e) {
             e.printStackTrace();
         }

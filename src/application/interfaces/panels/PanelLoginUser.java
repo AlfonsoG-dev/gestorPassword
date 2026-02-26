@@ -38,7 +38,6 @@ public class PanelLoginUser {
         cursor = nCursor;
         myConfig = nConfig;
         userUtils = nUserUtils;
-        createUI(500, 600);
     }
     private JPanel optionsComponent() {
         JPanel pOptions = new JPanel();
@@ -65,7 +64,7 @@ public class PanelLoginUser {
     private void appendOKOptionAction(UserODM user) {
         userUtils.insertOperation(user);
         myFrame.dispose();
-        new PanelLogin(myConfig, cursor);
+        new PanelLogin(myConfig, cursor).createUI("Login");
     }
     private String[] getTextFieldValues() {
         String nombre   = !txtNombre.getText().isBlank() ? txtNombre.getText() : null;

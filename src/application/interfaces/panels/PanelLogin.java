@@ -63,11 +63,6 @@ public class PanelLogin {
         dbConfig = myConfig;
         userUtils = new PanelUtils<>(new QueryDAO<>(cursor, "user", new UserModel()));
         cuentaUtils = new PanelUtils<>(new QueryDAO<>(cursor, "cuenta", new CuentaModel()));
-        if(!userUtils.myDataList().isEmpty()) {
-            createUI("Loggin");
-        } else {
-            new PanelLoginUser(dbConfig, cursor, userUtils);
-        }
     }
     /**
      * set the users to select in the comboBox
@@ -128,7 +123,8 @@ public class PanelLogin {
                 ParamValue condition = new ParamValue(c, v, "and");
                 UserModel mio = userUtils.findOperation(condition).get(0);
                 if(mio != null) {
-                    new PanelPrincipal(dbConfig, mio.getId_pk(), myFrame, cursor, cuentaUtils);
+                    PanelPrincipal pPrincipal = new PanelPrincipal(dbConfig, mio.getId_pk(), myFrame, cursor, cuentaUtils);
+                    pPrincipal.createUI("table example", "Gestor Password", 1100, 540);
                     myFrame.dispose();
                 } else {
                     JOptionPane.showMessageDialog(myFrame,
@@ -154,6 +150,10 @@ public class PanelLogin {
      * @param frameTitle: title of the frame
      */
     public void createUI(String frameTitle) {
+        if(userUtils.myDataList().isEmpty()) {
+            new PanelLoginUser(dbConfig, cursor, userUtils).createUI(500, 600);
+            return;
+        }
         myFrame = new JFrame(frameTitle);
         myFrame.setSize(400, 200);
         myFrame.setLayout(new BorderLayout());

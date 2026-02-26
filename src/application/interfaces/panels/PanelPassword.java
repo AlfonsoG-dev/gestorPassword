@@ -36,7 +36,6 @@ public final class PanelPassword {
         mainFrame = nMainFrame;
         txtPassword = nPassword;
         cuentaUtils = nCuentaUtils;
-        createUI();
     }
     private void okButtonHandler(JButton okButton) {
         okButton.setMnemonic(KeyEvent.VK_ENTER);
