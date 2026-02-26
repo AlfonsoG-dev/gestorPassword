@@ -9,8 +9,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.awt.Toolkit;
@@ -32,7 +30,9 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
+import javax.swing.WindowConstants;
 import javax.swing.table.DefaultTableModel;
 
 import application.interfaces.utils.FileUtils;
@@ -43,6 +43,7 @@ import orm.utils.formats.DbConfig;
 import orm.utils.formats.ParamValue;
 
 public class PanelPrincipal {
+    private static final String USER_FK_STRING = "user_id_fk";
     /**
      * the data table for the panel
      */
@@ -86,8 +87,7 @@ public class PanelPrincipal {
     /**
      * constructor
      */
-    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame, Connection miConnection,
-            PanelUtils<CuentaModel> nCuentaUtils) {
+    public PanelPrincipal(DbConfig mConfig, int pLoggedUser, JFrame nMainFrame, Connection miConnection, PanelUtils<CuentaModel> nCuentaUtils) {
         myConfig    = mConfig;
         loggedUser  = pLoggedUser;
         cursor      = miConnection;
@@ -98,31 +98,13 @@ public class PanelPrincipal {
             cursor.setAutoCommit(false);
         } catch(Exception e) {
             e.printStackTrace();
-            cuentaUtils.errorMessage(
-                    null,
-                    "error while trying to create the connection to DB",
-                    "Connection Error"
-            );
+            cuentaUtils.errorMessage(null, "error while trying to create the connection to DB", "Connection Error");
         }
 
-        if(misCuentas().size() > 0) {
-            createUI(
-                    "table example",
-                    "Gestor Password",
-                    1100,
-                    540
-            );
+        if(!misCuentas().isEmpty()) {
+            createUI("table example", "Gestor Password", 1100, 540);
         } else {
-            new PanelRegistro(
-                    "Register",
-                    400,
-                    900,
-                    myConfig,
-                    loggedUser,
-                    cursor,
-                    myFrame,
-                    cuentaUtils
-            );
+            new PanelRegistro("Register", 400, 900, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
         }
     }
     /**
@@ -132,7 +114,7 @@ public class PanelPrincipal {
     private List<CuentaModel> misCuentas() {
         List<CuentaModel> nuevas = new ArrayList<>();
         List<CuentaModel> nCuentas = cuentaUtils.myDataList();
-        if(nCuentas.size() > 0) {
+        if(!nCuentas.isEmpty()) {
             for(CuentaModel model: nCuentas) {
                 if(model.getUser_id_fk() == loggedUser) {
                     nuevas.add(model);
@@ -148,12 +130,14 @@ public class PanelPrincipal {
      */
     private Object[][] tableContent(String[] columns) {
         List<CuentaModel> cuentaList = misCuentas();
-        StringBuffer results = new StringBuffer();
+        StringBuilder results = new StringBuilder();
         for(CuentaModel miCuenta: cuentaList) {
-            if(miCuenta.getUpdate_at() != null && miCuenta.getUpdate_at().isEmpty() == false) {
-                results.append(cuentaUtils.getModelType(miCuenta).replace("'", "") + "\n");
+            if(miCuenta.getUpdate_at() != null && !miCuenta.getUpdate_at().isEmpty()) {
+                results.append(cuentaUtils.getModelType(miCuenta).replace("'", ""));
+                results.append("\n");
             } else if(miCuenta.getUpdate_at() == null) {
-                results.append(cuentaUtils.getModelType(miCuenta).replace("'", "") + ",null\n");
+                results.append(cuentaUtils.getModelType(miCuenta).replace("'", ""));
+                results.append(",null\n");
             }
         }
         String[] datos = results.toString().split("\n");
@@ -175,40 +159,21 @@ public class PanelPrincipal {
         List<CuentaModel> nCuentas = misCuentas();
         CuentaODM mia = null;
         if(rows > nCuentas.size()) {
-        outter: for(int i=0; i<rows; ++i) {
-                String 
-                    cNombre   = mTable.getValueAt(i, 1).toString(),
-                    cEmail    = mTable.getValueAt(i, 2).toString(),
-                    cUserFk   = mTable.getValueAt(i, 3).toString(),
-                    cPassword = mTable.getValueAt(i, 4).toString();
-                if(cNombre.isEmpty() || cEmail.isEmpty() || cPassword.isEmpty()) {
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "invalid empty fields",
-                            "Error"
-                    );
-                    break outter;
+            for(int i=0; i<rows; ++i) {
+                String cNombre   = mTable.getValueAt(i, 1).toString();
+                String cEmail    = mTable.getValueAt(i, 2).toString();
+                String cUserFk   = mTable.getValueAt(i, 3).toString();
+                String cPassword = mTable.getValueAt(i, 4).toString();
+                if(cNombre.isBlank() || cEmail.isBlank() || cPassword.isBlank()) {
+                    cuentaUtils.errorMessage(myFrame, "invalid empty fields", "Table Error");
+                    break;
                 }
-                if(cNombre == null || cEmail == null || cPassword == null) {
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "invalid empty fields",
-                            "Error"
-                    );
-                    break outter;
-                }
-                String[] 
-                    c = {"nombre", "user_id_fk"},
-                    v = {cNombre, cUserFk};
+                String[] c = {"nombre", USER_FK_STRING};
+                String[] v = {cNombre, cUserFk};
                 ParamValue condition = new ParamValue(c, v, "and");
                 List<CuentaModel> buscada = cuentaUtils.findOperation(condition);
-                if(buscada.size() == 0) {
-                    mia = new CuentaODM(
-                            cNombre,
-                            cEmail,
-                            Integer.parseInt(cUserFk),
-                            cPassword
-                    );
+                if(buscada.isEmpty()) {
+                    mia = new CuentaODM(cNombre, cEmail, Integer.parseInt(cUserFk), cPassword);
                     mia.makeCreate_at();
                     faltante.add(mia);
                 }
@@ -231,20 +196,19 @@ public class PanelPrincipal {
     private JPanel tableComponent(String tableText) {
 
         headerLabel.setText(tableText);
-
         String[] columns = cuentaUtils.getModelColumn(new CuentaModel());
-        
+
         tableModel = new DefaultTableModel(tableContent(columns), columns);
         mTable = new JTable(tableModel);
         mTable.setDragEnabled(true);
         mTable.setDropMode(DropMode.INSERT_ROWS);
         mTable.setTransferHandler(new TableTransferable());
         mTable.addMouseListener(new MouseAdapter() {
+            @Override
             public void mouseClicked(MouseEvent e) {
                 if(e.getButton() == MouseEvent.BUTTON3) {
-                    int 
-                        row    = mTable.rowAtPoint(e.getPoint()),
-                        column = mTable.columnAtPoint(e.getPoint());
+                    int row    = mTable.rowAtPoint(e.getPoint());
+                    int column = mTable.columnAtPoint(e.getPoint());
                     if(row != -1 && column != -1) {
                         allowCopyToClipBoard(row, column);
                     }
@@ -254,9 +218,8 @@ public class PanelPrincipal {
         mTable.addMouseMotionListener(new MouseMotionAdapter() {
             @Override 
             public void mouseMoved(MouseEvent e) {
-                int
-                    column = mTable.columnAtPoint(e.getPoint()),
-                    row = mTable.rowAtPoint(e.getPoint());
+                int column = mTable.columnAtPoint(e.getPoint());
+                int row = mTable.rowAtPoint(e.getPoint());
                 if(row != -1 && column != -1) {
                     mTable.setToolTipText("Hover over cell: (" + row + ", " + column + ")");
                 } else{
@@ -286,9 +249,9 @@ public class PanelPrincipal {
      * changes the data for the table model, making a request to the database
      */
     private void setNewDataTableModel() {
-        String[] columns     = cuentaUtils.getModelColumn(new CuentaModel());
+        String[] columns = cuentaUtils.getModelColumn(new CuentaModel());
         Object[][] contenido = tableContent(columns);
-        tableModel           = new DefaultTableModel(contenido, columns);
+        tableModel = new DefaultTableModel(contenido, columns);
         mTable.setModel(tableModel);
 
         /** 
@@ -310,79 +273,56 @@ public class PanelPrincipal {
     private JPanel tableOptionComponents() {
         JPanel tableOptions = new JPanel();
         tableOptions.setLayout(new GridLayout(3, 1));
-         
+
         JButton reloadButton = new JButton("R");
         tableOptions.add(reloadButton);
         // reload the table content
-        reloadButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    int option = JOptionPane.showConfirmDialog(
-                            myFrame,
-                            "apply changes before reload?",
-                            "REALOAD",
-                            JOptionPane.YES_NO_CANCEL_OPTION
-                    );
-                    if(option == JOptionPane.YES_OPTION) {
-                        cursor.commit();
-                        setNewDataTableModel();
-                    } else if(option == JOptionPane.NO_OPTION) {
-                        cursor.rollback();
-                        cuentaUtils.setAutoImcrement();
-                        setNewDataTableModel();
-                    } else if(option == JOptionPane.CANCEL_OPTION) {
-                        // do nothing
-                    }
-                } catch(Exception er) {
-                    er.printStackTrace();
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "Error while trying to reload the data",
-                            "Reload Error"
-                    );
+        reloadButton.addActionListener(e -> {
+            try {
+                int option = JOptionPane.showConfirmDialog(myFrame,
+                        "apply changes before reload?", "REALOAD", JOptionPane.YES_NO_CANCEL_OPTION);
+                if(option == JOptionPane.YES_OPTION) {
+                    cursor.commit();
+                    setNewDataTableModel();
+                } else if(option == JOptionPane.NO_OPTION) {
+                    cursor.rollback();
+                    cuentaUtils.setAutoImcrement();
+                    setNewDataTableModel();
+                } else if(option == JOptionPane.CANCEL_OPTION) {
+                    // do nothing
                 }
+            } catch(Exception er) {
+                er.printStackTrace();
+                cuentaUtils.errorMessage(myFrame, "Error while trying to reload the data", "Reload Error");
             }
         });
 
         JButton agregarButton = new JButton("+");
         tableOptions.add(agregarButton);
         // add a new row for the table
-        agregarButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String[] columns = {
-                    "",
-                    "",
-                    "",
-                    String.valueOf(loggedUser),
-                    "",
-                    "",
-                    ""
-                };
-                tableModel.addRow(columns);
-            }
+        agregarButton.addActionListener(e -> {
+            String[] columns = {
+                "", "", "",
+                String.valueOf(loggedUser),
+                "", "", ""
+            };
+            tableModel.addRow(columns);
         });
 
 
         JButton eliminarButton = new JButton("-");
         tableOptions.add(eliminarButton);
         // delete the row from the table
-        eliminarButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int 
-                    tableSize   = mTable.getRowCount()-1,
-                    selectedRow = mTable.getSelectedRow();
-                String cNombre = mTable.getValueAt(tableSize, 1).toString();
-                if(cNombre.isEmpty()) {
-                    tableModel.removeRow(tableSize);
-                } else if(selectedRow != -1 && mTable.getValueAt(selectedRow, 1).toString().isEmpty()) {
-                    tableModel.removeRow(selectedRow);
-                } else {
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "Cannot remove!",
-                            "Error"
-                    );
-                }
+        eliminarButton.addActionListener(e -> {
+            int tableSize   = mTable.getRowCount()-1;
+            int selectedRow = mTable.getSelectedRow();
+            String cNombre = mTable.getValueAt(tableSize, 1).toString();
+            if(cNombre.isEmpty()) {
+                tableModel.removeRow(tableSize);
+            } else if(selectedRow != -1 && mTable.getValueAt(selectedRow, 1).toString().isEmpty()) {
+                tableModel.removeRow(selectedRow);
+            } else {
+                cuentaUtils.errorMessage(myFrame, "Cannot remove!", "Delete Error");
             }
         });
         return tableOptions;
@@ -393,37 +333,21 @@ public class PanelPrincipal {
 
         JButton importButton = new JButton("I");
         filePanel.add(importButton);
-        importButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                myFrame.setEnabled(false);
-                new ImportPanel(myFrame, width, height, loggedUser, tableModel);
-            }
+        importButton.addActionListener(e -> {
+            myFrame.setEnabled(false);
+            new ImportPanel(myFrame, width, height, loggedUser, tableModel);
         });
 
         JButton exportButton = new JButton("E");
         filePanel.add(exportButton);
-        exportButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                String filePath = JOptionPane.showInputDialog(
-                        myFrame,
-                        null,
-                        "write the path where you want to save.",
-                        JOptionPane.INFORMATION_MESSAGE
-                );
-                if(filePath != null) {
-                    String fileName = JOptionPane.showInputDialog(
-                            myFrame,
-                            null,
-                            "write the name of the file.",
-                            JOptionPane.INFORMATION_MESSAGE
-                    );
-                    if(fileName != null) {
-                        FileUtils.exportSaveData(
-                                filePath,
-                                fileName,
-                                misCuentas()
-                        );
-                    }
+        exportButton.addActionListener(e -> {
+            String filePath = JOptionPane.showInputDialog(myFrame,
+                    null, "write the path where you want to save.", JOptionPane.INFORMATION_MESSAGE);
+            if(filePath != null) {
+                String fileName = JOptionPane.showInputDialog(myFrame,
+                        null, "write the name of the file.", JOptionPane.INFORMATION_MESSAGE);
+                if(fileName != null) {
+                    FileUtils.exportSaveData(filePath, fileName, misCuentas());
                 }
             }
         });
@@ -436,57 +360,36 @@ public class PanelPrincipal {
      * @param deleteButton: panel deleteButton to delte or truncate the cuenta for the database
      */
     private void deleteButtonHandler(JButton deleteButton) {
-        deleteButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int 
-                    row    = mTable.getSelectedRow(),
-                    column = mTable.getSelectedColumn(),
-                    option = JOptionPane.showConfirmDialog(
-                            myFrame,
-                            "Do you want to remove?",
-                            "Remove operation",
-                            JOptionPane.OK_CANCEL_OPTION,
-                            JOptionPane.QUESTION_MESSAGE
-                    );
-                String columName = mTable.getColumnName(column);
-                try {
-                    if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
-                        cuentaUtils.errorMessage(
-                                myFrame,
-                                "to delete use 'ID' or 'nombre' or 'email' or 'FK' ",
-                                "Error"
-                        );
-                    } else if(mTable.getSelectedRow() != -1 && option == JOptionPane.OK_OPTION && row != -1 && column != -1) {
-                        String valueOfColumn = mTable.getValueAt(row, column).toString();
-                        String[]
-                            c = {columName, "user_id_fk"},
-                            v = {valueOfColumn, mTable.getValueAt(row, 3).toString()};
-                        ParamValue condition = new ParamValue(c, v, "and");
-                        boolean eliminado = cuentaUtils.deleteOperation(condition);
-                        if(eliminado == true) {
-                            tableModel.removeRow(row);
-                        } else {
-                            cuentaUtils.errorMessage(
-                                    myFrame,
-                                    String.format("Column: %s with value of: %s not found"),
-                                    "Error"
-                            );
-                        }
+        deleteButton.addActionListener(e -> {
+            int row = mTable.getSelectedRow();
+            int column = mTable.getSelectedColumn();
+            int option = JOptionPane.showConfirmDialog(myFrame,
+                    "Do you want to remove?", "Remove operation",
+                    JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+            String columName = mTable.getColumnName(column);
+            try {
+                if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
+                    cuentaUtils.errorMessage(myFrame,
+                            "to delete use 'ID' or 'nombre' or 'email' or 'FK' ", "Option Error");
+                } else if(mTable.getSelectedRow() != -1 && option == JOptionPane.OK_OPTION && row != -1 && column != -1) {
+                    String valueOfColumn = mTable.getValueAt(row, column).toString();
+                    String[] c = {columName, USER_FK_STRING};
+                    String[] v = {valueOfColumn, mTable.getValueAt(row, 3).toString()};
+                    ParamValue condition = new ParamValue(c, v, "and");
+                    boolean eliminado = cuentaUtils.deleteOperation(condition);
+                    if(eliminado) {
+                        tableModel.removeRow(row);
                     } else {
-                        cuentaUtils.errorMessage(
-                                myFrame,
-                                "NO TABLE ELEMENT SELECTED",
-                                "Error"
-                        );
+                        cuentaUtils.errorMessage(myFrame,
+                                String.format("Column: %s with value of: %s not found", columName, valueOfColumn),
+                                "Not fount Error");
                     }
-                } catch(Exception er) {
-                    er.printStackTrace();
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "Error while trying to delete a register",
-                            "Delete Error"
-                    );
+                } else {
+                    cuentaUtils.errorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Select Error");
                 }
+            } catch(Exception er) {
+                er.printStackTrace();
+                cuentaUtils.errorMessage(myFrame, "Error while trying to delete a register", "Delete Error");
             }
         });
     }
@@ -498,52 +401,28 @@ public class PanelPrincipal {
      * @param height: height of the PanelRegistro
      */
     private void insertButtonHandler(JButton insertButton, int width, int height) {
-        insertButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if(listaFaltantes().size() == 0) {
-                    new PanelRegistro(
-                            "Register",
-                            width/2,
-                            height-100,
-                            myConfig,
-                            loggedUser,
-                            cursor,
-                            myFrame,
-                            cuentaUtils
-                    );
-                    myFrame.setEnabled(false);
-                } else {
-                    try {
-                        for(CuentaODM c: listaFaltantes()) {
-                            String[]
-                                co = {"nombre", "user_id_fk"},
-                                va = {c.getNombre(), String.valueOf(c.getUser_id_fk())};
-                            int option = JOptionPane.showConfirmDialog(
-                                    myFrame,
-                                    "Do you want to register?",
-                                    "Register operation",
-                                    JOptionPane.OK_CANCEL_OPTION,
-                                    JOptionPane.QUESTION_MESSAGE
-                            );
-                            if(option == JOptionPane.OK_OPTION) {
-                                ParamValue condition = new ParamValue(co, va, "and");
-                                cuentaUtils.insertOperation(c, condition);
-                            }
+        insertButton.addActionListener(e -> {
+            if(!listaFaltantes().isEmpty()) {
+                new PanelRegistro("Register", width/2, height-100, myConfig, loggedUser, cursor, myFrame, cuentaUtils);
+                myFrame.setEnabled(false);
+            } else {
+                try {
+                    for(CuentaODM c: listaFaltantes()) {
+                        String[] co = {"nombre", USER_FK_STRING};
+                        String[]va = {c.getNombre(), String.valueOf(c.getUser_id_fk())};
+                        int option = JOptionPane.showConfirmDialog(myFrame,
+                                "Do you want to register?", "Register operation",
+                                JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE);
+                        if(option == JOptionPane.OK_OPTION) {
+                            ParamValue condition = new ParamValue(co, va, "and");
+                            cuentaUtils.insertOperation(c, condition);
                         }
-                    } catch(Exception er) {
-                        er.printStackTrace();
-                        cuentaUtils.errorMessage(
-                                myFrame,
-                                "Error while trying to inser a register",
-                                "Insert Error"
-                        );
-                    } finally {
-                        cuentaUtils.infoMessage(
-                                myFrame,
-                                "reload the window to see the changes",
-                                "INFO"
-                        );
                     }
+                } catch(Exception er) {
+                    er.printStackTrace();
+                    cuentaUtils.errorMessage(myFrame, "Error while trying to inser a register", "Insert Error");
+                } finally {
+                    cuentaUtils.infoMessage(myFrame, "reload the window to see the changes", "INFO");
                 }
             }
         });
@@ -556,43 +435,22 @@ public class PanelPrincipal {
      * @param height: height of the PanelUpdate
      */
     private void updateButtonHandler(JButton updateButton, int width, int height) {
-        updateButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                int 
-                    row    = mTable.getSelectedRow(),
-                    column = mTable.getSelectedColumn();
-                String columName = mTable.getColumnName(column);
-                if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
-                        cuentaUtils.errorMessage(
-                                myFrame,
-                                "to update use 'ID' or 'nombre' or 'email' or 'FK' ",
-                                "Error"
-                        );
-                } else if(row != -1 || column != -1) {
-                    CuentaModel updateCuenta = cuentaUtils.buildObjectFromTable(
-                            row,
-                            column,
-                            loggedUser,
-                            mTable
-                    );
-                    if(updateCuenta != null) {
-                        new PanelUpdate(
-                                "Update",
-                                width/2,
-                                height-100,
-                                updateCuenta,
-                                myFrame,
-                                cuentaUtils
-                        );
-                        myFrame.setEnabled(false);
-                    }
-                } else {
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "NO TABLE ELEMENT SELECTED",
-                            "Error"
-                    );
+        updateButton.addActionListener(e -> {
+            int row    = mTable.getSelectedRow();
+            int column = mTable.getSelectedColumn();
+            String columName = mTable.getColumnName(column);
+            if(columName.equals("create_at") || columName.equals("update_at") || columName.equals("password")) {
+                    cuentaUtils.errorMessage(myFrame,
+                            "to update use 'ID' or 'nombre' or 'email' or 'FK' ", "Error");
+            } else if(row != -1 || column != -1) {
+                CuentaModel updateCuenta = cuentaUtils.buildObjectFromTable(
+                        row, column, loggedUser, mTable);
+                if(updateCuenta != null) {
+                    new PanelUpdate("Update", width/2, height-100, updateCuenta, myFrame, cuentaUtils);
+                    myFrame.setEnabled(false);
                 }
+            } else {
+                cuentaUtils.errorMessage(myFrame, "NO TABLE ELEMENT SELECTED", "Error");
             }
         });
     }
@@ -602,29 +460,19 @@ public class PanelPrincipal {
      * @param cancelButton: panel button to cancel the operation
      */
     private void cancelButtonHandler(JButton cancelButton) {
-        cancelButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                try {
-                    int option = JOptionPane.showConfirmDialog(
-                            myFrame,
-                            "Go back to login",
-                            "Cancel op",
-                            JOptionPane.OK_CANCEL_OPTION
-                    );
-                    if(option == JOptionPane.OK_OPTION) {
-                        mainFrame.setVisible(true);
-                        cursor.rollback();
-                        cuentaUtils.setAutoImcrement();
-                        myFrame.dispose();
-                    }
-                } catch(Exception er) {
-                    er.printStackTrace();
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "Error while trying to cancel the operation",
-                            "Cancel Error"
-                    );
+        cancelButton.addActionListener(e -> {
+            try {
+                int option = JOptionPane.showConfirmDialog(myFrame,
+                        "Go back to login", "Cancel op", JOptionPane.OK_CANCEL_OPTION);
+                if(option == JOptionPane.OK_OPTION) {
+                    mainFrame.setVisible(true);
+                    cursor.rollback();
+                    cuentaUtils.setAutoImcrement();
+                    myFrame.dispose();
                 }
+            } catch(Exception er) {
+                er.printStackTrace();
+                cuentaUtils.errorMessage(myFrame, "Error while trying to cancel the operation", "Cancel Error");
             }
         });
     }
@@ -634,7 +482,7 @@ public class PanelPrincipal {
      * @param height: height of the panel
      * @return the panel with the content setted
      */
-    private JPanel optionsComponent(int width, int height) {
+    private JPanel optionsComponent(int height) {
         JPanel optionPanel = new JPanel();
         optionPanel.setLayout(new FlowLayout());
 
@@ -669,14 +517,11 @@ public class PanelPrincipal {
         myFrame.setLayout(new GridLayout(3, 1));
 
         myFrame.addWindowListener(new WindowAdapter() {
+            @Override
             public void windowClosing(WindowEvent we) {
                 try {
-                    int option = JOptionPane.showConfirmDialog(
-                            myFrame,
-                            "save changes before exit?",
-                            "save changes",
-                            JOptionPane.YES_NO_CANCEL_OPTION
-                    );
+                    int option = JOptionPane.showConfirmDialog(myFrame,
+                            "save changes before exit?", "save changes", JOptionPane.YES_NO_CANCEL_OPTION);
                     if(option == JOptionPane.YES_OPTION) {
                         cursor.commit();
                         System.exit(0);
@@ -685,20 +530,16 @@ public class PanelPrincipal {
                         cuentaUtils.setAutoImcrement();
                         System.exit(0);
                     } else if(option == JOptionPane.CANCEL_OPTION) {
-                        myFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+                        myFrame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
                     }
                 } catch(Exception e) {
                     e.printStackTrace();
-                    cuentaUtils.errorMessage(
-                            myFrame,
-                            "Error while trying to close the window",
-                            "Close Error"
-                    );
+                    cuentaUtils.errorMessage(myFrame, "Error while trying to close the window", "Close Error");
                 }
             }
         });
 
-        headerLabel = new JLabel("", JLabel.CENTER);
+        headerLabel = new JLabel("", SwingConstants.CENTER);
 
         controlPanel = new JPanel();
         controlPanel.setLayout(new BorderLayout());
@@ -707,8 +548,8 @@ public class PanelPrincipal {
 
         myFrame.add(headerLabel);
         myFrame.add(tableComponent(tableTitle), BorderLayout.CENTER);
-        myFrame.add(optionsComponent(600, 700));
-        myFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        myFrame.add(optionsComponent(700));
+        myFrame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         myFrame.setVisible(true);
         myFrame.setLocationRelativeTo(mainFrame);
         myFrame.setResizable(true);
